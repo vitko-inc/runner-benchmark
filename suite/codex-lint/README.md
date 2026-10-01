@@ -11,3 +11,4 @@
 - `codex-voice-host` is excluded (needs GStreamer 1.28+, absent from stock Ubuntu 24.04).
 - No `-D warnings`, so the job ends green; the compile work is the same.
 - Needs more than 8 GB of memory without swap (GitHub's runner has 4 GB of swap). Providers without swap run it at their next memory size, priced there.
+- The `kernel.unprivileged_userns_clone` sysctl in upstream's setup action runs only where the kernel has it.

@@ -41,6 +41,12 @@ jobs:
           repository: openai/codex
           ref: 01fc69f4026735edfdf6789820549727a4867b11 # rust-v0.159.3
           persist-credentials: false
+      # PORTABILITY: upstream's setup-ci sets kernel.unprivileged_userns_clone, a sysctl that only
+      # Debian/Ubuntu-patched kernels have; on other kernels it fails the job. Run it only where it exists.
+      - name: Guard the userns sysctl
+        shell: bash
+        working-directory: ${{ github.workspace }}
+        run: sed -i 's#sudo sysctl -w kernel.unprivileged_userns_clone=1#if [ -e /proc/sys/kernel/unprivileged_userns_clone ]; then sudo sysctl -w kernel.unprivileged_userns_clone=1; fi#' .github/actions/setup-ci/action.yml
       - uses: ./.github/actions/setup-ci
       - name: Install Linux build dependencies
         if: ${{ runner.os == 'Linux' }}
