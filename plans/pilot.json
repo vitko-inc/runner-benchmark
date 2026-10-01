@@ -4,26 +4,105 @@
   "warmup_rounds": 2,
   "measured_rounds": 3,
   "run_timeout_s": 7200,
-  "providers": ["gh2", "gh4", "ec2-eph", "gce-pool", "vitko", "vitko-split"],
-  "lanes": [
-    ["monorepo", "codex-lint"],
-    ["ts", "container"],
-    ["vite", "okhttp", "cli", "pydantic", "fd"],
-    ["vue", "flask"]
+  "providers": [
+    "gh2",
+    "gh4",
+    "ec2-eph",
+    "gce-pool",
+    "vitko",
+    "vitko-split"
   ],
-  "bursts": ["burst"],
+  "lanes": [
+    [
+      "monorepo",
+      "codex-lint"
+    ],
+    [
+      "ts",
+      "container"
+    ],
+    [
+      "vite",
+      "okhttp",
+      "cli",
+      "pydantic",
+      "fd"
+    ],
+    [
+      "vue",
+      "flask"
+    ]
+  ],
+  "bursts": [
+    "burst"
+  ],
   "workloads": {
-    "vite": {"id": "vite", "workflow": "wl-vite.yml", "splittable": true},
-    "vue": {"id": "vue", "workflow": "wl-vue.yml", "splittable": true},
-    "flask": {"id": "flask", "workflow": "wl-flask.yml", "splittable": true},
-    "pydantic": {"id": "pydantic", "workflow": "wl-pydantic.yml", "splittable": true},
-    "fd": {"id": "fd", "workflow": "wl-fd.yml"},
-    "codex-lint": {"id": "codex-lint", "workflow": "wl-codex-lint.yml"},
-    "cli": {"id": "cli", "workflow": "wl-cli.yml", "splittable": true},
-    "okhttp": {"id": "okhttp", "workflow": "wl-okhttp.yml"},
-    "monorepo": {"id": "monorepo", "workflow": "wl-monorepo.yml"},
-    "container": {"id": "container", "workflow": "wl-container.yml"},
-    "ts": {"id": "ts", "workflow": "wl-ts.yml", "splittable": true},
-    "burst": {"id": "burst", "workflow": "wl-black.yml", "copies": 20}
-  }
+    "vite": {
+      "id": "vite",
+      "workflow": "wl-vite.yml",
+      "splittable": true
+    },
+    "vue": {
+      "id": "vue",
+      "workflow": "wl-vue.yml",
+      "splittable": true
+    },
+    "flask": {
+      "id": "flask",
+      "workflow": "wl-flask.yml",
+      "splittable": true
+    },
+    "pydantic": {
+      "id": "pydantic",
+      "workflow": "wl-pydantic.yml",
+      "splittable": true
+    },
+    "fd": {
+      "id": "fd",
+      "workflow": "wl-fd.yml"
+    },
+    "codex-lint": {
+      "id": "codex-lint",
+      "workflow": "wl-codex-lint.yml"
+    },
+    "cli": {
+      "id": "cli",
+      "workflow": "wl-cli.yml",
+      "splittable": true
+    },
+    "okhttp": {
+      "id": "okhttp",
+      "workflow": "wl-okhttp.yml"
+    },
+    "monorepo": {
+      "id": "monorepo",
+      "workflow": "wl-monorepo.yml"
+    },
+    "container": {
+      "id": "container",
+      "workflow": "wl-container.yml"
+    },
+    "ts": {
+      "id": "ts",
+      "workflow": "wl-ts.yml",
+      "splittable": true
+    },
+    "burst": {
+      "id": "burst",
+      "workflow": "wl-black.yml",
+      "copies": 20
+    }
+  },
+  "burst_groups": [
+    [
+      "gh2",
+      "ec2-eph",
+      "gce-pool",
+      "vitko"
+    ],
+    [
+      "gh4"
+    ]
+  ],
+  "note": "gh2 and gh4 share one GitHub account in the pilot (20 concurrent jobs on its plan), so their bursts run one after the other."
 }

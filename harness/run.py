@@ -162,7 +162,13 @@ def main():
         for wid in plan.get("bursts", []):
             w = plan["workloads"][wid]
             print(f"[{now()}] {phase} r{rnd} burst {wid} x{w['copies']}", flush=True)
-            run_group(plan, targets, w, providers_for(wid), meta, a.out, a.dry_run, copies=w["copies"])
+            # Optional "burst_groups": provider groups that burst one after another, e.g. when two
+            # providers share one account-wide concurrency limit.
+            groups = plan.get("burst_groups") or [providers_for(wid)]
+            for g in groups:
+                ps = [p for p in g if p in providers_for(wid)]
+                if ps:
+                    run_group(plan, targets, w, ps, meta, a.out, a.dry_run, copies=w["copies"])
         record(a.out, dict(meta, event="round_end", at=now()))
 
 
