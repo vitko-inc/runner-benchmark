@@ -49,10 +49,16 @@ jobs:
       - name: Run unit and integration tests
         if: ${{ !inputs.split }}
         run: go test -race -tags=integration ./...
+      # Track B (split): the attestation tests that call the public Sigstore services need the
+      # network, which split parts don't have. They're excluded from the split step and run unsplit
+      # in the next step of the same job, so the job does the same work as the other arms.
       - name: Run unit and integration tests (split)
         if: ${{ inputs.split }}
         uses: vitko-inc/split-tests@1a0d81a16601de725e94b3179545208f21423dd1 # v1.0.3
         with:
-          run: go test -race -tags=integration ./...
+          run: go test -race -tags=integration -skip '^(TestLiveSigstoreVerifier|TestVerifyAttestations|TestVerifyIntegration.*)$' ./...
+      - name: Run the network-dependent attestation tests (split arm, unsplit)
+        if: ${{ inputs.split }}
+        run: go test -race -tags=integration -run '^(TestLiveSigstoreVerifier|TestVerifyAttestations|TestVerifyIntegration.*)$' ./pkg/cmd/attestation/...
       - name: Build
         run: go build -v ./cmd/gh
