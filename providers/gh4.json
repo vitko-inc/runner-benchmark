@@ -1,1 +1,8 @@
-{"id": "gh4", "name": "GitHub-hosted, 4 vCPU", "size": "4 vCPU / 16 GB", "track": "A (reference size)", "price_ref": "github-4vcpu", "runs_on": "ubuntu-24.04 (public repository) or a 4-core larger runner"}
+{
+ "id": "gh4",
+ "name": "GitHub-hosted, 4 vCPU",
+ "size": "4 vCPU / 16 GB",
+ "track": "A (reference size)",
+ "price_ref": "github-4vcpu",
+ "runs_on": "ubuntu-24.04 in a public repository (GitHub's free 4 vCPU / 16 GB standard runner), priced at the 4-core list price"
+}
