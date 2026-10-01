@@ -1,0 +1,9 @@
+The benchmark results in results/ (raw job records, run and cell tables, results.json) are
+licensed under the Creative Commons Attribution 4.0 International licence (CC BY 4.0):
+https://creativecommons.org/licenses/by/4.0/legalcode
+
+Attribution: "Runner benchmark, <result set date>, https://github.com/vitko-inc/runner-benchmark".
+
+Everything else in this repository is licensed under the Apache License 2.0 (see LICENSE).
+The projects the workloads build and test are not part of this repository; they are fetched at
+pinned commits at run time and remain under their own licences (listed in suite/<id>/README.md).

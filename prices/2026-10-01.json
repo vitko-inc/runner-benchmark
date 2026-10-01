@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-01",
+  "note": "Public list prices on the date, Linux x64, for the size each provider is tested at. Free minutes, plans and discounts are excluded from per-run cost.",
+  "providers": {
+    "github-2vcpu": {"usd_per_min": 0.006, "billing": "job-rounded-up-to-minute", "source": "https://docs.github.com/en/billing/reference/actions-runner-pricing"},
+    "github-4vcpu": {"usd_per_min": 0.012, "billing": "job-rounded-up-to-minute", "source": "https://docs.github.com/en/billing/reference/actions-runner-pricing"},
+    "blacksmith-2vcpu": {"usd_per_min": 0.004, "billing": "job-rounded-up-to-minute", "source": "https://www.blacksmith.sh/pricing", "note": "per-minute billing; per-job rounding not stated publicly, whole minutes observed"},
+    "depot-2vcpu": {"usd_per_min": 0.006, "billing": "per-second", "source": "https://depot.dev/docs/github-actions/runner-types"},
+    "ubicloud-standard-2": {"usd_per_min": 0.00125, "billing": "job-rounded-up-to-minute", "source": "https://www.ubicloud.com/docs/about/pricing"},
+    "vitko-2vcpu": {"usd_per_min": 0.002, "billing": "per-second", "source": "https://runners.vitko.inc"},
+    "aws-m8a.large-on-demand": {"usd_per_min": 0.0020287, "billing": "external", "usd_per_hour": 0.12172, "region": "us-east-1", "disk_gp3_usd_per_gb_month": 0.08, "source": "https://aws.amazon.com/ec2/pricing/on-demand/", "method": "billed seconds from instance launch to termination (60 s minimum) plus the root volume, per job; computed by selfhosted/aws cost collector"},
+    "gcp-n4d-standard-2-pool": {"usd_per_min": 0.0014117, "billing": "pool-occupancy", "utilization": 0.5, "usd_per_hour": 0.0847, "region": "us-east4", "disk_pd_balanced_usd_per_gib_month": 0.11, "source": "https://cloud.google.com/products/compute/pricing/general-purpose", "method": "always-on pool: job run time / U at the VM's per-second price; U = 0.5 (sensitivity 0.25 and 0.75 in METHOD.md); disk added per VM-second"}
+  }
+}

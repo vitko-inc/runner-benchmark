@@ -1,0 +1,8 @@
+# Deployment-specific files stay out of the repository.
+targets*.json
+*.auto.tfvars
+*.tfstate
+*.tfstate.*
+.terraform/
+__pycache__/
+/work/

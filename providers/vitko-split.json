@@ -1,0 +1,1 @@
+{"id": "vitko-split", "name": "Vitko Runners + split tests", "size": "up to 2 vCPU / 8 GB", "track": "B", "price_ref": "vitko-2vcpu", "runs_on": "Vitko Runners label", "workflow_input": {"split": true}, "split_billing": true, "note": "Only the parts are billed while a split step runs: job time - split step + each part's time."}

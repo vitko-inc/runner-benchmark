@@ -1,0 +1,62 @@
+# Workload "pydantic": pydantic/pydantic@v2.13.5 (001dea020e0809844e5b17666432c9135a976f46)
+# Adapted from upstream .github/workflows/ci.yml, job "Test ubuntu-latest / 3.13". Changes from upstream are marked "PORTABILITY" and are
+# identical for every provider. See suite/pydantic/README.md.
+name: wl-pydantic
+run-name: ${{ inputs.tag }}
+on:
+  workflow_dispatch:
+    inputs:
+      runs_on:
+        description: runs-on label of the provider under test
+        type: string
+        required: true
+      tag:
+        description: run identifier assigned by the harness (shown as the run name)
+        type: string
+        required: true
+      split:
+        description: Track B only - run the test step through vitko-inc/split-tests (on other runners it runs all tests in one part)
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  test:
+    name: pydantic test (3.13)
+    runs-on: ${{ inputs.runs_on }}
+    timeout-minutes: 45
+    env:
+      OS: ubuntu-latest
+      DEPS: yes
+      UV_PYTHON_PREFERENCE: only-managed
+    steps:
+      - name: rb-probe
+        shell: bash
+        run: |
+          echo "rb-probe cpu=\"$(grep -m1 'model name' /proc/cpuinfo | cut -d: -f2 | xargs)\" nproc=$(nproc) mem_kib=$(awk '/MemTotal/{print $2}' /proc/meminfo) swap_kib=$(awk '/SwapTotal/{print $2}' /proc/meminfo) kernel=$(uname -r)"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: pydantic/pydantic
+          ref: 001dea020e0809844e5b17666432c9135a976f46 # v2.13.5
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@cec208311dfd045dd5311c1add060b2062131d57 # v8.0.0
+        with:
+          python-version: '3.13'
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --all-packages --group testing-extra --all-extras
+      - run: 'uv run python -c "import pydantic.version; print(pydantic.version.version_info())"'
+      - run: mkdir coverage
+      - name: Run pytest
+        if: ${{ !inputs.split }}
+        run: make test NUM_THREADS=1
+        env:
+          COVERAGE_FILE: coverage/.coverage.Linux-py3.13
+          CONTEXT: Linux-py3.13-without-deps
+      - name: Run pytest (split)
+        if: ${{ inputs.split }}
+        uses: vitko-inc/split-tests@f0506956caffeaba87a2e3ea04e8bc06318b6af1 # v1
+        with:
+          run: uv run pytest --durations=10
+      # PORTABILITY: upstream uploads coverage files as an artifact for a later combine job; that
+      # job is not part of this workload, so the upload is omitted.

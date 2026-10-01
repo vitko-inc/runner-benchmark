@@ -1,0 +1,1 @@
+{"id": "gh2", "name": "GitHub-hosted, 2 vCPU", "size": "2 vCPU / 8 GB", "track": "A", "price_ref": "github-2vcpu", "runs_on": "ubuntu-24.04 (private repository) or a 2-core larger runner (public repository)"}

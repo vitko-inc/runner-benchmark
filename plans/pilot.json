@@ -1,0 +1,29 @@
+{
+  "set": "pilot-2026-10",
+  "seed": 20261001,
+  "warmup_rounds": 2,
+  "measured_rounds": 3,
+  "run_timeout_s": 7200,
+  "providers": ["gh2", "gh4", "ec2-eph", "gce-pool", "vitko", "vitko-split"],
+  "lanes": [
+    ["monorepo", "codex-lint"],
+    ["ts", "container"],
+    ["vite", "okhttp", "cli", "pydantic", "fd"],
+    ["vue", "flask"]
+  ],
+  "bursts": ["burst"],
+  "workloads": {
+    "vite": {"id": "vite", "workflow": "wl-vite.yml", "splittable": true},
+    "vue": {"id": "vue", "workflow": "wl-vue.yml", "splittable": true},
+    "flask": {"id": "flask", "workflow": "wl-flask.yml", "splittable": true},
+    "pydantic": {"id": "pydantic", "workflow": "wl-pydantic.yml", "splittable": true},
+    "fd": {"id": "fd", "workflow": "wl-fd.yml"},
+    "codex-lint": {"id": "codex-lint", "workflow": "wl-codex-lint.yml"},
+    "cli": {"id": "cli", "workflow": "wl-cli.yml", "splittable": true},
+    "okhttp": {"id": "okhttp", "workflow": "wl-okhttp.yml"},
+    "monorepo": {"id": "monorepo", "workflow": "wl-monorepo.yml"},
+    "container": {"id": "container", "workflow": "wl-container.yml"},
+    "ts": {"id": "ts", "workflow": "wl-ts.yml", "splittable": true},
+    "burst": {"id": "burst", "workflow": "wl-black.yml", "copies": 20}
+  }
+}

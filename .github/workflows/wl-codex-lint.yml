@@ -1,0 +1,255 @@
+# Workload "codex-lint": openai/codex@rust-v0.159.3 (01fc69f4026735edfdf6789820549727a4867b11)
+# Adapted from upstream .github/workflows/rust-ci-full.yml, job "lint_build" (ubuntu-24.04, x86_64-unknown-linux-gnu, dev). Changes from upstream are marked "PORTABILITY" and are
+# identical for every provider. See suite/codex-lint/README.md.
+name: wl-codex-lint
+run-name: ${{ inputs.tag }}
+on:
+  workflow_dispatch:
+    inputs:
+      runs_on:
+        description: runs-on label of the provider under test
+        type: string
+        required: true
+      tag:
+        description: run identifier assigned by the harness (shown as the run name)
+        type: string
+        required: true
+permissions:
+  contents: read
+# Matrix values are inlined. Steps that upstream runs only for musl or release entries are kept
+# with "if: false", as they are for this matrix entry.
+jobs:
+  lint_build:
+    name: codex Lint/Build x86_64-unknown-linux-gnu (dev)
+    runs-on: ${{ inputs.runs_on }}
+    timeout-minutes: 120
+    defaults:
+      run:
+        working-directory: codex-rs
+    env:
+      USE_SCCACHE: 'true'
+      CARGO_INCREMENTAL: "0"
+      SCCACHE_CACHE_SIZE: 10G
+    steps:
+      - name: rb-probe
+        shell: bash
+        working-directory: ${{ github.workspace }}
+        run: |
+          echo "rb-probe cpu=\"$(grep -m1 'model name' /proc/cpuinfo | cut -d: -f2 | xargs)\" nproc=$(nproc) mem_kib=$(awk '/MemTotal/{print $2}' /proc/meminfo) swap_kib=$(awk '/SwapTotal/{print $2}' /proc/meminfo) kernel=$(uname -r)"
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          repository: openai/codex
+          ref: 01fc69f4026735edfdf6789820549727a4867b11 # rust-v0.159.3
+          persist-credentials: false
+      - uses: ./.github/actions/setup-ci
+      - name: Install Linux build dependencies
+        if: ${{ runner.os == 'Linux' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if command -v apt-get >/dev/null 2>&1; then
+            sudo apt-get update -y
+            sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends build-essential pkg-config libcap-dev libasound2-dev libglib2.0-dev libdbus-1-dev  # PORTABILITY: + libglib2.0-dev libdbus-1-dev (present on GitHub's image, not on plain Ubuntu)
+          fi
+      - uses: dtolnay/rust-toolchain@e081816240890017053eacbb1bdf337761dc5582 # 1.95.0
+        with:
+          targets: x86_64-unknown-linux-gnu
+          components: clippy
+
+      - if: ${{ false }}
+        name: Use hermetic Cargo home (musl)
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo_home="${GITHUB_WORKSPACE}/.cargo-home"
+          mkdir -p "${cargo_home}/bin"
+          echo "CARGO_HOME=${cargo_home}" >> "$GITHUB_ENV"
+          echo "${cargo_home}/bin" >> "$GITHUB_PATH"
+          : > "${cargo_home}/config.toml"
+
+      - name: Compute lockfile hash
+        id: lockhash
+        working-directory: codex-rs
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "hash=$(sha256sum Cargo.lock | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+          echo "toolchain_hash=$(sha256sum rust-toolchain.toml | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+
+      # Explicit cache restore: split cargo home vs target, so we can
+      # avoid caching the large target dir on the gnu-dev job.
+      - name: Restore cargo home cache
+        id: cache_cargo_home_restore
+        uses: actions/cache/restore@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            ${{ github.workspace }}/.cargo-home/bin/
+            ${{ github.workspace }}/.cargo-home/registry/index/
+            ${{ github.workspace }}/.cargo-home/registry/cache/
+            ${{ github.workspace }}/.cargo-home/git/db/
+          key: cargo-home-ubuntu-24.04-x86_64-unknown-linux-gnu-dev-${{ steps.lockhash.outputs.hash }}-${{ steps.lockhash.outputs.toolchain_hash }}
+          restore-keys: |
+            cargo-home-ubuntu-24.04-x86_64-unknown-linux-gnu-dev-
+
+      # Install and restore sccache cache
+      - name: Install sccache
+        if: ${{ env.USE_SCCACHE == 'true' }}
+        uses: taiki-e/install-action@44c6d64aa62cd779e873306675c7a58e86d6d532 # v2.62.49
+        with:
+          tool: sccache
+          version: 0.7.5
+
+      - name: Configure sccache backend
+        if: ${{ env.USE_SCCACHE == 'true' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -n "${ACTIONS_CACHE_URL:-}" && -n "${ACTIONS_RUNTIME_TOKEN:-}" ]]; then
+            echo "SCCACHE_GHA_ENABLED=true" >> "$GITHUB_ENV"
+            echo "Using sccache GitHub backend"
+          else
+            echo "SCCACHE_GHA_ENABLED=false" >> "$GITHUB_ENV"
+            echo "SCCACHE_DIR=${{ github.workspace }}/.sccache" >> "$GITHUB_ENV"
+            echo "Using sccache local disk + actions/cache fallback"
+          fi
+
+      - name: Enable sccache wrapper
+        if: ${{ env.USE_SCCACHE == 'true' }}
+        shell: bash
+        run: echo "RUSTC_WRAPPER=sccache" >> "$GITHUB_ENV"
+
+      - name: Restore sccache cache (fallback)
+        if: ${{ env.USE_SCCACHE == 'true' && env.SCCACHE_GHA_ENABLED != 'true' }}
+        id: cache_sccache_restore
+        uses: actions/cache/restore@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+        with:
+          path: ${{ github.workspace }}/.sccache/
+          key: sccache-ubuntu-24.04-x86_64-unknown-linux-gnu-dev-${{ steps.lockhash.outputs.hash }}-${{ github.run_id }}
+          restore-keys: |
+            sccache-ubuntu-24.04-x86_64-unknown-linux-gnu-dev-${{ steps.lockhash.outputs.hash }}-
+            sccache-ubuntu-24.04-x86_64-unknown-linux-gnu-dev-
+
+      - if: ${{ false }}
+        name: Prepare APT cache directories (musl)
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo mkdir -p /var/cache/apt/archives /var/lib/apt/lists
+          sudo chown -R "$USER:$USER" /var/cache/apt /var/lib/apt/lists
+
+      - if: ${{ false }}
+        name: Restore APT cache (musl)
+        id: cache_apt_restore
+        uses: actions/cache/restore@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+        with:
+          path: |
+            /var/cache/apt
+          key: apt-ubuntu-24.04-x86_64-unknown-linux-gnu-v1
+
+      - if: ${{ false }}
+        name: Install Zig
+        uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29 # v2.2.1
+        with:
+          version: 0.14.0
+
+      - if: ${{ false }}
+        name: Install musl build tools
+        env:
+          DEBIAN_FRONTEND: noninteractive
+          TARGET: x86_64-unknown-linux-gnu
+          APT_UPDATE_ARGS: -o Acquire::Retries=3
+          APT_INSTALL_ARGS: --no-install-recommends
+        shell: bash
+        run: bash "${GITHUB_WORKSPACE}/.github/scripts/install-musl-build-tools.sh"
+
+      - name: Configure rusty_v8 artifact overrides and verify checksums
+        uses: ./.github/actions/setup-rusty-v8
+        with:
+          target: x86_64-unknown-linux-gnu
+
+      - name: Install cargo-chef
+        if: ${{ false }}
+        uses: taiki-e/install-action@44c6d64aa62cd779e873306675c7a58e86d6d532 # v2.62.49
+        with:
+          tool: cargo-chef
+          version: 0.1.71
+
+      - name: Pre-warm dependency cache (cargo-chef)
+        if: ${{ false }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          RECIPE="${RUNNER_TEMP}/chef-recipe.json"
+          cargo chef prepare --recipe-path "$RECIPE"
+          cargo chef cook --recipe-path "$RECIPE" --target x86_64-unknown-linux-gnu --release
+
+      - name: cargo clippy
+        # PORTABILITY: codex-voice-host needs gstreamer >= 1.28, which no stock
+        # Ubuntu 24.04 runner has (upstream's own runner image does); it is a leaf crate, excluded here.
+        # PORTABILITY: no `-D warnings`. Upstream's own Linux-gnu Lint/Build is red at every main commit for
+        # days (unused imports in codex-core tests); the compile work is identical, the job ends green.
+        run: cargo clippy --workspace --exclude codex-voice-host --target x86_64-unknown-linux-gnu --tests --profile dev --timings
+
+      - name: Upload Cargo timings (clippy)
+        if: always()
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: cargo-timings-rust-ci-clippy-x86_64-unknown-linux-gnu-dev
+          path: ${{ env.CARGO_TARGET_DIR }}/**/cargo-timings/cargo-timing.html
+          if-no-files-found: warn
+
+      # Save caches explicitly; make non-fatal so cache packaging
+      # never fails the overall job. Only save when key wasn't hit.
+      - name: Save cargo home cache
+        if: always() && !cancelled() && steps.cache_cargo_home_restore.outputs.cache-hit != 'true'
+        continue-on-error: true
+        uses: actions/cache/save@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            ${{ github.workspace }}/.cargo-home/bin/
+            ${{ github.workspace }}/.cargo-home/registry/index/
+            ${{ github.workspace }}/.cargo-home/registry/cache/
+            ${{ github.workspace }}/.cargo-home/git/db/
+          key: cargo-home-ubuntu-24.04-x86_64-unknown-linux-gnu-dev-${{ steps.lockhash.outputs.hash }}-${{ steps.lockhash.outputs.toolchain_hash }}
+
+      - name: Save sccache cache (fallback)
+        if: always() && !cancelled() && env.USE_SCCACHE == 'true' && env.SCCACHE_GHA_ENABLED != 'true'
+        continue-on-error: true
+        uses: actions/cache/save@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+        with:
+          path: ${{ github.workspace }}/.sccache/
+          key: sccache-ubuntu-24.04-x86_64-unknown-linux-gnu-dev-${{ steps.lockhash.outputs.hash }}-${{ github.run_id }}
+
+      - name: sccache stats
+        if: always() && env.USE_SCCACHE == 'true'
+        continue-on-error: true
+        run: sccache --show-stats || true
+
+      - name: sccache summary
+        if: always() && env.USE_SCCACHE == 'true'
+        shell: bash
+        run: |
+          {
+            echo "### sccache stats — x86_64-unknown-linux-gnu (dev)";
+            echo;
+            echo '```';
+            sccache --show-stats || true;
+            echo '```';
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Save APT cache (musl)
+        if: false
+        continue-on-error: true
+        uses: actions/cache/save@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+        with:
+          path: |
+            /var/cache/apt
+          key: apt-ubuntu-24.04-x86_64-unknown-linux-gnu-v1

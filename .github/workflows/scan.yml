@@ -1,0 +1,35 @@
+name: disclosure-scan
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Files
+        run: python3 .github/disclosure/scan.py
+      - name: Commit messages
+        run: python3 .github/disclosure/scan.py --no-files --git-log HEAD
+      - name: Pull request title, body and branch
+        if: github.event_name == 'pull_request'
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_BRANCH: ${{ github.head_ref }}
+        run: printf '%s\n%s\n%s\n' "$PR_TITLE" "$PR_BRANCH" "$PR_BODY" | python3 .github/disclosure/scan.py --text pull-request
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Python compiles
+        run: python3 -m py_compile harness/*.py analysis/*.py
+      - name: JSON files parse
+        run: for f in providers/*.json prices/*.json plans/*.json; do python3 -m json.tool "$f" > /dev/null || exit 1; done

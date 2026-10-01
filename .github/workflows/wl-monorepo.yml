@@ -1,0 +1,56 @@
+# Workload "monorepo": vercel/ai@ai@7.0.126 (45e1fbc3ea10d22f852e12b1c1851e289c85e835)
+# Adapted from upstream .github/workflows/ci.yml, job "Build Examples (next-core)". Changes from upstream are marked "PORTABILITY" and are
+# identical for every provider. See suite/monorepo/README.md.
+name: wl-monorepo
+run-name: ${{ inputs.tag }}
+on:
+  workflow_dispatch:
+    inputs:
+      runs_on:
+        description: runs-on label of the provider under test
+        type: string
+        required: true
+      tag:
+        description: run identifier assigned by the harness (shown as the run name)
+        type: string
+        required: true
+      split:
+        description: Track B only - run the test step through vitko-inc/split-tests (on other runners it runs all tests in one part)
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  build-examples:
+    name: 'Build Examples (next-core)'
+    runs-on: ${{ inputs.runs_on }}
+    timeout-minutes: 90
+    steps:
+      - name: rb-probe
+        shell: bash
+        run: |
+          echo "rb-probe cpu=\"$(grep -m1 'model name' /proc/cpuinfo | cut -d: -f2 | xargs)\" nproc=$(nproc) mem_kib=$(awk '/MemTotal/{print $2}' /proc/meminfo) swap_kib=$(awk '/SwapTotal/{print $2}' /proc/meminfo) kernel=$(uname -r)"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: vercel/ai
+          ref: 45e1fbc3ea10d22f852e12b1c1851e289c85e835 # ai@7.0.126
+          persist-credentials: false
+      # PORTABILITY: Node before pnpm (see wl-vue.yml).
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+      - name: Setup pnpm
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+      - name: Use Node.js 22
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      # PORTABILITY (source-keyed caches): upstream restores .turbo/.next build caches keyed by commit.
+      # The benchmark builds the same commit on every run, so a restored cache would replay every
+      # task and turn the job into a no-op. The restore is omitted: this is the full build that a
+      # change to shared packages triggers. Dependency caches (pnpm store) are kept.
+      - name: Build Examples
+        run: pnpm exec turbo build --filter=@example/next --filter=@example/next-openai --filter=@example/next-agent

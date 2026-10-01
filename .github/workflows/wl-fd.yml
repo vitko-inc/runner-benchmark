@@ -1,0 +1,60 @@
+# Workload "fd": sharkdp/fd@v10.5.0 (4f81778774463bf414a184cbe6d5219ad2229646)
+# Adapted from upstream .github/workflows/CICD.yml, job "x86_64-unknown-linux-gnu (ubuntu-24.04)". Changes from upstream are marked "PORTABILITY" and are
+# identical for every provider. See suite/fd/README.md.
+name: wl-fd
+run-name: ${{ inputs.tag }}
+on:
+  workflow_dispatch:
+    inputs:
+      runs_on:
+        description: runs-on label of the provider under test
+        type: string
+        required: true
+      tag:
+        description: run identifier assigned by the harness (shown as the run name)
+        type: string
+        required: true
+      split:
+        description: Track B only - run the test step through vitko-inc/split-tests (on other runners it runs all tests in one part)
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  build:
+    name: fd x86_64-unknown-linux-gnu
+    runs-on: ${{ inputs.runs_on }}
+    timeout-minutes: 45
+    env:
+      # PORTABILITY: upstream builds this target with cross (a Docker-based wrapper); on an x86_64
+      # host the native cargo build of the same target is equivalent and needs no Docker.
+      BUILD_CMD: cargo
+      target: x86_64-unknown-linux-gnu
+    steps:
+      - name: rb-probe
+        shell: bash
+        run: |
+          echo "rb-probe cpu=\"$(grep -m1 'model name' /proc/cpuinfo | cut -d: -f2 | xargs)\" nproc=$(nproc) mem_kib=$(awk '/MemTotal/{print $2}' /proc/meminfo) swap_kib=$(awk '/SwapTotal/{print $2}' /proc/meminfo) kernel=$(uname -r)"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: sharkdp/fd
+          ref: 4f81778774463bf414a184cbe6d5219ad2229646 # v10.5.0
+          persist-credentials: false
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-unknown-linux-gnu
+          toolchain: "stable"
+      - name: Show version information (Rust, cargo, GCC)
+        shell: bash
+        run: |
+          gcc --version || true
+          rustup -V
+          cargo -V
+          rustc -V
+      - name: Build
+        shell: bash
+        run: $BUILD_CMD build --locked --release --target="${target}"
+      - name: Run tests
+        shell: bash
+        run: $BUILD_CMD test --locked --target="${target}"

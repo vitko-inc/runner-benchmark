@@ -1,0 +1,58 @@
+# Workload "container": mastodon/mastodon@v4.7.2 (3987b9fd624010eeeaeb7cad96606b05aa813f6a)
+# Adapted from upstream .github/workflows/build-container-image.yml, job "build-image (linux/amd64)". Changes from upstream are marked "PORTABILITY" and are
+# identical for every provider. See suite/container/README.md.
+name: wl-container
+run-name: ${{ inputs.tag }}
+on:
+  workflow_dispatch:
+    inputs:
+      runs_on:
+        description: runs-on label of the provider under test
+        type: string
+        required: true
+      tag:
+        description: run identifier assigned by the harness (shown as the run name)
+        type: string
+        required: true
+      split:
+        description: Track B only - run the test step through vitko-inc/split-tests (on other runners it runs all tests in one part)
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  build-image:
+    name: mastodon build-image (linux/amd64)
+    runs-on: ${{ inputs.runs_on }}
+    timeout-minutes: 90
+    steps:
+      - name: rb-probe
+        shell: bash
+        run: |
+          echo "rb-probe cpu=\"$(grep -m1 'model name' /proc/cpuinfo | cut -d: -f2 | xargs)\" nproc=$(nproc) mem_kib=$(awk '/MemTotal/{print $2}' /proc/meminfo) swap_kib=$(awk '/SwapTotal/{print $2}' /proc/meminfo) kernel=$(uname -r)"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: mastodon/mastodon
+          ref: 3987b9fd624010eeeaeb7cad96606b05aa813f6a # v4.7.2
+          persist-credentials: false
+      - name: Prepare
+        run: echo "PLATFORM_PAIR=linux-amd64" >> $GITHUB_ENV
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+        id: buildx
+      # PORTABILITY: no registry login and no push (upstream's PR builds don't push either).
+      # Upstream's reusable workflow takes a cache input; this workload runs it with cache: false,
+      # because the same commit is built every run and a layer cache would make the build a no-op.
+      - name: Build
+        id: build
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        with:
+          context: .
+          file: Dockerfile
+          build-args: |
+            MASTODON_VERSION_PRERELEASE=
+            MASTODON_VERSION_METADATA=
+            SOURCE_COMMIT=3987b9fd624010eeeaeb7cad96606b05aa813f6a
+          platforms: linux/amd64
+          provenance: false
+          push: false
+          outputs: type=cacheonly

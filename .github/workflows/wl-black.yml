@@ -1,0 +1,47 @@
+# Workload "black": psf/black@26.5.1 (87928e6d6761a4a6d22250e1fee5601b3998086e)
+# Adapted from upstream .github/workflows/test.yml, job "test (3.13, ubuntu-latest)". Changes from upstream are marked "PORTABILITY" and are
+# identical for every provider. See suite/burst/README.md.
+name: wl-black
+run-name: ${{ inputs.tag }}
+on:
+  workflow_dispatch:
+    inputs:
+      runs_on:
+        description: runs-on label of the provider under test
+        type: string
+        required: true
+      tag:
+        description: run identifier assigned by the harness (shown as the run name)
+        type: string
+        required: true
+      split:
+        description: Track B only - run the test step through vitko-inc/split-tests (on other runners it runs all tests in one part)
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  test:
+    name: black test (3.13)
+    runs-on: ${{ inputs.runs_on }}
+    timeout-minutes: 30
+    steps:
+      - name: rb-probe
+        shell: bash
+        run: |
+          echo "rb-probe cpu=\"$(grep -m1 'model name' /proc/cpuinfo | cut -d: -f2 | xargs)\" nproc=$(nproc) mem_kib=$(awk '/MemTotal/{print $2}' /proc/meminfo) swap_kib=$(awk '/SwapTotal/{print $2}' /proc/meminfo) kernel=$(uname -r)"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: psf/black
+          ref: 87928e6d6761a4a6d22250e1fee5601b3998086e # 26.5.1
+          persist-credentials: false
+      - name: Set up Python 3.13
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: '3.13'
+          allow-prereleases: true
+          pip-version: "25.3"
+          pip-install: --group tox
+      # Not splittable: tox runs the suite as one command (Track B leaves this job unchanged).
+      - name: Unit tests
+        run: tox -e ci-py313 -- -v --color=yes

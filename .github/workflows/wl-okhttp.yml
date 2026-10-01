@@ -1,0 +1,52 @@
+# Workload "okhttp": lysine-dev/okhttp@parent-5.5.0 (a94bdf152084d11acecd44dcd09ffef203f4f0aa)
+# Adapted from upstream .github/workflows/build.yml, job "jvm (21)". Changes from upstream are marked "PORTABILITY" and are
+# identical for every provider. See suite/okhttp/README.md.
+name: wl-okhttp
+run-name: ${{ inputs.tag }}
+on:
+  workflow_dispatch:
+    inputs:
+      runs_on:
+        description: runs-on label of the provider under test
+        type: string
+        required: true
+      tag:
+        description: run identifier assigned by the harness (shown as the run name)
+        type: string
+        required: true
+      split:
+        description: Track B only - run the test step through vitko-inc/split-tests (on other runners it runs all tests in one part)
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  jvm:
+    name: okhttp jvm (21)
+    runs-on: ${{ inputs.runs_on }}
+    timeout-minutes: 60
+    steps:
+      - name: rb-probe
+        shell: bash
+        run: |
+          echo "rb-probe cpu=\"$(grep -m1 'model name' /proc/cpuinfo | cut -d: -f2 | xargs)\" nproc=$(nproc) mem_kib=$(awk '/MemTotal/{print $2}' /proc/meminfo) swap_kib=$(awk '/SwapTotal/{print $2}' /proc/meminfo) kernel=$(uname -r)"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: lysine-dev/okhttp
+          ref: a94bdf152084d11acecd44dcd09ffef203f4f0aa # parent-5.5.0
+          persist-credentials: false
+      - name: Configure JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: |
+            21
+            21
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+      - name: Run Tests
+        # PORTABILITY (source-keyed caches): upstream enables Gradle's build cache; with the same commit
+        # every run, test tasks would be restored FROM-CACHE. --no-build-cache keeps dependency
+        # caching (setup-gradle) but compiles and tests for real.
+        run: ./gradlew test allTests -Ptest.java.version=21 --no-build-cache
+      # PORTABILITY: upstream's two report-publishing steps only run in its own repository.

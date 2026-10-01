@@ -1,0 +1,58 @@
+# Workload "cli": cli/cli@v2.102.0 (fc4b137cdef0a6bd28fd461b7cf9c84a5812a8cd)
+# Adapted from upstream .github/workflows/go.yml, job "build (ubuntu-latest)". Changes from upstream are marked "PORTABILITY" and are
+# identical for every provider. See suite/cli/README.md.
+name: wl-cli
+run-name: ${{ inputs.tag }}
+on:
+  workflow_dispatch:
+    inputs:
+      runs_on:
+        description: runs-on label of the provider under test
+        type: string
+        required: true
+      tag:
+        description: run identifier assigned by the harness (shown as the run name)
+        type: string
+        required: true
+      split:
+        description: Track B only - run the test step through vitko-inc/split-tests (on other runners it runs all tests in one part)
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  build:
+    name: cli build (ubuntu)
+    runs-on: ${{ inputs.runs_on }}
+    timeout-minutes: 45
+    env:
+      # PORTABILITY (source-keyed caches): the same commit runs every time, so Go's test-result
+      # cache would report every package "(cached)". -count=1 disables only the result cache;
+      # module and build caches (setup-go) are kept.
+      GOFLAGS: -count=1
+    steps:
+      - name: rb-probe
+        shell: bash
+        run: |
+          echo "rb-probe cpu=\"$(grep -m1 'model name' /proc/cpuinfo | cut -d: -f2 | xargs)\" nproc=$(nproc) mem_kib=$(awk '/MemTotal/{print $2}' /proc/meminfo) swap_kib=$(awk '/SwapTotal/{print $2}' /proc/meminfo) kernel=$(uname -r)"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: cli/cli
+          ref: fc4b137cdef0a6bd28fd461b7cf9c84a5812a8cd # v2.102.0
+          persist-credentials: false
+      - name: Set up Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: "go.mod"
+      - name: Download dependencies
+        run: go mod download
+      - name: Run unit and integration tests
+        if: ${{ !inputs.split }}
+        run: go test -race -tags=integration ./...
+      - name: Run unit and integration tests (split)
+        if: ${{ inputs.split }}
+        uses: vitko-inc/split-tests@f0506956caffeaba87a2e3ea04e8bc06318b6af1 # v1
+        with:
+          run: go test -race -tags=integration ./...
+      - name: Build
+        run: go build -v ./cmd/gh

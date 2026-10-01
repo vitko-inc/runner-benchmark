@@ -1,0 +1,82 @@
+# Workload "vite": vitejs/vite@v8.3.1 (39ddf7ccf7e7469ff6a3ba37bca38c32ea804d6e)
+# Adapted from upstream .github/workflows/ci.yml, job "Build&Test: node-24, ubuntu-latest". Changes from upstream are marked "PORTABILITY" and are
+# identical for every provider. See suite/vite/README.md.
+name: wl-vite
+run-name: ${{ inputs.tag }}
+on:
+  workflow_dispatch:
+    inputs:
+      runs_on:
+        description: runs-on label of the provider under test
+        type: string
+        required: true
+      tag:
+        description: run identifier assigned by the harness (shown as the run name)
+        type: string
+        required: true
+      split:
+        description: Track B only - run the test step through vitko-inc/split-tests (on other runners it runs all tests in one part)
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  test:
+    name: 'vite Build&Test (node 24)'
+    runs-on: ${{ inputs.runs_on }}
+    timeout-minutes: 40
+    steps:
+      - name: rb-probe
+        shell: bash
+        run: |
+          echo "rb-probe cpu=\"$(grep -m1 'model name' /proc/cpuinfo | cut -d: -f2 | xargs)\" nproc=$(nproc) mem_kib=$(awk '/MemTotal/{print $2}' /proc/meminfo) swap_kib=$(awk '/SwapTotal/{print $2}' /proc/meminfo) kernel=$(uname -r)"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: vitejs/vite
+          ref: 39ddf7ccf7e7469ff6a3ba37bca38c32ea804d6e # v8.3.1
+          persist-credentials: false
+      # PORTABILITY: Node before pnpm (see wl-vue.yml).
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 24
+      - name: Install pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - name: Set node version to 24
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 24
+          cache: "pnpm"
+      - name: Install deps
+        run: pnpm install
+      - name: Set Playwright path and Get playwright version
+        run: |
+          echo "PLAYWRIGHT_BROWSERS_PATH=$HOME/.cache/playwright-bin" >> $GITHUB_ENV
+          PLAYWRIGHT_VERSION="$(pnpm ls --depth 0 --json -w playwright-chromium | jq --raw-output '.[0].devDependencies["playwright-chromium"].version')"
+          echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
+      - name: Cache Playwright's binary
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        with:
+          key: ${{ runner.os }}-playwright-bin-v1-${{ env.PLAYWRIGHT_VERSION }}
+          path: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-bin-v1-
+      # PORTABILITY: --with-deps installs Chromium's system libraries, which GitHub's image ships
+      # and a plain Ubuntu image doesn't. On GitHub's image it finds them already installed.
+      - name: Install Playwright
+        run: pnpm playwright install --with-deps chromium
+      - name: Build
+        run: pnpm run build
+      - name: Test unit
+        if: ${{ !inputs.split }}
+        run: pnpm run test-unit
+      - name: Test unit (split)
+        if: ${{ inputs.split }}
+        uses: vitko-inc/split-tests@f0506956caffeaba87a2e3ea04e8bc06318b6af1 # v1
+        with:
+          run: pnpm exec vitest run --project unit
+      - name: Test serve
+        run: pnpm run test-serve
+      - name: Test serve (bundled dev)
+        run: pnpm run test-serve-bundled
+      - name: Test build
+        run: pnpm run test-build

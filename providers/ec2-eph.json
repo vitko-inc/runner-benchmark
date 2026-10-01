@@ -1,0 +1,1 @@
+{"id": "ec2-eph", "name": "Self-hosted: AWS EC2 m8a.large, one VM per job (on-demand)", "size": "2 vCPU / 8 GiB", "track": "A", "price_ref": "aws-m8a.large-on-demand", "runs_on": "self-hosted label of the deployment", "setup": "selfhosted/aws"}

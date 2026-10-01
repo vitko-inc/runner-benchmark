@@ -1,0 +1,50 @@
+# Workload "flask": pallets/flask@3.1.3 (22d924701a6ae2e4cd01e9a15bbaf3946094af65)
+# Adapted from upstream .github/workflows/tests.yaml, job "tests (3.13)". Changes from upstream are marked "PORTABILITY" and are
+# identical for every provider. See suite/flask/README.md.
+name: wl-flask
+run-name: ${{ inputs.tag }}
+on:
+  workflow_dispatch:
+    inputs:
+      runs_on:
+        description: runs-on label of the provider under test
+        type: string
+        required: true
+      tag:
+        description: run identifier assigned by the harness (shown as the run name)
+        type: string
+        required: true
+      split:
+        description: Track B only - run the test step through vitko-inc/split-tests (on other runners it runs all tests in one part)
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  tests:
+    name: flask tests (3.13)
+    runs-on: ${{ inputs.runs_on }}
+    timeout-minutes: 30
+    steps:
+      - name: rb-probe
+        shell: bash
+        run: |
+          echo "rb-probe cpu=\"$(grep -m1 'model name' /proc/cpuinfo | cut -d: -f2 | xargs)\" nproc=$(nproc) mem_kib=$(awk '/MemTotal/{print $2}' /proc/meminfo) swap_kib=$(awk '/SwapTotal/{print $2}' /proc/meminfo) kernel=$(uname -r)"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: pallets/flask
+          ref: 22d924701a6ae2e4cd01e9a15bbaf3946094af65 # 3.1.3
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@61cb8a9741eeb8a550a1b8544337180c0fc8476b # v7.2.0
+        with:
+          enable-cache: true
+          prune-cache: false
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: '3.13'
+      - if: ${{ !inputs.split }}
+        run: uv run --locked tox run -e py3.13
+      - if: ${{ inputs.split }}
+        uses: vitko-inc/split-tests@f0506956caffeaba87a2e3ea04e8bc06318b6af1 # v1
+        with:
+          run: uv run --locked tox run -e py3.13
