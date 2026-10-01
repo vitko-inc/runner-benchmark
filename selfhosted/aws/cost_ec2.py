@@ -37,7 +37,7 @@ import re
 import subprocess
 import sys
 
-PRICE_PER_HOUR = {"m8a.large": 0.12172}  # us-east-1 on-demand Linux, 2026-10-01
+PRICE_PER_HOUR = {"m8a.large": 0.12172, "r8a.large": 0.15976}  # us-east-1 on-demand Linux, 2026-10-01
 GP3_PER_GB_MONTH = 0.08
 IPV4_PER_HOUR = 0.005
 HOURS_PER_MONTH = 730.0
@@ -89,7 +89,7 @@ def resolve_jobs(repo, launches):
     names = {rec["runner_name"] for rec in launches}
     for run_id in run_ids:
         res = subprocess.run(["gh", "api", "--paginate", f"repos/{repo}/actions/runs/{run_id}/jobs?filter=all&per_page=100",
-                              "--jq", ".jobs[]"], capture_output=True, text=True)
+                              "--jq", ".jobs[] | tojson"], capture_output=True, text=True)
         for line in res.stdout.splitlines():
             job = json.loads(line)
             if job.get("runner_name") in names:

@@ -56,7 +56,8 @@ def load_providers(path):
 
 def job_cost(provider, prices, workload, job, extra, copies):
     """Return (usd, billed_seconds) for one job, or (None, None) if it can't be priced."""
-    pr = prices["providers"].get(provider["price_ref"])
+    ref = provider.get("price_ref_by_workload", {}).get(workload, provider["price_ref"])
+    pr = prices["providers"].get(ref)
     if pr is None:
         return None, None
     run_s = ts(job["completed_at"]) - ts(job["started_at"])

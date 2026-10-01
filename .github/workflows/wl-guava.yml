@@ -1,0 +1,54 @@
+# Workload "guava": google/guava@v33.7.2 (666338cc49d5686c07e3e4d17f0aa1cec25a2be6)
+# Adapted from upstream .github/workflows/ci.yml, job "pom.xml on JDK 25 on ubuntu-latest". Changes from upstream are marked "PORTABILITY" and are
+# identical for every provider. See suite/guava/README.md.
+name: wl-guava
+run-name: ${{ inputs.tag }}
+on:
+  workflow_dispatch:
+    inputs:
+      runs_on:
+        description: runs-on label of the provider under test
+        type: string
+        required: true
+      tag:
+        description: run identifier assigned by the harness (shown as the run name)
+        type: string
+        required: true
+permissions:
+  contents: read
+jobs:
+  test:
+    name: guava pom.xml on JDK 25
+    runs-on: ${{ inputs.runs_on }}
+    timeout-minutes: 90
+    env:
+      ROOT_POM: pom.xml
+    steps:
+      - name: rb-probe
+        shell: bash
+        run: |
+          echo "rb-probe cpu=\"$(grep -m1 'model name' /proc/cpuinfo | cut -d: -f2 | xargs)\" nproc=$(nproc) mem_kib=$(awk '/MemTotal/{print $2}' /proc/meminfo) swap_kib=$(awk '/SwapTotal/{print $2}' /proc/meminfo) kernel=$(uname -r)"
+      - name: 'Check out repository'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: google/guava
+          ref: 666338cc49d5686c07e3e4d17f0aa1cec25a2be6 # v33.7.2
+          persist-credentials: false
+      - name: 'Set up JDKs'
+        uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 # v5.6.0
+        with:
+          java-version: |
+            25
+            26
+          distribution: 'temurin'
+          cache: 'maven'
+      - name: 'Install'
+        shell: bash
+        run: ./mvnw -B -ntp -Dtoolchain.skip install -U -DskipTests=true -f $ROOT_POM
+      - name: 'Test'
+        shell: bash
+        run: ./mvnw -B -ntp -P!standard-with-extra-repos -Dtoolchain.skip verify -U -Dmaven.javadoc.skip=true -Dsurefire.toolchain.version=25 -f $ROOT_POM
+      - name: 'Print Surefire reports'
+        if: ${{ failure() }}
+        shell: bash
+        run: ./util/print_surefire_reports.sh

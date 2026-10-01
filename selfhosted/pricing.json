@@ -5,7 +5,8 @@
     "m8a.large_per_hour": 0.12172,
     "gp3_per_gb_month": 0.08,
     "public_ipv4_per_hour": 0.005,
-    "billing": "per-second, 60 s minimum"
+    "billing": "per-second, 60 s minimum",
+    "r8a.large_per_hour": 0.15976
   },
   "gcp_us_east4": {
     "n4d-standard-2_per_hour": 0.0847,
@@ -13,6 +14,8 @@
     "hyperdisk-balanced_per_gib_month": 0.08,
     "hyperdisk-balanced_note": "N4D accepts only Hyperdisk (pd-balanced is rejected by the API). Pool uses hyperdisk-balanced 75 GiB at the included baseline 3000 IOPS / 140 MiB/s, so only capacity is billed (Cloud Billing catalog, us-east4, 2026-10-01). pd-balanced $0.11 kept for reference.",
     "external_ipv4_per_hour": 0.005,
-    "pool_cost_model": "pool $/s x occupancy / utilisation, from pool-log.csv uptime"
-  }
+    "pool_cost_model": "pool $/s x occupancy / utilisation, from pool-log.csv uptime",
+    "n4d-highmem-2_per_hour": 0.11118
+  },
+  "next_size_note": "Next memory size at 2 vCPU, for workloads that need more than 8 GiB without swap: EC2 r8a.large (2 vCPU / 16 GiB), GCE n4d-highmem-2 (2 vCPU / 16 GiB: 2 x $0.02911 core-h + 16 x $0.00331 GiB-h). Prices from the AWS Price List API and the Cloud Billing catalog, 2026-10-01."
 }

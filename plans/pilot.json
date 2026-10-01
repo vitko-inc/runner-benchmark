@@ -23,7 +23,7 @@
     ],
     [
       "vite",
-      "okhttp",
+      "guava",
       "cli",
       "pydantic",
       "fd"
@@ -70,10 +70,6 @@
       "workflow": "wl-cli.yml",
       "splittable": true
     },
-    "okhttp": {
-      "id": "okhttp",
-      "workflow": "wl-okhttp.yml"
-    },
     "monorepo": {
       "id": "monorepo",
       "workflow": "wl-monorepo.yml"
@@ -91,6 +87,10 @@
       "id": "burst",
       "workflow": "wl-black.yml",
       "copies": 20
+    },
+    "guava": {
+      "id": "guava",
+      "workflow": "wl-guava.yml"
     }
   },
   "burst_groups": [

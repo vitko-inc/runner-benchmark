@@ -240,6 +240,7 @@ class Launcher:
                     "ec2", "run-instances",
                     "--launch-template", f"LaunchTemplateId={self.a.launch_template_id},Version=$Latest",
                     "--count", "1",
+                    *(["--instance-type", self.a.instance_type] if self.a.instance_type else []),
                     "--user-data", f"file://{ud_path}",
                     "--tag-specifications", spec,
                 )
@@ -377,7 +378,10 @@ class Launcher:
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--repo", default=os.environ.get("RB_REPO"), help="owner/name")
-    p.add_argument("--label", default="rb-ec2-eph")
+    p.add_argument("--label", default=os.environ.get("RB_LABEL", "rb-ec2-eph"))
+    p.add_argument("--instance-type", default=os.environ.get("RB_INSTANCE_TYPE", ""),
+                   help="override the launch template's instance type, e.g. r8a.large (2 vCPU / 16 GiB) for "
+                        "the next memory size; run a second launcher with its own --label and --state-dir")
     p.add_argument("--launch-template-id", default=os.environ.get("RB_LAUNCH_TEMPLATE_ID"))
     p.add_argument("--runner-group-id", type=int, default=1)
     p.add_argument("--state-dir", default=os.environ.get("RB_STATE_DIR", "./launcher-state"))

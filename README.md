@@ -23,7 +23,7 @@ edits that are identical for every provider ([suite/](suite/)):
 | fd | sharkdp/fd v10.5.0 | release build and tests |
 | codex-lint | openai/codex rust-v0.159.3 | clippy over the Rust workspace |
 | cli | cli/cli v2.102.0 | `go test -race` and build |
-| okhttp | square/okhttp parent-5.5.0 | Gradle tests (JDK 21) |
+| guava | google/guava v33.7.2 | Maven build and tests (JDK 25) |
 | monorepo | vercel/ai ai@7.0.126 | turbo build of the Next.js examples (one shard) |
 | container | mastodon/mastodon v4.7.2 | Docker image build (linux/amd64) |
 | ts | microsoft/TypeScript v6.0.3 | full test suite (Node 24) |
