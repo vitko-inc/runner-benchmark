@@ -35,6 +35,20 @@ jobs:
           repository: vitejs/vite
           ref: 39ddf7ccf7e7469ff6a3ba37bca38c32ea804d6e # v8.3.1
           persist-credentials: false
+      # PORTABILITY: upstream's environment-react-ssr "deps reload" test asserts the ORDER of two log
+      # lines that come from racing paths (a fixed 200 ms timer vs a browser round trip), so faster
+      # machines lose the race. Compare the two lines order-insensitively. Fails if the code changed.
+      - name: Make the deps-reload log assertion order-insensitive
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          p = "playground/environment-react-ssr/__tests__/environment-react-ssr.spec.ts"
+          s = open(p).read()
+          old_a = ".filter(Boolean),\n      )\n      .toStrictEqual(['react-fake-server', 'react-fake-client'])"
+          new_a = ".filter(Boolean)\n          .sort(),\n      )\n      .toStrictEqual(['react-fake-client', 'react-fake-server'])"
+          assert s.count(old_a) == 1, "deps-reload assertion not found; review the portability patch"
+          open(p, "w").write(s.replace(old_a, new_a))
+          PY
       # PORTABILITY: Node before pnpm (see wl-vue.yml).
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
