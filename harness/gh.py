@@ -1,4 +1,5 @@
 """Minimal GitHub REST client (stdlib only). Reads the token from GITHUB_TOKEN; never logs it."""
+import http.client
 import json
 import os
 import time
@@ -40,7 +41,7 @@ def request(method, path, body=None, accept="application/vnd.github+json", raw=F
                 time.sleep(2 * (attempt + 1))
                 continue
             raise
-        except (urllib.error.URLError, TimeoutError):
+        except (urllib.error.URLError, TimeoutError, http.client.HTTPException, ConnectionError):
             if attempt < retries - 1:
                 time.sleep(2 * (attempt + 1))
                 continue

@@ -9,3 +9,4 @@
 - One JDK (21).
 - `--no-build-cache`: with the same commit every run, Gradle's build cache would restore test results instead of running tests. Dependency caching (setup-gradle) is kept.
 - Report-publishing steps run only in upstream's repository and are omitted.
+- `android-actions/setup-android`: the Android host tests need an Android SDK, which GitHub's image ships and other images don't.

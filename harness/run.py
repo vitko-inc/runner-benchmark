@@ -68,8 +68,18 @@ def dispatch(target, workload, tag, split, dry):
         return {"run_id": None, "dispatched_at": now()}
     since = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(seconds=30)).strftime("%Y-%m-%dT%H:%M:%SZ")
     at = now()
-    resp = gh.post(f"/repos/{repo}/actions/workflows/{workload['workflow']}/dispatches",
-                   {"ref": target.get("ref", "main"), "inputs": inputs, "return_run_details": True})
+    body = {"ref": target.get("ref", "main"), "inputs": inputs, "return_run_details": True}
+    path = f"/repos/{repo}/actions/workflows/{workload['workflow']}/dispatches"
+    try:
+        # One attempt only: a retried POST could dispatch twice. On a connection error, look the
+        # run up by its tag, and dispatch again only if GitHub never created it.
+        resp = gh.request("POST", path, body=body, retries=1)
+    except Exception as e:
+        print(f"[{now()}] dispatch error for {tag}: {e}; checking whether the run exists", file=sys.stderr)
+        rid = find_run(repo, workload["workflow"], tag, since, timeout=60)
+        if rid:
+            return {"run_id": rid, "dispatched_at": at, "since": since}
+        resp = gh.request("POST", path, body=body, retries=1)
     run_id = (resp or {}).get("workflow_run_id")
     return {"run_id": run_id, "dispatched_at": at, "since": since}
 
@@ -121,7 +131,11 @@ def lane_worker(plan, targets, wls, providers_for, meta, out, dry):
     for wid in wls:
         w = plan["workloads"][wid]
         print(f"[{now()}] {meta['phase']} r{meta['round']} {wid}", flush=True)
-        run_group(plan, targets, w, providers_for(wid), meta, out, dry)
+        try:
+            run_group(plan, targets, w, providers_for(wid), meta, out, dry)
+        except Exception as e:  # log, record and continue with the next workload
+            print(f"[{now()}] ERROR {wid}: {e!r}", file=sys.stderr, flush=True)
+            record(out, dict(meta, workload=wid, event="error", error=repr(e)))
 
 
 def main():
@@ -168,7 +182,11 @@ def main():
             for g in groups:
                 ps = [p for p in g if p in providers_for(wid)]
                 if ps:
-                    run_group(plan, targets, w, ps, meta, a.out, a.dry_run, copies=w["copies"])
+                    try:
+                        run_group(plan, targets, w, ps, meta, a.out, a.dry_run, copies=w["copies"])
+                    except Exception as e:
+                        print(f"[{now()}] ERROR burst {wid}: {e!r}", file=sys.stderr, flush=True)
+                        record(a.out, dict(meta, workload=wid, event="error", error=repr(e)))
         record(a.out, dict(meta, event="round_end", at=now()))
 
 

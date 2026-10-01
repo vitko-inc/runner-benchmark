@@ -10,3 +10,4 @@
 - Two extra apt packages (libglib2.0-dev, libdbus-1-dev) that upstream's runner image has.
 - `codex-voice-host` is excluded (needs GStreamer 1.28+, absent from stock Ubuntu 24.04).
 - No `-D warnings`, so the job ends green; the compile work is the same.
+- Needs more than 8 GB of memory without swap (GitHub's runner has 4 GB of swap). Providers without swap run it at their next memory size, priced there.
