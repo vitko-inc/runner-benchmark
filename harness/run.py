@@ -60,7 +60,8 @@ def find_run(repo, workflow, tag, since, timeout=300):
 
 def dispatch(target, workload, tag, split, dry):
     repo = target["repo"]
-    inputs = {"runs_on": target["runs_on"], "tag": tag}
+    label = target.get("runs_on_by_workload", {}).get(workload["id"], target["runs_on"])
+    inputs = {"runs_on": label, "tag": tag}
     if workload.get("splittable") or split:
         inputs["split"] = "true" if split else "false"
     if dry:

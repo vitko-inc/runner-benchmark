@@ -1,0 +1,18 @@
+{
+  "as_of": "2026-10-01",
+  "note": "On-demand list prices used by the cost model. Verify before publishing.",
+  "aws_us_east_1": {
+    "m8a.large_per_hour": 0.12172,
+    "gp3_per_gb_month": 0.08,
+    "public_ipv4_per_hour": 0.005,
+    "billing": "per-second, 60 s minimum"
+  },
+  "gcp_us_east4": {
+    "n4d-standard-2_per_hour": 0.0847,
+    "pd-balanced_per_gib_month": 0.11,
+    "hyperdisk-balanced_per_gib_month": 0.08,
+    "hyperdisk-balanced_note": "N4D accepts only Hyperdisk (pd-balanced is rejected by the API). Pool uses hyperdisk-balanced 75 GiB at the included baseline 3000 IOPS / 140 MiB/s, so only capacity is billed (Cloud Billing catalog, us-east4, 2026-10-01). pd-balanced $0.11 kept for reference.",
+    "external_ipv4_per_hour": 0.005,
+    "pool_cost_model": "pool $/s x occupancy / utilisation, from pool-log.csv uptime"
+  }
+}

@@ -8,3 +8,4 @@
 
 - One matrix cell (Linux, Python 3.13).
 - The coverage artifact upload is omitted (it feeds a separate combine job).
+- `ulimit -s 16384` before the tests: GitHub's runner image sets a 16 MiB stack limit, stock Ubuntu 8 MiB, where a recursion test overflows.

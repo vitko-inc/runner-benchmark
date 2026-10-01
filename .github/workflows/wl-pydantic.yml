@@ -49,7 +49,11 @@ jobs:
       - run: mkdir coverage
       - name: Run pytest
         if: ${{ !inputs.split }}
-        run: make test NUM_THREADS=1
+        # PORTABILITY: GitHub's runner image sets a 16 MiB stack limit; stock Ubuntu (and other
+        # runner images) use 8 MiB, where upstream's recursion test overflows the stack.
+        run: |
+          ulimit -s 16384
+          make test NUM_THREADS=1
         env:
           COVERAGE_FILE: coverage/.coverage.Linux-py3.13
           CONTEXT: Linux-py3.13-without-deps
@@ -57,6 +61,6 @@ jobs:
         if: ${{ inputs.split }}
         uses: vitko-inc/split-tests@f0506956caffeaba87a2e3ea04e8bc06318b6af1 # v1
         with:
-          run: uv run pytest --durations=10
+          run: bash -c 'ulimit -s 16384 && uv run pytest --durations=10'
       # PORTABILITY: upstream uploads coverage files as an artifact for a later combine job; that
       # job is not part of this workload, so the upload is omitted.
