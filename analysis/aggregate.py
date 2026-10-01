@@ -100,6 +100,8 @@ def main():
     ap.add_argument("--split-copies")
     ap.add_argument("--boot", type=int, default=10000)
     ap.add_argument("--phase", default="measure")
+    ap.add_argument("--index-workloads", choices=["all", "common"], default="all")
+    ap.add_argument("--min-success", type=float, default=0.9)
     a = ap.parse_args()
 
     providers = load_providers(a.providers)
@@ -185,12 +187,24 @@ def main():
     idx_provs = [x for x in a.index_providers.split(",") if x] or sorted({p for _, p in cells})
     ref = a.reference
 
-    def complete(prov):
-        return all((wl, prov) in cells and cell_stats(cells[(wl, prov)])["ok"] > 0 and
-                   cell_stats(cells[(wl, prov)])["mean_cost_usd"] is not None for wl in workloads)
+    def usable(wl, prov):
+        if (wl, prov) not in cells:
+            return False
+        st = cell_stats(cells[(wl, prov)])
+        return st["ok"] > 0 and st["success_rate"] >= a.min_success and st["mean_cost_usd"] is not None
 
-    idx_provs = [p for p in idx_provs if complete(p)]
-    if ref not in idx_provs:
+    excluded = {}
+    if a.index_workloads == "all":
+        idx_provs = [p for p in idx_provs if all(usable(wl, p) for wl in workloads)]
+    else:
+        # "common": the workloads every index provider (and the reference) completed; the result
+        # lists the excluded workloads and why, so a partial index is never mistaken for a full one.
+        for wl in workloads:
+            missing = [p for p in set(idx_provs) | {ref} if not usable(wl, p)]
+            if missing:
+                excluded[wl] = sorted(missing)
+        workloads = [wl for wl in workloads if wl not in excluded]
+    if ref not in idx_provs or not workloads:
         idx_provs = []
 
     blocks = sorted({(r["session"], r["round"]) for r in run_rows})
@@ -219,6 +233,7 @@ def main():
         return out
 
     result = {"schema": "runner-benchmark/v2", "reference": ref, "workloads": workloads,
+              "excluded_from_index": excluded,
               "index_providers": idx_provs, "blocks": len(blocks), "cells": summary}
     if idx_provs:
         point = indices(blocks, workloads)

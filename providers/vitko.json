@@ -1,1 +1,12 @@
-{"id": "vitko", "name": "Vitko Runners", "size": "up to 2 vCPU / 8 GB", "track": "A", "price_ref": "vitko-2vcpu", "runs_on": "Vitko Runners label", "price_multiplier": {}}
+{
+ "id": "vitko",
+ "name": "Vitko Runners",
+ "size": "up to 2 vCPU / 8 GB",
+ "track": "A",
+ "price_ref": "vitko-2vcpu",
+ "runs_on": "Vitko Runners label",
+ "price_multiplier": {
+  "codex-lint": 2
+ },
+ "note": "codex-lint runs at 12 GiB (next memory size), priced at 2x, while the guest image has no swap."
+}

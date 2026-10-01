@@ -22,7 +22,7 @@ JOB_FIELDS = ("id", "name", "status", "conclusion", "created_at", "started_at", 
 
 def probe(repo, job_id):
     try:
-        text = gh.get(f"/repos/{repo}/actions/jobs/{job_id}/logs", raw=True).decode("utf-8", "replace")
+        text = gh.get_log(f"/repos/{repo}/actions/jobs/{job_id}/logs").decode("utf-8", "replace")
     except Exception:
         return None
     for line in text.splitlines():

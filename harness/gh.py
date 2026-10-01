@@ -66,3 +66,25 @@ def paginate(path, key):
         if len(items) < 100:
             return out
         page += 1
+
+
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
+def get_log(path):
+    """Fetch a job log: the API answers with a redirect to a signed URL, which must be fetched
+    without the Authorization header."""
+    req = urllib.request.Request(API + path, method="GET")
+    req.add_header("Authorization", "Bearer " + _token())
+    req.add_header("Accept", "application/vnd.github+json")
+    opener = urllib.request.build_opener(_NoRedirect)
+    try:
+        with opener.open(req, timeout=60) as resp:
+            return resp.read()
+    except urllib.error.HTTPError as e:
+        if e.code in (301, 302, 303, 307, 308) and e.headers.get("Location"):
+            with urllib.request.urlopen(e.headers["Location"], timeout=120) as resp:
+                return resp.read()
+        raise
