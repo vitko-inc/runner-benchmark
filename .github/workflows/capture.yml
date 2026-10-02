@@ -1,0 +1,154 @@
+# Saves the warm-start checkpoints from a push to the default branch, the way a customer's
+# setup is saved: each workload runs once on each checkpoint-enabled label of the deployment.
+# Labels come from repository variables, so no deployment detail lives in this file.
+name: capture
+on:
+  push:
+    branches: [main]
+    paths: [".rb-capture"]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  vite_ckpt:
+    if: ${{ vars.RB_CKPT_LABEL != '' }}
+    uses: ./.github/workflows/wl-vite.yml
+    with:
+      runs_on: ${{ vars.RB_CKPT_LABEL }}
+      tag: capture-vite-ckpt
+      checkpoint: true
+      split: false
+  vue_ckpt:
+    if: ${{ vars.RB_CKPT_LABEL != '' }}
+    uses: ./.github/workflows/wl-vue.yml
+    with:
+      runs_on: ${{ vars.RB_CKPT_LABEL }}
+      tag: capture-vue-ckpt
+      checkpoint: true
+      split: false
+  flask_ckpt:
+    if: ${{ vars.RB_CKPT_LABEL != '' }}
+    uses: ./.github/workflows/wl-flask.yml
+    with:
+      runs_on: ${{ vars.RB_CKPT_LABEL }}
+      tag: capture-flask-ckpt
+      checkpoint: true
+      split: false
+  pydantic_ckpt:
+    if: ${{ vars.RB_CKPT_LABEL != '' }}
+    uses: ./.github/workflows/wl-pydantic.yml
+    with:
+      runs_on: ${{ vars.RB_CKPT_LABEL }}
+      tag: capture-pydantic-ckpt
+      checkpoint: true
+      split: false
+  cli_ckpt:
+    if: ${{ vars.RB_CKPT_LABEL != '' }}
+    uses: ./.github/workflows/wl-cli.yml
+    with:
+      runs_on: ${{ vars.RB_CKPT_LABEL }}
+      tag: capture-cli-ckpt
+      checkpoint: true
+      split: false
+  ts_ckpt:
+    if: ${{ vars.RB_CKPT_LABEL != '' }}
+    uses: ./.github/workflows/wl-ts.yml
+    with:
+      runs_on: ${{ vars.RB_CKPT_LABEL }}
+      tag: capture-ts-ckpt
+      checkpoint: true
+      split: false
+  fd_ckpt:
+    if: ${{ vars.RB_CKPT_LABEL != '' }}
+    uses: ./.github/workflows/wl-fd.yml
+    with:
+      runs_on: ${{ vars.RB_CKPT_LABEL }}
+      tag: capture-fd-ckpt
+      checkpoint: true
+      split: false
+  codex_lint_ckpt:
+    if: ${{ vars.RB_CKPT_LABEL != '' }}
+    uses: ./.github/workflows/wl-codex-lint.yml
+    with:
+      runs_on: ${{ vars.RB_CKPT_LABEL }}
+      tag: capture-codex-lint-ckpt
+      checkpoint: true
+  guava_ckpt:
+    if: ${{ vars.RB_CKPT_LABEL != '' }}
+    uses: ./.github/workflows/wl-guava.yml
+    with:
+      runs_on: ${{ vars.RB_CKPT_LABEL }}
+      tag: capture-guava-ckpt
+      checkpoint: true
+  monorepo_ckpt:
+    if: ${{ vars.RB_CKPT_LABEL != '' }}
+    uses: ./.github/workflows/wl-monorepo.yml
+    with:
+      runs_on: ${{ vars.RB_CKPT_LABEL }}
+      tag: capture-monorepo-ckpt
+      checkpoint: true
+      split: false
+  container_ckpt:
+    if: ${{ vars.RB_CKPT_LABEL != '' }}
+    uses: ./.github/workflows/wl-container.yml
+    with:
+      runs_on: ${{ vars.RB_CKPT_LABEL }}
+      tag: capture-container-ckpt
+      checkpoint: true
+      split: false
+  black_ckpt:
+    if: ${{ vars.RB_CKPT_LABEL != '' }}
+    uses: ./.github/workflows/wl-black.yml
+    with:
+      runs_on: ${{ vars.RB_CKPT_LABEL }}
+      tag: capture-black-ckpt
+      checkpoint: true
+      split: false
+  vite_ckpt_split:
+    if: ${{ vars.RB_CKPT_SPLIT_LABEL != '' }}
+    uses: ./.github/workflows/wl-vite.yml
+    with:
+      runs_on: ${{ vars.RB_CKPT_SPLIT_LABEL }}
+      tag: capture-vite-ckpt-split
+      checkpoint: true
+      split: true
+  vue_ckpt_split:
+    if: ${{ vars.RB_CKPT_SPLIT_LABEL != '' }}
+    uses: ./.github/workflows/wl-vue.yml
+    with:
+      runs_on: ${{ vars.RB_CKPT_SPLIT_LABEL }}
+      tag: capture-vue-ckpt-split
+      checkpoint: true
+      split: true
+  flask_ckpt_split:
+    if: ${{ vars.RB_CKPT_SPLIT_LABEL != '' }}
+    uses: ./.github/workflows/wl-flask.yml
+    with:
+      runs_on: ${{ vars.RB_CKPT_SPLIT_LABEL }}
+      tag: capture-flask-ckpt-split
+      checkpoint: true
+      split: true
+  pydantic_ckpt_split:
+    if: ${{ vars.RB_CKPT_SPLIT_LABEL != '' }}
+    uses: ./.github/workflows/wl-pydantic.yml
+    with:
+      runs_on: ${{ vars.RB_CKPT_SPLIT_LABEL }}
+      tag: capture-pydantic-ckpt-split
+      checkpoint: true
+      split: true
+  cli_ckpt_split:
+    if: ${{ vars.RB_CKPT_SPLIT_LABEL != '' }}
+    uses: ./.github/workflows/wl-cli.yml
+    with:
+      runs_on: ${{ vars.RB_CKPT_SPLIT_LABEL }}
+      tag: capture-cli-ckpt-split
+      checkpoint: true
+      split: true
+  ts_ckpt_split:
+    if: ${{ vars.RB_CKPT_SPLIT_LABEL != '' }}
+    uses: ./.github/workflows/wl-ts.yml
+    with:
+      runs_on: ${{ vars.RB_CKPT_SPLIT_LABEL }}
+      tag: capture-ts-ckpt-split
+      checkpoint: true
+      split: true

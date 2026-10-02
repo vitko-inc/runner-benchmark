@@ -14,6 +14,24 @@ on:
         description: run identifier assigned by the harness (shown as the run name)
         type: string
         required: true
+      checkpoint:
+        description: Track B only - add the checkpoint step (warm starts) after the setup steps
+        type: boolean
+        default: false
+  workflow_call:
+    inputs:
+      runs_on:
+        description: runs-on label of the provider under test
+        type: string
+        required: true
+      tag:
+        description: run identifier assigned by the harness (shown as the run name)
+        type: string
+        required: true
+      checkpoint:
+        description: Track B only - add the checkpoint step (warm starts) after the setup steps
+        type: boolean
+        default: false
 permissions:
   contents: read
 jobs:
@@ -45,6 +63,11 @@ jobs:
       - name: 'Install'
         shell: bash
         run: ./mvnw -B -ntp -Dtoolchain.skip install -U -DskipTests=true -f $ROOT_POM
+      # Track B (warm starts): save the setup above from runs of the default branch; later jobs start
+      # with it in place. On other runners, and when the input is off, nothing happens.
+      - name: Checkpoint (warm starts)
+        if: ${{ inputs.checkpoint }}
+        uses: vitko-inc/checkpoint@69d5b7da1d0b1c82aa9fcd0aa87c2842a6e98b66 # v1.0.2
       - name: 'Test'
         shell: bash
         run: ./mvnw -B -ntp -P!standard-with-extra-repos -Dtoolchain.skip verify -U -Dmaven.javadoc.skip=true -Dsurefire.toolchain.version=25 -f $ROOT_POM

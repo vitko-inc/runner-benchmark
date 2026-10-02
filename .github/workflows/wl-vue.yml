@@ -18,6 +18,28 @@ on:
         description: Track B only - run the test step through vitko-inc/split-tests (on other runners it runs all tests in one part)
         type: boolean
         default: false
+      checkpoint:
+        description: Track B only - add the checkpoint step (warm starts) after the setup steps
+        type: boolean
+        default: false
+  workflow_call:
+    inputs:
+      runs_on:
+        description: runs-on label of the provider under test
+        type: string
+        required: true
+      tag:
+        description: run identifier assigned by the harness (shown as the run name)
+        type: string
+        required: true
+      split:
+        description: Track B only - run the test step through vitko-inc/split-tests (on other runners it runs all tests in one part)
+        type: boolean
+        default: false
+      checkpoint:
+        description: Track B only - add the checkpoint step (warm starts) after the setup steps
+        type: boolean
+        default: false
 permissions:
   contents: read
 jobs:
@@ -50,11 +72,16 @@ jobs:
           node-version-file: '.node-version'
           cache: 'pnpm'
       - run: pnpm install
+      # Track B (warm starts): save the setup above from runs of the default branch; later jobs start
+      # with it in place. On other runners, and when the input is off, nothing happens.
+      - name: Checkpoint (warm starts)
+        if: ${{ inputs.checkpoint }}
+        uses: vitko-inc/checkpoint@69d5b7da1d0b1c82aa9fcd0aa87c2842a6e98b66 # v1.0.2
       - name: Run unit tests
         if: ${{ !inputs.split }}
         run: pnpm run test-unit
       - name: Run unit tests (split)
         if: ${{ inputs.split }}
-        uses: vitko-inc/split-tests@1a0d81a16601de725e94b3179545208f21423dd1 # v1.0.3
+        uses: vitko-inc/split-tests@9e22147dce5ec8c57c82739dcdcdc33b626c9a37 # v1.0.5
         with:
           run: pnpm exec vitest run --project unit

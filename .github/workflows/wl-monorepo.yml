@@ -18,6 +18,28 @@ on:
         description: Track B only - run the test step through vitko-inc/split-tests (on other runners it runs all tests in one part)
         type: boolean
         default: false
+      checkpoint:
+        description: Track B only - add the checkpoint step (warm starts) after the setup steps
+        type: boolean
+        default: false
+  workflow_call:
+    inputs:
+      runs_on:
+        description: runs-on label of the provider under test
+        type: string
+        required: true
+      tag:
+        description: run identifier assigned by the harness (shown as the run name)
+        type: string
+        required: true
+      split:
+        description: Track B only - run the test step through vitko-inc/split-tests (on other runners it runs all tests in one part)
+        type: boolean
+        default: false
+      checkpoint:
+        description: Track B only - add the checkpoint step (warm starts) after the setup steps
+        type: boolean
+        default: false
 permissions:
   contents: read
 jobs:
@@ -48,6 +70,11 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+      # Track B (warm starts): save the setup above from runs of the default branch; later jobs start
+      # with it in place. On other runners, and when the input is off, nothing happens.
+      - name: Checkpoint (warm starts)
+        if: ${{ inputs.checkpoint }}
+        uses: vitko-inc/checkpoint@69d5b7da1d0b1c82aa9fcd0aa87c2842a6e98b66 # v1.0.2
       # PORTABILITY (source-keyed caches): upstream restores .turbo/.next build caches keyed by commit.
       # The benchmark builds the same commit on every run, so a restored cache would replay every
       # task and turn the job into a no-op. The restore is omitted: this is the full build that a
