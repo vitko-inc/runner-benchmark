@@ -8,4 +8,4 @@
 
 - One matrix cell (Linux).
 - `GOFLAGS=-count=1`: the same commit runs every time, so Go's test-result cache would skip every test. Module and build caches are kept.
-- Track B (split tests) only: the attestation tests that call the public Sigstore services (`TestLiveSigstoreVerifier`, `TestVerifyAttestations`, `TestVerifyIntegration*`) are skipped in the split step and run unsplit in the following step of the same job, because split parts have no network. The job runs the same tests as the unsplit arms.
+- Track B (split tests) only: the attestation tests that call the public Sigstore services (the integration-tagged tests under `pkg/cmd/attestation`: `TestLiveSigstoreVerifier*`, `TestVerifyAttestations`, `TestVerifyIntegration*`, `TestNewInspectCmd_PrintOutputJSONFormat`, `TestChooseVerifier*`) are skipped in the split step and run unsplit in the following step of the same job, because split parts have no network. The job runs the same tests as the unsplit arms.
