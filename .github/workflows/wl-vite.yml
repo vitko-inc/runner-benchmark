@@ -114,7 +114,7 @@ jobs:
         if: ${{ inputs.split }}
         uses: vitko-inc/split-tests@9e22147dce5ec8c57c82739dcdcdc33b626c9a37 # v1.0.5
         with:
-          run: pnpm exec vitest run --project unit
+          run: pnpm exec vitest run
       - name: Test serve
         run: pnpm run test-serve
       - name: Test serve (bundled dev)
