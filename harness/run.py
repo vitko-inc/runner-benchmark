@@ -64,6 +64,9 @@ def dispatch(target, workload, tag, split, dry):
     inputs = {"runs_on": label, "tag": tag}
     if workload.get("splittable") or split:
         inputs["split"] = "true" if split else "false"
+    # Extra workflow inputs a provider needs (for example a Track B option), as strings.
+    for k, v in target.get("inputs", {}).items():
+        inputs[k] = v
     if dry:
         return {"run_id": None, "dispatched_at": now()}
     since = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(seconds=30)).strftime("%Y-%m-%dT%H:%M:%SZ")
