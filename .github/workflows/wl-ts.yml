@@ -67,7 +67,7 @@ jobs:
       # with it in place. On other runners, and when the input is off, nothing happens.
       - name: Checkpoint (warm starts)
         if: ${{ inputs.checkpoint }}
-        uses: vitko-inc/checkpoint@69d5b7da1d0b1c82aa9fcd0aa87c2842a6e98b66 # v1.0.2
+        uses: vitko-inc/checkpoint@a06aa88487d9cae4dee4eb50efffb8924ca99e78 # v1.0.3
       # PORTABILITY (all providers): build the test bundle in its own step, so a split run's parts
       # start with the build done. The test step's own build is then an up-to-date no-op.
       - name: Build tests
