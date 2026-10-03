@@ -22,6 +22,10 @@ on:
         description: Track B only - add the checkpoint step (warm starts) after the setup steps
         type: boolean
         default: false
+      accel:
+        description: Provider-recommended accelerator to enable (for example runson, blacksmith); empty for none
+        type: string
+        default: ''
   workflow_call:
     inputs:
       runs_on:
@@ -40,6 +44,10 @@ on:
         description: Track B only - add the checkpoint step (warm starts) after the setup steps
         type: boolean
         default: false
+      accel:
+        description: Provider-recommended accelerator to enable (for example runson, blacksmith); empty for none
+        type: string
+        default: ''
 permissions:
   contents: read
 jobs:
@@ -57,6 +65,10 @@ jobs:
         shell: bash
         run: |
           echo "rb-probe cpu=\"$(grep -m1 'model name' /proc/cpuinfo | cut -d: -f2 | xargs)\" nproc=$(nproc) mem_kib=$(awk '/MemTotal/{print $2}' /proc/meminfo) swap_kib=$(awk '/SwapTotal/{print $2}' /proc/meminfo) kernel=$(uname -r)"
+      # Provider accelerator (RunsOn): its documented S3-backed cache sidecar. Runs only when asked.
+      - name: RunsOn cache sidecar
+        if: ${{ inputs.accel == 'runson' }}
+        uses: runs-on/action@17b59092eb37ebfdbb034460892887c09100eaa3 # v2.5.0
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: sharkdp/fd

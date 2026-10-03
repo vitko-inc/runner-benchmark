@@ -20,8 +20,18 @@ after that tag is listed in the result set's `deviations.md`.
       setup steps, saved from a push to the default branch) and split tests on workloads with a
       splittable test step. Network-dependent tests run in a separate unsplit step of the same
       job, so the job runs the same tests as every other arm.
-  - Any other provider's documented accelerator for these workloads (for example a Docker layer
-    cache) may be added as its own arm before this file is tagged, on the provider's request or ours.
+  - **Providers' documented accelerators**, configured as their docs describe, wherever they apply
+    to these workloads (the workflow input `accel`):
+    - Blacksmith: Docker layer cache (`useblacksmith/setup-docker-builder` and
+      `useblacksmith/build-push-action`) on the container workload; its cache for `actions/cache`
+      is automatic.
+    - RunsOn: Magic Cache (`extras=s3-cache` in the label and `runs-on/action` before the cache steps).
+    - Ubicloud: transparent cache (on by default). Depot: Depot Cache for `actions/cache` (automatic).
+    - GitHub-hosted, self-hosted: GitHub's cache service.
+  - **Build-output persistence across runs** (for example a sticky disk holding a build directory)
+    is not used by any provider: the suite builds the same commit every run, so a persisted build
+    directory would replay the previous run instead of measuring a change. The container workload
+    instead simulates a pull-request change in each run, so layer caches are measured realistically.
 - **Sessions:** 3 sessions on 3 different days within 7 days: weekday US working hours, weekday
   night (UTC), weekend. Each: 2 warm-up rounds (discarded), then 10 measured rounds.
 - **Rounds:** every workload is dispatched to every provider within seconds, in random order

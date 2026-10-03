@@ -1,1 +1,9 @@
-{"id": "depot2", "name": "Depot, 2 vCPU", "size": "2 vCPU / 8 GB", "track": "A", "price_ref": "depot-2vcpu", "runs_on": "depot-ubuntu-24.04"}
+{
+ "id": "depot2",
+ "name": "Depot, 2 vCPU",
+ "size": "2 vCPU / 8 GB",
+ "track": "A",
+ "price_ref": "depot-2vcpu",
+ "runs_on": "depot-ubuntu-24.04",
+ "accelerators": "actions/cache is served by Depot Cache automatically (no workflow change)."
+}

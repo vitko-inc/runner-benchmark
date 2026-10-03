@@ -1,1 +1,9 @@
-{"id": "ubicloud2", "name": "Ubicloud standard, 2 vCPU", "size": "2 vCPU / 8 GB", "track": "A", "price_ref": "ubicloud-standard-2", "runs_on": "ubicloud-standard-2"}
+{
+ "id": "ubicloud2",
+ "name": "Ubicloud standard, 2 vCPU",
+ "size": "2 vCPU / 8 GB",
+ "track": "A",
+ "price_ref": "ubicloud-standard-2",
+ "runs_on": "ubicloud-standard-2",
+ "accelerators": "Transparent cache is on by default (no workflow change)."
+}

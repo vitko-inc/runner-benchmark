@@ -22,6 +22,10 @@ on:
         description: Track B only - add the checkpoint step (warm starts) after the setup steps
         type: boolean
         default: false
+      accel:
+        description: Provider-recommended accelerator to enable (for example runson, blacksmith); empty for none
+        type: string
+        default: ''
   workflow_call:
     inputs:
       runs_on:
@@ -40,6 +44,10 @@ on:
         description: Track B only - add the checkpoint step (warm starts) after the setup steps
         type: boolean
         default: false
+      accel:
+        description: Provider-recommended accelerator to enable (for example runson, blacksmith); empty for none
+        type: string
+        default: ''
 permissions:
   contents: read
 jobs:
@@ -52,6 +60,10 @@ jobs:
         shell: bash
         run: |
           echo "rb-probe cpu=\"$(grep -m1 'model name' /proc/cpuinfo | cut -d: -f2 | xargs)\" nproc=$(nproc) mem_kib=$(awk '/MemTotal/{print $2}' /proc/meminfo) swap_kib=$(awk '/SwapTotal/{print $2}' /proc/meminfo) kernel=$(uname -r)"
+      # Provider accelerator (RunsOn): its documented S3-backed cache sidecar. Runs only when asked.
+      - name: RunsOn cache sidecar
+        if: ${{ inputs.accel == 'runson' }}
+        uses: runs-on/action@17b59092eb37ebfdbb034460892887c09100eaa3 # v2.5.0
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: mastodon/mastodon
@@ -59,19 +71,44 @@ jobs:
           persist-credentials: false
       - name: Prepare
         run: echo "PLATFORM_PAIR=linux-amd64" >> $GITHUB_ENV
+      # PORTABILITY: the benchmark builds the same commit every run. To measure what a pull request
+      # build costs with a warm layer cache, each run changes one application file, as a real change
+      # would: dependency layers (system packages, libvips, ffmpeg, gems, node modules) can come from
+      # the cache, and everything after `COPY . /opt/mastodon/` rebuilds.
+      - name: Simulate a pull request change
+        run: echo "# benchmark run ${{ github.run_id }}" >> config/application.rb
       - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+        if: ${{ inputs.accel != 'blacksmith' }}
         id: buildx
+      # Provider accelerator (Blacksmith): its documented Docker layer cache on the runner's disk.
+      - uses: useblacksmith/setup-docker-builder@19215110ab936351210feebdfa5b440b4493e184 # v2
+        if: ${{ inputs.accel == 'blacksmith' }}
       # Track B (warm starts): save the setup above from runs of the default branch; later jobs start
       # with it in place. On other runners, and when the input is off, nothing happens.
       - name: Checkpoint (warm starts)
         if: ${{ inputs.checkpoint }}
         uses: vitko-inc/checkpoint@a06aa88487d9cae4dee4eb50efffb8924ca99e78 # v1.0.3
       # PORTABILITY: no registry login and no push (upstream's PR builds don't push either).
-      # Upstream's reusable workflow takes a cache input; this workload runs it with cache: false,
-      # because the same commit is built every run and a layer cache would make the build a no-op.
+      # The layer cache is upstream's own (type=gha, the PR workflow's cache: true).
       - name: Build
-        id: build
+        if: ${{ inputs.accel != 'blacksmith' }}
         uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        with:
+          context: .
+          file: Dockerfile
+          build-args: |
+            MASTODON_VERSION_PRERELEASE=
+            MASTODON_VERSION_METADATA=
+            SOURCE_COMMIT=3987b9fd624010eeeaeb7cad96606b05aa813f6a
+          platforms: linux/amd64
+          provenance: false
+          push: false
+          outputs: type=cacheonly
+          cache-from: type=gha,scope=build-linux-amd64
+          cache-to: type=gha,mode=max,scope=build-linux-amd64
+      - name: Build (Blacksmith layer cache)
+        if: ${{ inputs.accel == 'blacksmith' }}
+        uses: useblacksmith/build-push-action@9b0579bbec7a6cad2f171596c57e7ac1e7658850 # v2
         with:
           context: .
           file: Dockerfile

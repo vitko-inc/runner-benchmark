@@ -7,4 +7,4 @@
 ## Portability edits (identical for every provider)
 
 - No registry login or push.
-- Run with the reusable workflow's `cache: false`: the same commit every run would otherwise hit every layer.
+- Built with upstream's PR-build layer cache (`type=gha`). Each run first appends a comment to `config/application.rb`, as a pull request would change the app: dependency layers can come from the cache, and everything after `COPY . /opt/mastodon/` rebuilds. Providers' own Docker layer caches (where documented) are used the same way.

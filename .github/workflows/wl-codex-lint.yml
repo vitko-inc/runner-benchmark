@@ -18,6 +18,10 @@ on:
         description: Track B only - add the checkpoint step (warm starts) after the setup steps
         type: boolean
         default: false
+      accel:
+        description: Provider-recommended accelerator to enable (for example runson, blacksmith); empty for none
+        type: string
+        default: ''
   workflow_call:
     inputs:
       runs_on:
@@ -32,6 +36,10 @@ on:
         description: Track B only - add the checkpoint step (warm starts) after the setup steps
         type: boolean
         default: false
+      accel:
+        description: Provider-recommended accelerator to enable (for example runson, blacksmith); empty for none
+        type: string
+        default: ''
 permissions:
   contents: read
 # Matrix values are inlined. Steps that upstream runs only for musl or release entries are kept
@@ -54,6 +62,10 @@ jobs:
         working-directory: ${{ github.workspace }}
         run: |
           echo "rb-probe cpu=\"$(grep -m1 'model name' /proc/cpuinfo | cut -d: -f2 | xargs)\" nproc=$(nproc) mem_kib=$(awk '/MemTotal/{print $2}' /proc/meminfo) swap_kib=$(awk '/SwapTotal/{print $2}' /proc/meminfo) kernel=$(uname -r)"
+      # Provider accelerator (RunsOn): its documented S3-backed cache sidecar. Runs only when asked.
+      - name: RunsOn cache sidecar
+        if: ${{ inputs.accel == 'runson' }}
+        uses: runs-on/action@17b59092eb37ebfdbb034460892887c09100eaa3 # v2.5.0
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           repository: openai/codex

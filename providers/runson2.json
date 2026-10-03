@@ -4,6 +4,10 @@
  "size": "2 vCPU / 8 GB",
  "track": "A",
  "price_ref": "runson-aws",
- "runs_on": "runs-on/runner=2cpu-linux-x64",
- "note": "Software in the customer's AWS account. Cost per job = EC2 instance seconds at the spot (or on-demand) price paid, plus root volume, plus the licence amortised at the reference volume (METHOD.md)."
+ "runs_on": "runs-on/runner=2cpu-linux-x64/extras=s3-cache",
+ "note": "Software in the customer's AWS account. Cost per job = EC2 instance seconds at the spot (or on-demand) price paid, plus root volume, plus the licence amortised at the reference volume (METHOD.md).",
+ "workflow_input": {
+  "accel": "runson"
+ },
+ "accelerators": "Magic Cache: label extras=s3-cache and runs-on/action@v2 before the cache steps (RunsOn docs)."
 }
