@@ -72,7 +72,7 @@ jobs:
       - if: ${{ !inputs.split }}
         run: uv run --locked tox run -e py3.13
       - if: ${{ inputs.split }}
-        uses: vitko-inc/split-tests@9e22147dce5ec8c57c82739dcdcdc33b626c9a37 # v1.0.5
+        uses: vitko-inc/split-tests@310d103be21c9530234e76f790d448f5c42e9b83 # v1.0.6
         with:
           # The parts have no network: tox builds the env (and flask) in prepare, with network,
           # then each part runs pytest in that env, as tox's own test command does.

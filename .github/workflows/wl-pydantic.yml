@@ -86,7 +86,7 @@ jobs:
           CONTEXT: Linux-py3.13-without-deps
       - name: Run pytest (split)
         if: ${{ inputs.split }}
-        uses: vitko-inc/split-tests@9e22147dce5ec8c57c82739dcdcdc33b626c9a37 # v1.0.5
+        uses: vitko-inc/split-tests@310d103be21c9530234e76f790d448f5c42e9b83 # v1.0.6
         with:
           run: bash -c 'ulimit -s 16384 && uv run --no-sync pytest --durations=10'
       # PORTABILITY: upstream uploads coverage files as an artifact for a later combine job; that
