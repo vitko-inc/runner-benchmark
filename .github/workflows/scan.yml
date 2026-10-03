@@ -12,6 +12,10 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+      - name: Workflow triggers (benchmark workflows start on workflow_dispatch only)
+        run: |
+          python3 -c 'import yaml' 2>/dev/null || python3 -m pip install --user pyyaml==6.0.2
+          python3 harness/trigger_guard.py --local .github/workflows
       - name: Files
         run: python3 .github/disclosure/scan.py
       - name: Commit messages

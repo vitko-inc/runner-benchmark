@@ -276,6 +276,19 @@ def main():
                     help="minutes this month shown on the provider's own usage page")
     a = ap.parse_args()
     plan, targets = load(a.plan), load(a.targets)
+    if not a.dry_run:
+        # Refuse to start unless every run repository is still locked down: workflows start on
+        # workflow_dispatch only, and outside contributors cannot open issues or pull requests.
+        import trigger_guard
+        bad = []
+        for repo in sorted({t["repo"] for t in targets.values()}):
+            refs = sorted({t.get("ref", "main") for t in targets.values() if t["repo"] == repo}
+                          | {gh.get(f"/repos/{repo}")["default_branch"]})
+            bad += trigger_guard.remote(repo, refs, settings=True)[0]
+        if bad:
+            for b in bad:
+                print("TRIGGER GUARD:", b, file=sys.stderr)
+            raise SystemExit("run repositories are not locked down; not dispatching anything")
     for p, t in targets.items():
         if t.get("minute_budget"):
             BUDGETS[p] = MinuteBudget(p, t["minute_budget"])

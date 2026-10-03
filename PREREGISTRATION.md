@@ -38,7 +38,8 @@ after that tag is listed in the result set's `deviations.md`.
   (seeded), in parallel lanes; the burst (20 runs of the black job at once) runs after the lanes.
   Providers that share one account-wide concurrency limit burst one after another.
 - **Measured runs** are dispatched from a non-default branch. Warm-start captures happen only from
-  pushes to the default branch, before session 1 and after any change to the suite.
+  runs on the default branch (harness/capture.py), before session 1 and after any change to the
+  suite.
 
 ## Analysis (fixed)
 

@@ -56,6 +56,24 @@ python3 analysis/aggregate.py --raw work/<set>/raw/jobs.jsonl.gz --providers pro
 
 Self-hosted baselines are set up with the Terraform and launcher in [selfhosted/](selfhosted/).
 
+### Locking down the run repositories
+
+A public run repository is connected to a paid runner account, so nobody outside the project may
+be able to start anything in it:
+
+- Every benchmark workflow starts on `workflow_dispatch` only, which needs write access. No
+  workflow starts on push, pull requests, comments, schedules or calls from other workflows.
+  `harness/trigger_guard.py` enforces this: CI runs it on this repository, and `harness/run.py`
+  runs it against every run repository (and its settings) before dispatching, and refuses to
+  start if anything is off.
+- Copy only `.github/workflows/wl-*.yml` into a run repository, not `scan.yml`.
+- In each run repository: issues, pull requests, wiki, projects and discussions off;
+  "Require approval for all external contributors" for fork pull request runs; read-only
+  default `GITHUB_TOKEN` that cannot approve pull requests; interaction limit
+  "collaborators only"; write access only for the people who run the benchmark.
+- Warm-start checkpoints are saved with `harness/capture.py`, which dispatches each workload
+  on the default branch.
+
 ## Licences
 
 Code: Apache-2.0 ([LICENSE](LICENSE)). Result data: CC BY 4.0 ([LICENSE-DATA](LICENSE-DATA)).

@@ -22,24 +22,6 @@ on:
         description: Provider-recommended accelerator to enable (for example runson, blacksmith); empty for none
         type: string
         default: ''
-  workflow_call:
-    inputs:
-      runs_on:
-        description: runs-on label of the provider under test
-        type: string
-        required: true
-      tag:
-        description: run identifier assigned by the harness (shown as the run name)
-        type: string
-        required: true
-      checkpoint:
-        description: Track B only - add the checkpoint step (warm starts) after the setup steps
-        type: boolean
-        default: false
-      accel:
-        description: Provider-recommended accelerator to enable (for example runson, blacksmith); empty for none
-        type: string
-        default: ''
 permissions:
   contents: read
 jobs:
