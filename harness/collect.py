@@ -15,7 +15,7 @@ import sys
 sys.path.insert(0, os.path.dirname(__file__))
 import gh  # noqa: E402
 
-PROBE = re.compile(r'rb-probe cpu="([^"]*)" nproc=(\d+) mem_kib=(\d+) swap_kib=(\d+) kernel=(\S+)')
+PROBE = re.compile(r'rb-probe cpu="([^"]*)" ghz=(\S+) nproc=(\d+) mem_kib=(\d+) swap_kib=(\d+)')
 JOB_FIELDS = ("id", "name", "status", "conclusion", "created_at", "started_at", "completed_at",
               "labels", "runner_name", "runner_group_name", "run_attempt")
 
@@ -29,8 +29,8 @@ def probe(repo, job_id):
         if "rb-probe cpu=" in line and "echo" not in line:
             m = PROBE.search(line)
             if m:
-                return {"cpu": m.group(1), "nproc": int(m.group(2)), "mem_kib": int(m.group(3)),
-                        "swap_kib": int(m.group(4)), "kernel": m.group(5)}
+                return {"cpu": m.group(1), "ghz": m.group(2), "nproc": int(m.group(3)),
+                        "mem_kib": int(m.group(4)), "swap_kib": int(m.group(5))}
     return None
 
 

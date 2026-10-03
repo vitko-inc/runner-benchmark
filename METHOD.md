@@ -44,7 +44,7 @@ All times come from GitHub's jobs API (whole seconds), the same clock for every 
 - **Run:** job `completed_at` − `started_at`.
 - **Wall:** first job created to last job completed, per workflow run. For the burst, across all 20 runs.
 - **Per cell:** p50 and p95 (linear interpolation), mean and max wall; p50 queue; mean cost; success rate.
-- **Hardware** each job saw (CPU model, vCPUs, memory, swap, kernel) is recorded by the first step of every job.
+- **Hardware** each job saw is recorded by the first step of every job, the same way for every provider: CPU vendor family (for example "AMD EPYC"), clock in GHz, vCPUs, memory and swap. Exact CPU models are not recorded.
 
 ## Cost
 
