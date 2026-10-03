@@ -13,10 +13,25 @@ Within a round, every lane runs in parallel. A lane takes its workloads one at a
 dispatches the workload to every provider within a few seconds, in random order, and waits
 until all of those runs have finished. Burst workloads run after the lanes, as their own step:
 every provider gets N copies at once.
+
+A target may carry a monthly minute budget, for a provider whose account has no spend cap of
+its own:
+
+  "minute_budget": {"month_limit": 4500, "ledger": "/path/outside/repo/blacksmith-minutes.json",
+                    "default_estimate_min": 10}
+
+Before each dispatch the harness reserves an estimate of the run's billed minutes (the largest
+billed total seen so far for that workload, or the default) and refuses the dispatch if the
+month's billed minutes plus open reservations would pass the limit; the refusal is recorded as a
+"budget_skip" event. After each run finishes, its billed minutes (every job, rounded up to the
+minute, from the GitHub jobs API) replace the reservation in the ledger. --usage-observed
+provider=minutes raises the month's total to what the provider's own usage page shows, when
+that is higher (for example minutes used outside the harness).
 """
 import argparse
 import datetime as dt
 import json
+import math
 import os
 import random
 import sys
@@ -43,6 +58,85 @@ def record(out, rec):
     with LOCK:
         with open(out, "a") as f:
             f.write(json.dumps(rec, sort_keys=True) + "\n")
+
+
+class MinuteBudget:
+    """Monthly billed-minute ledger for one provider (see the module docstring)."""
+
+    def __init__(self, provider, cfg):
+        self.provider, self.limit = provider, float(cfg["month_limit"])
+        self.path, self.default = cfg["ledger"], float(cfg.get("default_estimate_min", 10))
+        self.reserved = 0.0
+        self.data = load(self.path) if os.path.exists(self.path) else {}
+
+    def _month(self):
+        m = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m")
+        return self.data.setdefault(m, {"billed_min": 0, "observed_min": 0, "runs": {}, "max_by_workload": {}})
+
+    def used(self):
+        m = self._month()
+        return max(m["billed_min"], m["observed_min"])
+
+    def _save(self):
+        tmp = self.path + ".tmp"
+        with open(tmp, "w") as f:
+            json.dump(self.data, f, indent=1, sort_keys=True)
+        os.replace(tmp, self.path)
+
+    def observe(self, minutes):
+        with LOCK:
+            m = self._month()
+            m["observed_min"] = max(m["observed_min"], float(minutes))
+            self._save()
+
+    def fits(self, workload_id, n):
+        with LOCK:
+            est = float(self._month()["max_by_workload"].get(workload_id, self.default))
+            return self.used() + self.reserved + n * est <= self.limit
+
+    def reserve(self, workload_id):
+        """Returns the reserved estimate, or None when the run would pass the month's limit."""
+        with LOCK:
+            est = float(self._month()["max_by_workload"].get(workload_id, self.default))
+            if self.used() + self.reserved + est > self.limit:
+                return None
+            self.reserved += est
+            return est
+
+    def settle(self, workload_id, repo, run_id, est):
+        """Replace a reservation with the run's billed minutes (each job rounded up)."""
+        billed = 0
+        if run_id:
+            try:
+                jobs = gh.paginate(f"/repos/{repo}/actions/runs/{run_id}/jobs?filter=all", "jobs")
+            except Exception as e:  # keep the estimate counted rather than lose it
+                print(f"[{now()}] budget: jobs lookup failed for {run_id}: {e}", file=sys.stderr)
+                jobs = None
+            if jobs is None:
+                billed = est
+            else:
+                for j in jobs:
+                    if j.get("started_at") and j.get("completed_at"):
+                        a = dt.datetime.fromisoformat(j["started_at"].replace("Z", "+00:00"))
+                        b = dt.datetime.fromisoformat(j["completed_at"].replace("Z", "+00:00"))
+                        billed += max(1, math.ceil((b - a).total_seconds() / 60))
+        with LOCK:
+            self.reserved -= est
+            m = self._month()
+            key = str(run_id)
+            if run_id and key in m["runs"]:
+                return  # already counted
+            m["billed_min"] += billed
+            if run_id:
+                m["runs"][key] = billed
+                if billed > m["max_by_workload"].get(workload_id, 0):
+                    m["max_by_workload"][workload_id] = billed
+            self._save()
+        print(f"[{now()}] budget {self.provider}: {self.used():.0f}/{self.limit:.0f} min this month",
+              flush=True)
+
+
+BUDGETS = {}
 
 
 def find_run(repo, workflow, tag, since, timeout=300):
@@ -107,6 +201,15 @@ def wait_all(items, timeout_s):
 
 def run_group(plan, targets, workload, providers, meta, out, dry, copies=1):
     """Dispatch one workload to all providers (copies each), then wait for all."""
+    if copies > 1:
+        # A burst is measured whole or not at all: drop a budgeted provider that cannot afford
+        # every copy.
+        for p in [p for p in providers if p in BUDGETS and not BUDGETS[p].fits(workload["id"], copies)]:
+            print(f"[{now()}] BUDGET STOP {p}: burst {workload['id']} x{copies} not dispatched",
+                  file=sys.stderr, flush=True)
+            record(out, dict(meta, workload=workload["id"], provider=p, event="budget_skip",
+                             copies=copies, used_min=BUDGETS[p].used(), limit_min=BUDGETS[p].limit))
+        providers = [p for p in providers if p not in BUDGETS or BUDGETS[p].fits(workload["id"], copies)]
     jobs = [(p, c) for p in providers for c in range(copies)]
     random.shuffle(jobs)
     sent = []
@@ -114,6 +217,17 @@ def run_group(plan, targets, workload, providers, meta, out, dry, copies=1):
         t = targets[p]
         split = bool(t.get("split"))
         tag = "rb/{set}/{session}/{round}/{wl}/{p}/{c}".format(wl=workload["id"], p=p, c=c, **meta)
+        est = None
+        if p in BUDGETS:
+            est = BUDGETS[p].reserve(workload["id"])
+            if est is None:
+                print(f"[{now()}] BUDGET STOP {p}: {tag} not dispatched "
+                      f"({BUDGETS[p].used():.0f}/{BUDGETS[p].limit:.0f} min used this month)",
+                      file=sys.stderr, flush=True)
+                record(out, dict(meta, workload=workload["id"], provider=p, copy=c, tag=tag,
+                                 event="budget_skip", used_min=BUDGETS[p].used(),
+                                 limit_min=BUDGETS[p].limit))
+                continue
         d = dispatch(t, workload, tag, split, dry)
         if not dry and d["run_id"] is None:
             d["run_id"] = find_run(t["repo"], workload["workflow"], tag, d["since"])
@@ -121,10 +235,19 @@ def run_group(plan, targets, workload, providers, meta, out, dry, copies=1):
                    workflow=workload["workflow"], run_id=d["run_id"], dispatched_at=d["dispatched_at"],
                    kind="burst" if copies > 1 else "single")
         record(out, rec)
+        rec["_est"] = est
         sent.append(rec)
     if dry:
+        for r in sent:
+            if r["_est"] is not None:
+                with LOCK:
+                    BUDGETS[r["provider"]].reserved -= r["_est"]
         return
     left = wait_all(sent, plan.get("run_timeout_s", 7200))
+    for r in sent:
+        if r["_est"] is not None and (r["repo"], r["run_id"]) not in left:
+            BUDGETS[r["provider"]].settle(workload["id"], r["repo"], r["run_id"], r["_est"])
+        # A run that timed out keeps its reservation counted for the rest of the session.
     if left:
         print(f"[{now()}] TIMEOUT {workload['id']} {sorted(left)}", file=sys.stderr)
         record(out, dict(meta, workload=workload["id"], event="timeout", runs=sorted(map(list, left))))
@@ -149,8 +272,18 @@ def main():
     ap.add_argument("--session", default="s1")
     ap.add_argument("--start-round", type=int, default=1)
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--usage-observed", action="append", default=[], metavar="PROVIDER=MINUTES",
+                    help="minutes this month shown on the provider's own usage page")
     a = ap.parse_args()
     plan, targets = load(a.plan), load(a.targets)
+    for p, t in targets.items():
+        if t.get("minute_budget"):
+            BUDGETS[p] = MinuteBudget(p, t["minute_budget"])
+    for kv in a.usage_observed:
+        p, mins = kv.split("=", 1)
+        BUDGETS[p].observe(mins)
+    for p, b in BUDGETS.items():
+        print(f"[{now()}] budget {p}: {b.used():.0f}/{b.limit:.0f} min used this month", flush=True)
     os.makedirs(os.path.dirname(os.path.abspath(a.out)), exist_ok=True)
     rng_seed = plan.get("seed")
     if rng_seed is not None:
