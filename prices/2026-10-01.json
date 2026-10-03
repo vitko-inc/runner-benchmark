@@ -68,6 +68,14 @@
       "region": "us-east-1",
       "source": "https://aws.amazon.com/ec2/pricing/on-demand/",
       "method": "next memory size (2 vCPU / 16 GiB); billed like aws-m8a.large-on-demand"
+    },
+    "runson-aws": {
+      "billing": "external",
+      "usd_per_min": null,
+      "licence_usd_per_year": 350,
+      "licence_reference_jobs_per_month": 100000,
+      "source": "https://runs-on.com/pricing/",
+      "method": "EC2 instance seconds x the price paid for that instance (spot price history for spot), plus the root volume, plus the licence amortised over the reference volume; computed by a collector from the instances RunsOn tags"
     }
   }
 }

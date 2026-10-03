@@ -1,0 +1,13 @@
+{
+ "id": "vitko-opt",
+ "name": "Vitko Runners, recommended configuration (warm starts + split tests)",
+ "size": "up to 2 vCPU / 8 GB",
+ "track": "provider-recommended",
+ "price_ref": "vitko-2vcpu",
+ "split_billing": true,
+ "workflow_input": {
+  "checkpoint": true,
+  "split": "true on workloads with a splittable test step"
+ },
+ "note": "Warm starts: vitko-inc/checkpoint after the setup steps, captured from a push to the default branch; measured runs come from another branch. Split tests: vitko-inc/split-tests on the test step, with network-dependent tests in a separate unsplit step. Only the parts are billed while a split step runs."
+}
