@@ -64,6 +64,20 @@ jobs:
           assert s.count(old_a) == 1, "deps-reload assertion not found; review the portability patch"
           open(p, "w").write(s.replace(old_a, new_a))
           PY
+      # PORTABILITY: upstream's legacy "styles only entry" watch test waits at most 100 ms for the
+      # second of two rebuild outputs (its comment links rolldown issue 10613), so a busy or slower
+      # machine sometimes reads the manifest before the second output lands. Wait up to 5 s for it
+      # instead; it still continues as soon as the rebuild completes. Fails if the code changed.
+      - name: Give the legacy watch test's second rebuild time to finish
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          p = "playground/legacy/__tests__/watch/legacy-styles-only-entry-watch.spec.ts"
+          s = open(p).read()
+          old = "await Promise.race([notifyRebuildComplete(watcher), setTimeout(100)])"
+          assert s.count(old) == 1, "legacy watch wait not found; review the portability patch"
+          open(p, "w").write(s.replace(old, "await Promise.race([notifyRebuildComplete(watcher), setTimeout(5000)])"))
+          PY
       # PORTABILITY: Node before pnpm (see wl-vue.yml).
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
@@ -109,8 +123,52 @@ jobs:
         with:
           run: pnpm exec vitest run
       - name: Test serve
+        if: ${{ !inputs.split }}
         run: pnpm run test-serve
       - name: Test serve (bundled dev)
+        if: ${{ !inputs.split }}
         run: pnpm run test-serve-bundled
       - name: Test build
+        if: ${{ !inputs.split }}
         run: pnpm run test-build
+      # Track B (split tests): the same three end-to-end (Playwright) steps, with the same commands
+      # as upstream's package.json scripts, each shared out by test file. Playwright drives local
+      # playground servers in each part, and the browser is installed above, before the split.
+      # Spec files whose pages load resources from the internet (assets: an image from vite.dev;
+      # css and css-lightningcss: an @import of external CSS) run unsplit after each split step,
+      # because the parts have no outside network. Together the two steps run every spec file.
+      - name: Test serve (split)
+        if: ${{ inputs.split }}
+        uses: vitko-inc/split-tests@310d103be21c9530234e76f790d448f5c42e9b83 # v1.0.6
+        with:
+          run: pnpm exec vitest run -c vitest.config.e2e.ts --exclude './playground/assets/**' --exclude './playground/css/**' --exclude './playground/css-lightningcss/**'
+          env: PLAYWRIGHT_BROWSERS_PATH
+      - name: Test serve (network, unsplit)
+        if: ${{ inputs.split }}
+        run: pnpm exec vitest run -c vitest.config.e2e.ts --passWithNoTests playground/assets/ playground/css/ playground/css-lightningcss/__tests__/
+      - name: Test serve (bundled dev) (split)
+        if: ${{ inputs.split }}
+        uses: vitko-inc/split-tests@310d103be21c9530234e76f790d448f5c42e9b83 # v1.0.6
+        env:
+          VITE_TEST_BUNDLED_DEV: "1"
+        with:
+          run: pnpm exec vitest run -c vitest.config.e2e.ts --exclude './playground/assets/**' --exclude './playground/css/**' --exclude './playground/css-lightningcss/**'
+          env: PLAYWRIGHT_BROWSERS_PATH VITE_TEST_BUNDLED_DEV
+      - name: Test serve (bundled dev) (network, unsplit)
+        if: ${{ inputs.split }}
+        env:
+          VITE_TEST_BUNDLED_DEV: "1"
+        run: pnpm exec vitest run -c vitest.config.e2e.ts --passWithNoTests playground/assets/ playground/css/ playground/css-lightningcss/__tests__/
+      - name: Test build (split)
+        if: ${{ inputs.split }}
+        uses: vitko-inc/split-tests@310d103be21c9530234e76f790d448f5c42e9b83 # v1.0.6
+        env:
+          VITE_TEST_BUILD: "1"
+        with:
+          run: pnpm exec vitest run -c vitest.config.e2e.ts --exclude './playground/assets/**' --exclude './playground/css/**' --exclude './playground/css-lightningcss/**'
+          env: PLAYWRIGHT_BROWSERS_PATH VITE_TEST_BUILD
+      - name: Test build (network, unsplit)
+        if: ${{ inputs.split }}
+        env:
+          VITE_TEST_BUILD: "1"
+        run: pnpm exec vitest run -c vitest.config.e2e.ts --passWithNoTests playground/assets/ playground/css/ playground/css-lightningcss/__tests__/

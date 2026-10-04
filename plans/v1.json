@@ -48,18 +48,34 @@
   ],
   "burst_groups": [
     [
-      "gh2",
-      "blacksmith2",
-      "depot2",
-      "ubicloud2",
-      "runson2",
-      "ec2-eph",
-      "gce-pool",
-      "vitko",
-      "vitko-opt"
+      "gh2"
     ],
     [
       "gh4"
+    ],
+    [
+      "blacksmith2"
+    ],
+    [
+      "depot2"
+    ],
+    [
+      "ubicloud2"
+    ],
+    [
+      "runson2"
+    ],
+    [
+      "ec2-eph"
+    ],
+    [
+      "gce-pool"
+    ],
+    [
+      "vitko"
+    ],
+    [
+      "vitko-opt"
     ]
   ],
   "workloads": {
@@ -118,5 +134,6 @@
       "id": "guava",
       "workflow": "wl-guava.yml"
     }
-  }
+  },
+  "burst_group_order": "random"
 }

@@ -12,7 +12,9 @@ provider id to the repository where its runs happen and the runs-on label to use
 Within a round, every lane runs in parallel. A lane takes its workloads one at a time: it
 dispatches the workload to every provider within a few seconds, in random order, and waits
 until all of those runs have finished. Burst workloads run after the lanes, as their own step:
-every provider gets N copies at once.
+each provider gets N copies dispatched at once, in parallel, and the spread of those dispatch
+times is recorded ("burst_dispatch" events). With "burst_groups", each group bursts after the
+previous one has finished.
 
 A target may carry a monthly minute budget, for a provider whose account has no spend cap of
 its own:
@@ -37,6 +39,7 @@ import random
 import sys
 import threading
 import time
+from concurrent.futures import ThreadPoolExecutor
 
 sys.path.insert(0, os.path.dirname(__file__))
 import gh  # noqa: E402
@@ -162,9 +165,10 @@ def dispatch(target, workload, tag, split, dry):
     for k, v in target.get("inputs", {}).items():
         inputs[k] = v
     if dry:
-        return {"run_id": None, "dispatched_at": now()}
+        return {"run_id": None, "dispatched_at": now(), "dispatched_at_ms": round(time.time() * 1000)}
     since = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(seconds=30)).strftime("%Y-%m-%dT%H:%M:%SZ")
     at = now()
+    at_ms = round(time.time() * 1000)
     body = {"ref": target.get("ref", "main"), "inputs": inputs, "return_run_details": True}
     path = f"/repos/{repo}/actions/workflows/{workload['workflow']}/dispatches"
     try:
@@ -175,10 +179,11 @@ def dispatch(target, workload, tag, split, dry):
         print(f"[{now()}] dispatch error for {tag}: {e}; checking whether the run exists", file=sys.stderr)
         rid = find_run(repo, workload["workflow"], tag, since, timeout=60)
         if rid:
-            return {"run_id": rid, "dispatched_at": at, "since": since}
+            return {"run_id": rid, "dispatched_at": at, "dispatched_at_ms": at_ms, "since": since}
+        at, at_ms = now(), round(time.time() * 1000)  # the dispatch that counts is this one
         resp = gh.request("POST", path, body=body, retries=1)
     run_id = (resp or {}).get("workflow_run_id")
-    return {"run_id": run_id, "dispatched_at": at, "since": since}
+    return {"run_id": run_id, "dispatched_at": at, "dispatched_at_ms": at_ms, "since": since}
 
 
 def wait_all(items, timeout_s):
@@ -200,7 +205,14 @@ def wait_all(items, timeout_s):
 
 
 def run_group(plan, targets, workload, providers, meta, out, dry, copies=1):
-    """Dispatch one workload to all providers (copies each), then wait for all."""
+    """Dispatch one workload to the providers, then wait for every run to finish.
+
+    A single run (copies=1) goes to every provider within a few seconds, in random order. A burst
+    (copies>1) goes to one provider at a time, in random order: all of that provider's copies are
+    dispatched at once, in parallel, and the spread of their dispatch times is recorded as a
+    "burst_dispatch" event, so it can be checked that every provider got the same tight start.
+    """
+    kind = "burst" if copies > 1 else "single"
     if copies > 1:
         # A burst is measured whole or not at all: drop a budgeted provider that cannot afford
         # every copy.
@@ -210,33 +222,66 @@ def run_group(plan, targets, workload, providers, meta, out, dry, copies=1):
             record(out, dict(meta, workload=workload["id"], provider=p, event="budget_skip",
                              copies=copies, used_min=BUDGETS[p].used(), limit_min=BUDGETS[p].limit))
         providers = [p for p in providers if p not in BUDGETS or BUDGETS[p].fits(workload["id"], copies)]
-    jobs = [(p, c) for p in providers for c in range(copies)]
-    random.shuffle(jobs)
-    sent = []
-    for p, c in jobs:
+
+    def reserve(p, c, tag):
+        """Budget reservation: (True, estimate) to go ahead, (False, None) when over budget."""
+        if p not in BUDGETS:
+            return True, None
+        est = BUDGETS[p].reserve(workload["id"])
+        if est is None:
+            print(f"[{now()}] BUDGET STOP {p}: {tag} not dispatched "
+                  f"({BUDGETS[p].used():.0f}/{BUDGETS[p].limit:.0f} min used this month)",
+                  file=sys.stderr, flush=True)
+            record(out, dict(meta, workload=workload["id"], provider=p, copy=c, tag=tag,
+                             event="budget_skip", used_min=BUDGETS[p].used(), limit_min=BUDGETS[p].limit))
+            return False, None
+        return True, est
+
+    def send(p, c, tag, est):
         t = targets[p]
-        split = bool(t.get("split"))
-        tag = "rb/{set}/{session}/{round}/{wl}/{p}/{c}".format(wl=workload["id"], p=p, c=c, **meta)
-        est = None
-        if p in BUDGETS:
-            est = BUDGETS[p].reserve(workload["id"])
-            if est is None:
-                print(f"[{now()}] BUDGET STOP {p}: {tag} not dispatched "
-                      f"({BUDGETS[p].used():.0f}/{BUDGETS[p].limit:.0f} min used this month)",
-                      file=sys.stderr, flush=True)
-                record(out, dict(meta, workload=workload["id"], provider=p, copy=c, tag=tag,
-                                 event="budget_skip", used_min=BUDGETS[p].used(),
-                                 limit_min=BUDGETS[p].limit))
-                continue
-        d = dispatch(t, workload, tag, split, dry)
+        d = dispatch(t, workload, tag, bool(t.get("split")), dry)
         if not dry and d["run_id"] is None:
             d["run_id"] = find_run(t["repo"], workload["workflow"], tag, d["since"])
         rec = dict(meta, workload=workload["id"], provider=p, copy=c, tag=tag, repo=t["repo"],
                    workflow=workload["workflow"], run_id=d["run_id"], dispatched_at=d["dispatched_at"],
-                   kind="burst" if copies > 1 else "single")
+                   dispatched_at_ms=d.get("dispatched_at_ms"), kind=kind)
         record(out, rec)
         rec["_est"] = est
-        sent.append(rec)
+        return rec
+
+    def tag_of(p, c):
+        return "rb/{set}/{session}/{round}/{wl}/{p}/{c}".format(wl=workload["id"], p=p, c=c, **meta)
+
+    sent = []
+    if copies == 1:
+        order = list(providers)
+        random.shuffle(order)
+        for p in order:
+            tag = tag_of(p, 0)
+            ok, est = reserve(p, 0, tag)
+            if ok:
+                sent.append(send(p, 0, tag, est))
+    else:
+        order = list(providers)
+        random.shuffle(order)
+        for p in order:
+            batch = []
+            for c in range(copies):
+                tag = tag_of(p, c)
+                ok, est = reserve(p, c, tag)
+                if ok:
+                    batch.append((p, c, tag, est))
+            with ThreadPoolExecutor(max_workers=max(1, len(batch))) as ex:
+                recs = list(ex.map(lambda b: send(*b), batch))
+            sent += recs
+            ms = [r["dispatched_at_ms"] for r in recs if r.get("dispatched_at_ms")]
+            if ms:
+                spread = (max(ms) - min(ms)) / 1000
+                record(out, dict(meta, workload=workload["id"], provider=p, event="burst_dispatch",
+                                 copies=len(recs), first_ms=min(ms), last_ms=max(ms),
+                                 spread_s=round(spread, 3)))
+                print(f"[{now()}] burst {workload['id']} {p}: {len(recs)} dispatched within "
+                      f"{spread:.2f} s", flush=True)
     if dry:
         for r in sent:
             if r["_est"] is not None:
@@ -327,7 +372,9 @@ def main():
             print(f"[{now()}] {phase} r{rnd} burst {wid} x{w['copies']}", flush=True)
             # Optional "burst_groups": provider groups that burst one after another, e.g. when two
             # providers share one account-wide concurrency limit.
-            groups = plan.get("burst_groups") or [providers_for(wid)]
+            groups = [list(g) for g in (plan.get("burst_groups") or [providers_for(wid)])]
+            if plan.get("burst_group_order") == "random":
+                random.shuffle(groups)  # seeded per session, like the rest of the order
             for g in groups:
                 ps = [p for p in g if p in providers_for(wid)]
                 if ps:

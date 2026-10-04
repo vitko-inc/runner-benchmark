@@ -12,6 +12,8 @@ Definitions (METHOD.md):
   run    = job completed_at - started_at
   wall   = last job completed - first job created, per workflow run; for a burst, across all
            runs of the burst (makespan)
+  burst dispatch spread = first to last dispatch request (harness clock, burst_dispatch.csv),
+           and first to last job created (GitHub's clock)
   cost   = per job, list price x billed time under the provider's billing rule, summed per run
   cell   = (workload, provider): p50/p95 wall and queue, mean cost, success rate
   index  = geometric mean over workloads of (cell p50 wall / reference p50 wall), and the same for
@@ -158,6 +160,23 @@ def main():
         w = csv.DictWriter(f, fieldnames=list(run_rows[0].keys()))
         w.writeheader()
         w.writerows(run_rows)
+
+    # ---- burst dispatch spread, per provider and round (METHOD.md: burst dispatch spread)
+    spread_rows = []
+    for key, rs in sorted(units.items(), key=lambda kv: str(kv[0])):
+        if not rs or rs[0].get("kind") != "burst":
+            continue
+        ms = [r["dispatched_at_ms"] for r in rs if r.get("dispatched_at_ms")]
+        created = [ts(j["created_at"]) for r in rs for j in r["jobs"] if j.get("created_at")]
+        spread_rows.append({
+            "workload": key[0], "provider": key[1], "session": key[2], "round": key[3], "runs": len(rs),
+            "dispatch_spread_s": round((max(ms) - min(ms)) / 1000, 3) if len(ms) == len(rs) else None,
+            "created_spread_s": (max(created) - min(created)) if created else None})
+    if spread_rows:
+        with open(os.path.join(a.out, "burst_dispatch.csv"), "w", newline="") as f:
+            w = csv.DictWriter(f, fieldnames=list(spread_rows[0].keys()))
+            w.writeheader()
+            w.writerows(spread_rows)
 
     # ---- per cell
     cells = defaultdict(list)

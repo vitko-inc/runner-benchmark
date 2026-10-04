@@ -28,7 +28,8 @@ toolchains, compiler caches of dependencies) are kept, as in everyday CI.
 
 - **Rounds.** A round dispatches each workload to every provider within a few seconds, in
   random order, and waits until all have finished. Workloads run in parallel lanes. The burst
-  runs after the lanes: every provider gets 20 copies at once.
+  runs after the lanes, one provider at a time in random order: each provider's 20 copies are
+  dispatched at once, in parallel, and the next provider starts when they have all finished.
 - **Warm-up.** The first 2 rounds of a session are discarded; they warm caches as everyday CI is warm.
 - **Sessions.** An official result set has 3 sessions on 3 different days (weekday working hours
   in the US, weekday night, weekend), with 10 measured rounds each: 30 runs per cell.
@@ -43,6 +44,10 @@ All times come from GitHub's jobs API (whole seconds), the same clock for every 
 - **Queue:** job `started_at` − `created_at`.
 - **Run:** job `completed_at` − `started_at`.
 - **Wall:** first job created to last job completed, per workflow run. For the burst, across all 20 runs.
+- **Burst dispatch spread:** per provider and round, the time between the first and the last of
+  the 20 dispatch requests (harness clock) and between the first and last job created (GitHub's
+  clock). Published in `burst_dispatch.csv`, so it can be checked that every provider's burst
+  started equally tight.
 - **Per cell:** p50 and p95 (linear interpolation), mean and max wall; p50 queue; mean cost; success rate.
 - **Hardware** each job saw is recorded by the first step of every job, the same way for every provider: CPU vendor family (for example "AMD EPYC"), clock in GHz, vCPUs, memory and swap. Exact CPU models are not recorded.
 
