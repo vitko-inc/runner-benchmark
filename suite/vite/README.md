@@ -10,7 +10,7 @@
 - `pnpm playwright install --with-deps chromium`: installs Chromium's system libraries, which GitHub's image already has.
 - One matrix cell (Node 24, Linux); the `changed` gate job is dropped.
 - `environment-react-ssr > pre-bundling > deps reload`: the assertion on the two "dependencies optimized" log lines is made order-insensitive (sorted). Upstream logs the server line after a fixed `setTimeout(…, 2 * debounceMs)` (200 ms) and the client line after a browser reload and re-bundle, so the order is a race that faster machines lose. The assertion is unchanged otherwise: both lines must appear.
-- `legacy > watch > rebuilds styles only entry on change`: the wait for the second of two rebuild outputs is raised from at most 100 ms to at most 5 s. Upstream races the second `notifyRebuildComplete` against a 100 ms timer (a workaround for rolldown issue 10613), so on a busy or slower machine the manifest is sometimes read before the second output is written. The wait still ends as soon as the rebuild completes, and the assertions are unchanged.
+- `legacy > watch > rebuilds styles only entry on change`: after upstream's own waits, the test also waits (up to 10 s, polling every 100 ms) until the rebuilt CSS files referenced by the manifest exist and contain the new colour. Upstream counts watcher END events and races a second one against 100 ms (a workaround for rolldown issue 10613); the number and timing of those events vary, so on any machine the files are sometimes read before the rebuild has written them. The assertions are unchanged.
 
 ## Split-test arm (Track B)
 

@@ -64,19 +64,36 @@ jobs:
           assert s.count(old_a) == 1, "deps-reload assertion not found; review the portability patch"
           open(p, "w").write(s.replace(old_a, new_a))
           PY
-      # PORTABILITY: upstream's legacy "styles only entry" watch test waits at most 100 ms for the
-      # second of two rebuild outputs (its comment links rolldown issue 10613), so a busy or slower
-      # machine sometimes reads the manifest before the second output lands. Wait up to 5 s for it
-      # instead; it still continues as soon as the rebuild completes. Fails if the code changed.
-      - name: Give the legacy watch test's second rebuild time to finish
+      # PORTABILITY: upstream's legacy "styles only entry" watch test reads the manifest and the
+      # rebuilt CSS files after counting watcher END events (it races a second one against 100 ms,
+      # a workaround for rolldown issue 10613). The number and timing of END events vary, so on
+      # any machine the files are sometimes read before the rebuild has written them. Instead,
+      # wait (up to 10 s) until the rebuilt files referenced by the manifest exist and contain the
+      # new colour, then run upstream's assertions unchanged. Fails if the code changed.
+      - name: Make the legacy watch test wait for the rebuilt files
         shell: bash
         run: |
           python3 - <<'PY'
           p = "playground/legacy/__tests__/watch/legacy-styles-only-entry-watch.spec.ts"
           s = open(p).read()
-          old = "await Promise.race([notifyRebuildComplete(watcher), setTimeout(100)])"
+          old = "  await Promise.race([notifyRebuildComplete(watcher), setTimeout(100)])\n"
+          new = old + """  for (let i = 0; i < 100; i++) {
+              let done = false
+              try {
+                const m: any = readManifest('watch')
+                done = ['style-only-entry.css', 'style-only-entry-legacy.css'].every((k) => {
+                  const f = m?.[k]?.file
+                  return !!f && !!findAssetFile(f.substring('assets/'.length), 'watch')?.includes('#ffb6c1')
+                })
+              } catch {
+                done = false // a file is being rewritten; try again
+              }
+              if (done) break
+              await setTimeout(100)
+            }
+          """
           assert s.count(old) == 1, "legacy watch wait not found; review the portability patch"
-          open(p, "w").write(s.replace(old, "await Promise.race([notifyRebuildComplete(watcher), setTimeout(5000)])"))
+          open(p, "w").write(s.replace(old, new))
           PY
       # PORTABILITY: Node before pnpm (see wl-vue.yml).
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
