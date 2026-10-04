@@ -8,6 +8,10 @@
 #   - user "runner" with passwordless sudo, member of the docker group
 #   - actions/runner pre-extracted in /opt/actions-runner (dependencies installed)
 #   - apt background timers disabled so jobs never wait on the dpkg lock
+#   - swap: zram (compressed, RAM-backed), zstd, size min(RAM, 8 GiB), priority 100,
+#     vm.swappiness=100, vm.page-cluster=0, set up by systemd-zram-generator. This is the same
+#     swap configuration as the Vitko Runners guest, so the self-hosted arms and Vitko run every
+#     workload at the same memory size (METHOD.md, "Memory and swap").
 set -euxo pipefail
 
 RUNNER_VERSION="${RUNNER_VERSION:-2.337.0}"
@@ -65,9 +69,26 @@ rm -f /tmp/runner.tar.gz
 "$RUNNER_DIR/bin/installdependencies.sh"
 chown -R "$RUNNER_USER:$RUNNER_USER" "$RUNNER_DIR"
 
-# 6. Image metadata + cleanup.
+# 6. Swap: zram via systemd-zram-generator. On the cloud kernels (linux-aws, linux-gcp) the zram
+#    module ships in the kernel's extra modules package: install it for every kernel present and
+#    the flavour's meta package, so it follows kernel updates too.
+flavour="$(uname -r | sed -E 's/.*-([a-z]+)$/\1/')"
+apt-get install -y --no-install-recommends systemd-zram-generator
+apt-get install -y --no-install-recommends "linux-modules-extra-${flavour}" || true
+for k in /lib/modules/*; do
+  apt-get install -y --no-install-recommends "linux-modules-extra-$(basename "$k")" || true
+done
+printf '%s\n' '[zram0]' 'zram-size = min(ram, 8192)' 'compression-algorithm = zstd' 'swap-priority = 100' \
+  >/etc/systemd/zram-generator.conf
+printf '%s\n' 'vm.swappiness = 100' 'vm.page-cluster = 0' >/etc/sysctl.d/90-ci-swap.conf
+for k in /lib/modules/*; do
+  find "$k" -name 'zram.ko*' | grep -q . || { echo "zram module missing for $(basename "$k")" >&2; exit 1; }
+done
+
+# 7. Image metadata + cleanup.
 cat >/etc/ci-runner-image <<EOF
 runner_version=${RUNNER_VERSION}
+swap=zram-zstd-min-ram-8g
 built_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 EOF
 apt-get clean

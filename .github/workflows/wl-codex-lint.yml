@@ -47,6 +47,8 @@ jobs:
           case "$m" in *EPYC*) fam="AMD EPYC";; *Ryzen*) fam="AMD Ryzen";; *Xeon*|*XEON*) fam="Intel Xeon";; *Intel*) fam="Intel";; *AMD*) fam="AMD";; *) fam="other";; esac
           ghz=$(awk -F: '/cpu MHz/{printf "%.1f", $2/1000; exit}' /proc/cpuinfo)
           echo "rb-probe cpu=\"$fam\" ghz=${ghz:-unknown} nproc=$(nproc) mem_kib=$(awk '/MemTotal/{print $2}' /proc/meminfo) swap_kib=$(awk '/SwapTotal/{print $2}' /proc/meminfo)"
+          # Pages swapped out so far, to show at the end of the job whether this job used swap.
+          echo "rb-swap-start pswpout=$(awk '/^pswpout/{print $2}' /proc/vmstat)"
       # Provider accelerator (RunsOn): its documented S3-backed cache sidecar. Runs only when asked.
       - name: RunsOn cache sidecar
         if: ${{ inputs.accel == 'runson' }}
@@ -279,3 +281,9 @@ jobs:
           path: |
             /var/cache/apt
           key: apt-ubuntu-24.04-x86_64-unknown-linux-gnu-v1
+
+      # Memory record (every provider): pages swapped out during the job and swap in use at the end.
+      - name: rb-swap
+        if: ${{ always() }}
+        shell: bash
+        run: echo "rb-swap-end pswpout=$(awk '/^pswpout/{print $2}' /proc/vmstat) swap_used_kib=$(awk '/SwapTotal/{t=$2} /SwapFree/{f=$2} END{print t-f}' /proc/meminfo)"

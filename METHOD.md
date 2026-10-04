@@ -67,6 +67,13 @@ used, with the provider's own billing rule, summed over the run's jobs:
 - Queue time isn't billed by hosted providers. Free minutes, plan fees, discounts, and cache and
   artifact storage are excluded from per-run cost and listed separately.
 - If a workload needs the next size up on a provider, it runs and is priced there, and the cell is flagged.
+- **Memory and swap.** Managed providers run their own documented images and sizes, unchanged.
+  The self-hosted baselines (EC2, GCE) are ours to configure, so they get the same swap as the
+  Vitko Runners guest: zram (compressed, in RAM), zstd, min(RAM, 8 GiB), priority 100,
+  `vm.swappiness = 100`, `vm.page-cluster = 0`. This is applied identically to every
+  self-hosted arm, so all of them, and Vitko, run every workload at 2 vCPU / 8 GiB. The
+  `codex-lint` job records the pages swapped out during the job and the swap in use at its end,
+  for every provider.
 - Not included for self-hosted: people's time, NAT gateways, image upkeep, monitoring.
 
 ## Reliability

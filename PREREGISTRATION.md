@@ -14,7 +14,11 @@ after that tag is listed in the result set's `deviations.md`.
 - **Configurations.** Every provider runs the configuration its customers would use:
   - GitHub-hosted 2 vCPU and 4 vCPU, Blacksmith, Ubicloud and RunsOn: the provider's
     defaults, with only `runs-on` changed.
-  - Self-hosted EC2 (one VM per job) and GCE (always-on pool): stock runner, on-demand prices.
+  - Self-hosted EC2 (one VM per job) and GCE (always-on pool): stock runner, on-demand prices, and
+    the same swap as the Vitko Runners guest (zram, zstd, min(RAM, 8 GiB); METHOD.md "Memory and
+    swap"), applied identically to every self-hosted arm, so every workload runs at 2 vCPU / 8 GiB.
+    Managed providers (GitHub, Blacksmith, RunsOn, Ubicloud) run their own documented images and
+    sizes, unchanged.
   - **Vitko Runners, two arms, both reported:**
     - `vitko`: only `runs-on` changed.
     - `vitko-opt`: Vitko's recommended configuration: warm starts (the checkpoint step after the
