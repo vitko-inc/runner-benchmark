@@ -9,18 +9,17 @@ the stock `actions/runner`:
 | `gce-pool` ([gcp/](gcp/)) | An always-on pool of GCE `n4d-standard-2` (2 vCPU / 8 GiB) VMs, each running a persistent runner | The job's run time ÷ U at the VM's per-second price (U = 50%, with 25% and 75% shown) |
 
 Both use the same machine image ([image/](image/)): Ubuntu 24.04, Docker with buildx, git,
-build-essential, Python 3, passwordless sudo for the runner user and `actions/runner` 2.337.0.
+build-essential, Python 3, passwordless sudo for the runner user, `actions/runner` 2.337.0 and
+zram swap (below).
 Toolchains come from each workflow's `setup-*` actions. Prices are in [pricing.json](pricing.json).
 
-## Next memory size
+## Memory and swap
 
-A workload that needs more than 8 GiB without swap (`codex-lint`) runs on each baseline's next
-memory size at 2 vCPU and is priced there, the same rule every provider follows:
-
-- EC2: a second launcher with its own label and state directory, overriding the instance type:
-  `RB_LABEL=<label>-16g RB_INSTANCE_TYPE=r8a.large RB_STATE_DIR=<dir>-16g aws/launcher.sh start`
-- GCE: a second pool from the same Terraform with its own var file and state:
-  `name`, `runner_labels` = `<label>-16g`, `machine_type = "n4d-highmem-2"`, a separate `subnet_cidr`.
+The image has swap: zram (compressed, in RAM, no disk), zstd, size min(RAM, 8 GiB), swap
+priority 100, `vm.swappiness = 100`, `vm.page-cluster = 0`, set up by `systemd-zram-generator`
+([image/install-runner-base.sh](image/install-runner-base.sh)). That is the same swap
+configuration as the Vitko Runners guest, so every workload, `codex-lint` included, runs on the
+2 vCPU / 8 GiB size and is priced there.
 
 ## Running
 

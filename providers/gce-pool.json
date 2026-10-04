@@ -6,8 +6,5 @@
  "price_ref": "gcp-n4d-standard-2-pool",
  "runs_on": "self-hosted label of the deployment",
  "setup": "selfhosted/gcp",
- "price_ref_by_workload": {
-  "codex-lint": "gcp-n4d-highmem-2-pool"
- },
- "next_size": "codex-lint needs more than 8 GiB without swap; it runs on n4d-highmem-2 (2 vCPU / 16 GiB) and is priced there"
+ "swap": "zram, zstd, min(RAM, 8 GiB), priority 100, vm.swappiness=100, vm.page-cluster=0 (the same as the Vitko Runners guest); every workload, codex-lint included, runs at 2 vCPU / 8 GiB"
 }
