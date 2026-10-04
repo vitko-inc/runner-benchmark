@@ -29,8 +29,8 @@ provider joins official rounds from the next one.
 
 After a result set is published, any measured provider can report an error in its results,
 configuration or price in an issue on this repository or by email to benchmark@vitko.inc. We
-review every report and publish
-corrections in the result set, each listed with its date in the result set's changelog.
+review every report and publish corrections in the result set, each listed with its date in the
+result set's changelog.
 
 ## Wording
 
