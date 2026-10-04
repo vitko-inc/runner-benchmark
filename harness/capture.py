@@ -30,6 +30,7 @@ def main():
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
     plan, targets = run.load(a.plan), run.load(a.targets)
+    targets = {k: v for k, v in targets.items() if not k.startswith("_")}
     t = targets[a.provider]
     cap = t["capture"]
     sent = []
