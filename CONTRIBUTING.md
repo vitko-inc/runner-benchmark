@@ -27,8 +27,9 @@ provider joins official rounds from the next one.
 
 ## Providers' right of reply
 
-Each measured provider receives the draft results, its configuration and the method 7 days before
-a result set is published.
+After a result set is published, any measured provider can report an error in its results,
+configuration or price in an issue on this repository. We review every report and publish
+corrections in the result set, each listed with its date in the result set's changelog.
 
 ## Wording
 

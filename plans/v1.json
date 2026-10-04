@@ -14,7 +14,6 @@
     "gh2",
     "gh4",
     "blacksmith2",
-    "depot2",
     "ubicloud2",
     "runson2",
     "ec2-eph",
@@ -55,9 +54,6 @@
     ],
     [
       "blacksmith2"
-    ],
-    [
-      "depot2"
     ],
     [
       "ubicloud2"

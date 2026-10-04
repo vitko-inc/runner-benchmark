@@ -9,9 +9,10 @@ after that tag is listed in the result set's `deviations.md`.
 - **Suite:** the 12 workloads in [suite/](suite/), at the pinned commits, with the portability
   edits listed per workload ([plans/v1.json](plans/v1.json)).
 - **Providers:** [plans/v1.json](plans/v1.json) and [providers/](providers/). Each provider runs
-  in its own repository copy, so no provider's cache serves another.
+  in its own repository copy, so no provider's cache serves another. Depot was excluded from v1:
+  its runners never started a job during the test window.
 - **Configurations.** Every provider runs the configuration its customers would use:
-  - GitHub-hosted 2 vCPU and 4 vCPU, Blacksmith, Depot, Ubicloud and RunsOn: the provider's
+  - GitHub-hosted 2 vCPU and 4 vCPU, Blacksmith, Ubicloud and RunsOn: the provider's
     defaults, with only `runs-on` changed.
   - Self-hosted EC2 (one VM per job) and GCE (always-on pool): stock runner, on-demand prices.
   - **Vitko Runners, two arms, both reported:**
@@ -28,7 +29,7 @@ after that tag is listed in the result set's `deviations.md`.
       `useblacksmith/build-push-action`) on the container workload; its cache for `actions/cache`
       is automatic.
     - RunsOn: Magic Cache (`extras=s3-cache` in the label and `runs-on/action` before the cache steps).
-    - Ubicloud: transparent cache (on by default). Depot: Depot Cache for `actions/cache` (automatic).
+    - Ubicloud: transparent cache (on by default).
     - GitHub-hosted, self-hosted: GitHub's cache service.
   - **Build-output persistence across runs** (for example a sticky disk holding a build directory)
     is not used by any provider: the suite builds the same commit every run, so a persisted build
