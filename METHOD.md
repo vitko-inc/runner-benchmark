@@ -41,7 +41,9 @@ toolchains, compiler caches of dependencies) are kept, as in everyday CI.
 
 All times come from GitHub's jobs API (whole seconds), the same clock for every provider.
 
-- **Queue:** job `started_at` − `created_at`.
+- **Queue:** job `started_at` − `created_at`. This is the time-to-start metric: how long a job waits for a
+  runner. For the burst it is reported per job (p50 and max), so a provider's warm capacity and
+  its time to add runners both show.
 - **Run:** job `completed_at` − `started_at`.
 - **Wall:** first job created to last job completed, per workflow run. For the burst, across all 20 runs.
 - **Burst dispatch spread:** per provider and round, the time between the first and the last of
@@ -67,6 +69,12 @@ used, with the provider's own billing rule, summed over the run's jobs:
 - Queue time isn't billed by hosted providers. Free minutes, plan fees, discounts, and cache and
   artifact storage are excluded from per-run cost and listed separately.
 - If a workload needs the next size up on a provider, it runs and is priced there, and the cell is flagged.
+- **Runner capacity (Vitko Runners, both arms).** The pools run with the default capacity
+  customers get: each pool keeps two warm standby runners, and additional runners are created on
+  demand. Nothing is sized for the benchmark. A burst larger than two jobs therefore shows the
+  time to create the additional runners in its queue times. Other managed providers run with
+  their own defaults; the self-hosted EC2 baseline starts one VM per job and the GCE pool has
+  always-on runners.
 - **Memory and swap.** Managed providers run their own documented images and sizes, unchanged.
   The self-hosted baselines (EC2, GCE) are ours to configure, so they get the same swap as the
   Vitko Runners guest: zram (compressed, in RAM), zstd, min(RAM, 8 GiB), priority 100,
