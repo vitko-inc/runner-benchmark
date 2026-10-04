@@ -17,9 +17,11 @@ after that tag is listed in the result set's `deviations.md`.
   - **Vitko Runners, two arms, both reported:**
     - `vitko`: only `runs-on` changed.
     - `vitko-opt`: Vitko's recommended configuration: warm starts (the checkpoint step after the
-      setup steps, saved from a push to the default branch) and split tests on workloads with a
-      splittable test step. Network-dependent tests run in a separate unsplit step of the same
-      job, so the job runs the same tests as every other arm.
+      setup steps, saved from a run on the default branch) and split tests (`vitko-inc/split-tests`)
+      on the splittable test steps: the unit tests of vite, vue, flask, pydantic, cli and ts, and
+      vite's three Playwright end-to-end steps (serve, bundled dev, build). Tests that need the
+      outside network or state shared between test files run in a separate unsplit step of the
+      same job, so the job runs the same tests as every other arm.
   - **Providers' documented accelerators**, configured as their docs describe, wherever they apply
     to these workloads (the workflow input `accel`):
     - Blacksmith: Docker layer cache (`useblacksmith/setup-docker-builder` and
@@ -35,8 +37,12 @@ after that tag is listed in the result set's `deviations.md`.
 - **Sessions:** 3 sessions on 3 different days within 7 days: weekday US working hours, weekday
   night (UTC), weekend. Each: 2 warm-up rounds (discarded), then 10 measured rounds.
 - **Rounds:** every workload is dispatched to every provider within seconds, in random order
-  (seeded), in parallel lanes; the burst (20 runs of the black job at once) runs after the lanes.
-  Providers that share one account-wide concurrency limit burst one after another.
+  (seeded), in parallel lanes. The burst (20 runs of the black job) runs after the lanes, one
+  provider at a time, in seeded random order: each provider's 20 runs are dispatched at once, in
+  parallel, and the next provider starts after every run of the previous one has finished. So no
+  two providers share a dispatch window, and providers that share one account-wide concurrency
+  limit or one host never burst at the same moment. The spread between the first and last of
+  each provider's 20 dispatches is recorded for every round and published with the results.
 - **Measured runs** are dispatched from a non-default branch. Warm-start captures happen only from
   runs on the default branch (harness/capture.py), before session 1 and after any change to the
   suite.
@@ -51,6 +57,10 @@ after that tag is listed in the result set's `deviations.md`.
 - **CIs:** block bootstrap over sessions, then rounds, 10,000 replicates, percentile 95%.
 - **Also published:** pairwise ratios with CIs, leave-one-workload-out, per-session indices, and
   the self-hosted pool at U = 25% / 50% / 75%.
+- **Burst dispatch spread** per provider and round (`burst_dispatch.csv`, METHOD.md).
+- **Reporting rules.** Results of `vitko-opt` are labelled as using Vitko Runners' own features
+  (warm starts and split tests). A comparison between a 2 vCPU and a 4 vCPU configuration is
+  reported as a difference in machine size, not in speed per vCPU.
 
 ## Exclusions and voids (fixed)
 

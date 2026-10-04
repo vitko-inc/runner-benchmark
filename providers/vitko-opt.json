@@ -9,5 +9,5 @@
   "checkpoint": true,
   "split": "true on workloads with a splittable test step"
  },
- "note": "Warm starts: vitko-inc/checkpoint after the setup steps, captured from a push to the default branch; measured runs come from another branch. Split tests: vitko-inc/split-tests on the test step, with network-dependent tests in a separate unsplit step. Only the parts are billed while a split step runs."
+ "note": "Warm starts: vitko-inc/checkpoint after the setup steps, captured from a run on the default branch; measured runs come from another branch. Split tests: vitko-inc/split-tests on the splittable test steps (unit tests, and vite's three end-to-end steps), with spec files that need the outside network in a separate unsplit step. Only the parts are billed while a split step runs."
 }
