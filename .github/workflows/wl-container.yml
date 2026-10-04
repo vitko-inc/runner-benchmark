@@ -68,7 +68,7 @@ jobs:
       # with it in place. On other runners, and when the input is off, nothing happens.
       - name: Checkpoint (warm starts)
         if: ${{ inputs.checkpoint }}
-        uses: vitko-inc/checkpoint@a06aa88487d9cae4dee4eb50efffb8924ca99e78 # v1.0.3
+        uses: vitko-inc/checkpoint@8fcc0f65bf4e270f9e7de0e3a4cd9ad622723b74 # v1.0.4
       # PORTABILITY: no registry login and no push (upstream's PR builds don't push either).
       # The layer cache is upstream's own (type=gha, the PR workflow's cache: true).
       - name: Build
