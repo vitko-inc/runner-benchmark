@@ -321,6 +321,7 @@ def main():
                     help="minutes this month shown on the provider's own usage page")
     a = ap.parse_args()
     plan, targets = load(a.plan), load(a.targets)
+    targets = {k: v for k, v in targets.items() if not k.startswith("_")}  # "_note" and similar
     if not a.dry_run:
         # Refuse to start unless every run repository is still locked down: workflows start on
         # workflow_dispatch only, and outside contributors cannot open issues or pull requests.
