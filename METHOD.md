@@ -60,14 +60,32 @@ used, with the provider's own billing rule, summed over the run's jobs:
 
 - **Rounded up to a whole minute per job** where the provider bills that way.
 - **Per second** where the provider bills per second.
-- **Self-hosted, one VM per job:** billed instance seconds from launch to termination (60 s
-  minimum), including boot, plus the root volume.
-- **Self-hosted, always-on pool:** the job's run time ÷ U at the VM's per-second price, with
-  U = 50% (results at 25% and 75% are shown alongside). Time is measured; cost at U is modelled.
+- **Self-hosted in your own cloud (RunsOn, EC2, GCE): all-in cost the customer pays.** Applied
+  identically to every option that runs in the customer's cloud account:
+  - *Per job, measured:* everything the job uses in the account: instance seconds at the price
+    actually paid (spot or on-demand), disks, public IPv4, accelerator storage and requests (for
+    example RunsOn's S3 cache), NAT, and internet egress. Egress is measured per instance from VPC
+    flow logs (AWS) or the VM's sent bytes (GCE); traffic to object storage in the same region is
+    free and not counted. The collectors in [selfhosted/](selfhosted/) record these per job during
+    the sessions; nothing is estimated.
+  - *Fixed per month:* control plane, launcher or controller hosts, and licences, spread over a
+    reference volume of **100,000 jobs per month**; results at 10,000 and 1,000 jobs per month are
+    published as sensitivity (`cost_usd_10000`, `cost_usd_1000`, `cost_sensitivity`).
+  - *One VM per job (EC2):* billed instance seconds from launch to termination (60 s minimum),
+    including boot. *Always-on pool (GCE):* the job's run time ÷ U at the VM's per-second price
+    (VM, boot disk and public IPv4), with U = 50% (25% and 75% shown alongside); time is measured,
+    cost at U is modelled.
+  - Managed providers (GitHub, Blacksmith, Ubicloud, Vitko Runners) are priced at list price,
+    which already includes their infrastructure.
+  - Why: in the pre-registration pilot (2026-10-05) the earlier rule (instance, disk and licence
+    only) understated RunsOn by about 45% per job before fixed costs (public IPv4 and the S3 cache
+    were missing) and left out the GCE pool's disk, public IPv4 and egress; see the result set's
+    pilot note. The rule was changed before the `prereg-v1` tag.
 - **Split tests (Vitko Runners, Track B):** only the parts are billed while a split step runs:
   job run time − the split step's duration + each part's duration.
-- Queue time isn't billed by hosted providers. Free minutes, plan fees, discounts, and cache and
-  artifact storage are excluded from per-run cost and listed separately.
+- Queue time isn't billed by hosted providers. Free minutes, plan fees and discounts are
+  excluded from per-run cost; for managed providers, cache and artifact storage are excluded too
+  and listed separately (for self-hosted options they are part of the all-in cost above).
 - If a workload needs the next size up on a provider, it runs and is priced there, and the cell is flagged.
 - **Runner capacity (Vitko Runners, both arms).** The pools run with the default capacity
   customers get: each pool keeps two warm standby runners, and additional runners are created on
@@ -82,7 +100,8 @@ used, with the provider's own billing rule, summed over the run's jobs:
   self-hosted arm, so all of them, and Vitko, run every workload at 2 vCPU / 8 GiB. The
   `codex-lint` job records the pages swapped out during the job and the swap in use at its end,
   for every provider.
-- Not included for self-hosted: people's time, NAT gateways, image upkeep, monitoring.
+- Not included for self-hosted: people's time, image upkeep, and monitoring beyond what the
+  option deploys itself.
 
 ## Reliability
 

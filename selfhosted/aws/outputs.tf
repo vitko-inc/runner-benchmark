@@ -4,3 +4,4 @@ output "security_group_id" { value = aws_security_group.runner.id }
 output "launch_template_id" {
   value = try(aws_launch_template.runner[0].id, "")
 }
+output "flowlogs_bucket" { value = aws_s3_bucket.flowlogs.id }

@@ -54,7 +54,20 @@ after that tag is listed in the result set's `deviations.md`.
 
 ## Analysis (fixed)
 
-- Metrics, cost rules and the index as in [METHOD.md](METHOD.md) v1.0.
+- Metrics, cost rules and the index as in [METHOD.md](METHOD.md) v1.0. Prices:
+  [prices/2026-10-05.json](prices/2026-10-05.json).
+- **Self-hosted options are priced all-in** (METHOD.md, "Cost"): RunsOn, EC2 and GCE pay
+  everything their jobs use in the customer's cloud account, measured per job (instances, disks,
+  public IPv4, accelerator storage and requests, NAT, internet egress), plus fixed monthly costs
+  (control plane, launcher or controller hosts, licences) spread over 100,000 jobs per month, with
+  10,000 and 1,000 jobs per month as sensitivity. Managed providers are priced at list price.
+  This rule was adopted before the tag, after the pilot (below) showed the earlier rule left out
+  public IPv4, accelerator storage, egress and fixed costs.
+- **Pilot:** one round of the v1 plan on 2026-10-05, before the tag, to check the harness, the
+  collectors and the cost rules. It is disclosed with the results and is not part of the result
+  set. Changes it led to before the tag: all-in pricing for self-hosted options; RunsOn's
+  `codex-lint` on its next memory size (2 vCPU / 16 GiB), applying METHOD.md's next-size rule after
+  it ran out of memory at 8 GiB; harness and analysis fixes (runner-benchmark #11, #12).
 - **Reference:** GitHub-hosted 2 vCPU.
 - **Indices** over all 12 workloads; a provider without a usable cell for every workload gets
   per-workload results only, and the reason is listed.

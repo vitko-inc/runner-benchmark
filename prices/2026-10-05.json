@@ -1,0 +1,116 @@
+{
+  "date": "2026-10-05",
+  "note": "Public list prices on the date, Linux x64, for the size each provider is tested at. Free minutes, plans and discounts are excluded from per-run cost. Self-hosted-in-your-cloud options (RunsOn, EC2, GCE) are priced all-in (METHOD.md, Cost): every resource the jobs use, measured per job by the collectors, plus fixed monthly costs spread over the reference monthly job volume.",
+  "providers": {
+    "github-2vcpu": {
+      "usd_per_min": 0.006,
+      "billing": "job-rounded-up-to-minute",
+      "source": "https://docs.github.com/en/billing/reference/actions-runner-pricing"
+    },
+    "github-4vcpu": {
+      "usd_per_min": 0.012,
+      "billing": "job-rounded-up-to-minute",
+      "source": "https://docs.github.com/en/billing/reference/actions-runner-pricing"
+    },
+    "blacksmith-2vcpu": {
+      "usd_per_min": 0.004,
+      "billing": "job-rounded-up-to-minute",
+      "source": "https://www.blacksmith.sh/pricing",
+      "note": "per-minute billing; per-job rounding not stated publicly, whole minutes observed"
+    },
+    "depot-2vcpu": {
+      "usd_per_min": 0.006,
+      "billing": "per-second",
+      "source": "https://depot.dev/docs/github-actions/runner-types"
+    },
+    "ubicloud-standard-2": {
+      "usd_per_min": 0.00125,
+      "billing": "job-rounded-up-to-minute",
+      "source": "https://www.ubicloud.com/docs/about/pricing"
+    },
+    "vitko-2vcpu": {
+      "usd_per_min": 0.002,
+      "billing": "per-second",
+      "source": "https://runners.vitko.inc"
+    },
+    "aws-m8a.large-on-demand": {
+      "usd_per_min": 0.0020287,
+      "billing": "external",
+      "usd_per_hour": 0.12172,
+      "region": "us-east-1",
+      "disk_gp3_usd_per_gb_month": 0.08,
+      "source": "https://aws.amazon.com/ec2/pricing/on-demand/",
+      "method": "selfhosted/aws/cost_ec2.py: billed instance seconds from launch to termination (60 s minimum) x the on-demand price, plus the root gp3 volume, public IPv4 and the instance's NetworkOut bytes x internet egress $/GB; plus the launcher host as a fixed monthly cost",
+      "egress_usd_per_gb": 0.09,
+      "ipv4_usd_per_hour": 0.005,
+      "fixed_monthly_usd": 3.066,
+      "fixed_items": {
+        "launcher_host": "one t4g.nano on-demand (us-east-1, $0.0042/h x 730 h) runs the polling launcher"
+      },
+      "sources": {
+        "instance": "https://aws.amazon.com/ec2/pricing/on-demand/",
+        "egress": "https://aws.amazon.com/ec2/pricing/on-demand/#Data_Transfer",
+        "ipv4": "https://aws.amazon.com/vpc/pricing/"
+      }
+    },
+    "gcp-n4d-standard-2-pool": {
+      "billing": "external",
+      "utilization": 0.5,
+      "usd_per_hour": 0.0847,
+      "region": "us-east4",
+      "source": "https://cloud.google.com/products/compute/pricing/general-purpose",
+      "method": "selfhosted/gcp/cost_gce.py: job run time / U x (VM + boot disk + external IPv4) $/hour, plus the VM's sent bytes during the job (Cloud Monitoring) x Premium Tier internet egress $/GiB. No controller host: the pool is managed by Terraform, so no fixed monthly cost.",
+      "disk_gib": 75,
+      "disk_usd_per_gib_month": 0.08,
+      "ipv4_usd_per_hour": 0.005,
+      "egress_usd_per_gb": 0.12,
+      "fixed_monthly_usd": 0,
+      "sources": {
+        "vm": "https://cloud.google.com/products/compute/pricing/general-purpose#n4d-machine-types",
+        "disk": "https://cloud.google.com/compute/disks-image-pricing",
+        "ipv4_and_egress": "https://cloud.google.com/vpc/network-pricing"
+      },
+      "egress_note": "Premium Tier egress to North America, $0.12/GiB (first tier; 1 GiB/month free per account, not counted)"
+    },
+    "runson-aws": {
+      "billing": "external",
+      "usd_per_min": null,
+      "licence_usd_per_year": 350,
+      "source": "https://runs-on.com/pricing/",
+      "method": "selfhosted/runson/cost_runson.py: per job, measured: EC2 instance seconds x the spot (or on-demand) price paid, root EBS, public IPv4, S3 cache storage (object listing x expiry) and requests (bucket request metrics), internet egress (NetworkOut minus S3 bytes, which go through the free gateway endpoint), and the usage-driven control plane (Lambda, SQS, API Gateway, DynamoDB, CloudWatch Logs ingestion) split over the session's jobs; fixed monthly, measured from the stack: the always-on Fargate worker and its public IPv4, Secrets Manager secrets, CloudWatch Logs storage, and the licence",
+      "region": "us-east-2",
+      "ebs_usd_per_gb_month": 0.08,
+      "ipv4_usd_per_hour": 0.005,
+      "egress_usd_per_gb": 0.09,
+      "s3_usd_per_gb_month": 0.023,
+      "s3_put_usd_per_1000": 0.005,
+      "s3_get_usd_per_1000": 0.0004,
+      "s3_default_retention_days": 30,
+      "lambda_usd_per_request": 2e-07,
+      "lambda_x86_usd_per_gb_s": 1.66667e-05,
+      "lambda_arm_usd_per_gb_s": 1.33334e-05,
+      "sqs_usd_per_million": 0.4,
+      "apigw_usd_per_million": 3.5,
+      "ddb_usd_per_million_wru": 0.625,
+      "ddb_usd_per_million_rru": 0.125,
+      "logs_ingest_usd_per_gb": 0.5,
+      "logs_storage_usd_per_gb_month": 0.03,
+      "secrets_usd_per_month": 0.4,
+      "fargate_arm_vcpu_hour": 0.03238,
+      "fargate_arm_gb_hour": 0.00356,
+      "fargate_x86_vcpu_hour": 0.04048,
+      "fargate_x86_gb_hour": 0.004445,
+      "sources": {
+        "licence": "https://runs-on.com/pricing/",
+        "aws_price_list": "https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/index.json"
+      }
+    }
+  },
+  "allin": {
+    "reference_jobs_per_month": 100000,
+    "sensitivity_jobs_per_month": [
+      10000,
+      1000
+    ]
+  }
+}
