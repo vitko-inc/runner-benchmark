@@ -220,7 +220,9 @@ def main():
             od = next(iter(item["terms"]["OnDemand"].values()))
             hourly = float(next(iter(od["priceDimensions"].values()))["pricePerUnit"]["USD"])
         ec2 = secs / 3600 * hourly
-        disk = (i["root_gb"] or 0) * P["ebs_usd_per_gb_month"] / (730 * 3600) * secs
+        if i.get("root_gb") is None:
+            raise SystemExit(f"no root volume size recorded for {i['instance_id']}")
+        disk = i["root_gb"] * P["ebs_usd_per_gb_month"] / (730 * 3600) * secs
         ipv4 = secs / 3600 * P["ipv4_usd_per_hour"] if i.get("public_ip", True) else 0.0
         fl = flows.get(i["instance_id"], {"internet": 0, "s3": 0})
         out_b = fl["internet"]

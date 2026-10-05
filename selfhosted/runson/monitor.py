@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Record the EC2 instances RunsOn starts in us-east-2 (every 15 s) so each job's
+"""Record the EC2 instances RunsOn starts in us-east-2 (every 5 s) so each job's
 cost can be computed afterwards: type, lifecycle (spot/on-demand), AZ, launch time, root volume
 size, and the first time the instance was seen shutting down or terminated.
 
@@ -48,6 +48,12 @@ while True:
                        "public_ip": bool(i.get("PublicIpAddress")),
                        "first_seen": now(), "end": None, "reason": None}
                 seen[iid] = rec
+            if rec["root_gb"] is None:  # volumes attach a few seconds after launch
+                vols = [b["Ebs"]["VolumeId"] for b in i.get("BlockDeviceMappings", []) if "Ebs" in b]
+                if vols:
+                    v = aws("ec2", "describe-volumes", "--volume-ids", *vols)
+                    if v:
+                        rec["root_gb"] = sum(x["Size"] for x in v.get("Volumes", []))
             if st in ("shutting-down", "terminated") and not rec["end"]:
                 rec["end"] = now()
                 rec["reason"] = i.get("StateTransitionReason")
@@ -55,4 +61,4 @@ while True:
                     f.write(json.dumps(rec) + "\n")
             elif rec.get("reason") is None and i.get("StateTransitionReason"):
                 rec["reason_live"] = i.get("StateTransitionReason")
-    time.sleep(15)
+    time.sleep(5)
