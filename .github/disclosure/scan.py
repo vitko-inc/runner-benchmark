@@ -93,9 +93,19 @@ def main():
         for path in filter(None, files):
             found += scan_text(path, path, ci, cs, allow)  # the path itself
             try:
-                with open(path, encoding="utf-8") as f:
-                    text = f.read()
-            except (UnicodeDecodeError, IsADirectoryError, FileNotFoundError):
+                if path.endswith(".gz"):  # published raw records (results/<set>/raw/*.jsonl.gz)
+                    import gzip
+                    with gzip.open(path, "rt", encoding="utf-8") as f:
+                        text = f.read()
+                else:
+                    with open(path, encoding="utf-8") as f:
+                        text = f.read()
+            except UnicodeDecodeError:
+                # Binary files can't be scanned; only image formats are expected in this repository.
+                if not path.lower().endswith((".png", ".jpg", ".jpeg", ".gif", ".webp", ".ico")):
+                    found.append(f"{path}: binary file that the scan can't read; publish it as text or .gz")
+                continue
+            except (IsADirectoryError, FileNotFoundError):
                 continue
             found += scan_text(path, text, ci, cs, allow)
     if a.git_log:
