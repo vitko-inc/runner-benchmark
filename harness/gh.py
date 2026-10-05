@@ -1,7 +1,10 @@
-"""Minimal GitHub REST client (stdlib only). Reads the token from GITHUB_TOKEN; never logs it."""
+"""Minimal GitHub REST client (stdlib only). Reads the token from GITHUB_TOKEN, or runs
+GITHUB_TOKEN_CMD to get one (refreshed every 20 minutes); never logs it."""
 import http.client
 import json
 import os
+import subprocess
+import threading
 import time
 import urllib.error
 import urllib.request
@@ -9,10 +12,26 @@ import urllib.request
 API = os.environ.get("GITHUB_API_URL", "https://api.github.com")
 
 
+_CACHE = {"token": None, "at": 0.0}
+_LOCK = threading.Lock()
+
+
 def _token():
+    """GITHUB_TOKEN, or the output of GITHUB_TOKEN_CMD (for short-lived tokens such as a GitHub
+    App installation token), re-run every 20 minutes so long sessions keep a valid token."""
+    cmd = os.environ.get("GITHUB_TOKEN_CMD")
+    if cmd:
+        with _LOCK:
+            if not _CACHE["token"] or time.time() - _CACHE["at"] > 1200:
+                out = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=60)
+                tok = out.stdout.strip()
+                if out.returncode != 0 or not tok:
+                    raise SystemExit("GITHUB_TOKEN_CMD failed")
+                _CACHE.update(token=tok, at=time.time())
+            return _CACHE["token"]
     tok = os.environ.get("GITHUB_TOKEN")
     if not tok:
-        raise SystemExit("GITHUB_TOKEN is not set")
+        raise SystemExit("GITHUB_TOKEN (or GITHUB_TOKEN_CMD) is not set")
     return tok
 
 

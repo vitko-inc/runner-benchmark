@@ -47,7 +47,8 @@ benchmark results.
 4. Dispatch, collect and analyse:
 
 ```sh
-export GITHUB_TOKEN=...   # a token with actions:write on the target repositories
+export GITHUB_TOKEN=...   # a token with actions:write on the target repositories, or
+# export GITHUB_TOKEN_CMD="<command that prints a short-lived token>"   # re-run every 20 minutes
 python3 harness/run.py --plan plans/<plan>.json --targets targets.json --out work/<set>/dispatch.jsonl
 python3 harness/collect.py --dispatch work/<set>/dispatch.jsonl --out work/<set>/raw/jobs.jsonl.gz
 python3 analysis/aggregate.py --raw work/<set>/raw/jobs.jsonl.gz --providers providers \
