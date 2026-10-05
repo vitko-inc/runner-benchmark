@@ -45,7 +45,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 import gh  # noqa: E402
 
 LOCK = threading.Lock()
-POLL_S = 10
+POLL_S = 30  # a full session stays well inside a GitHub App's 5,000 requests/hour
 
 
 def now():
@@ -186,19 +186,50 @@ def dispatch(target, workload, tag, split, dry):
     return {"run_id": run_id, "dispatched_at": at, "dispatched_at_ms": at_ms, "since": since}
 
 
+class _ActiveRuns:
+    """Shared view of each repository's queued and running runs, refreshed at most every POLL_S
+    seconds and shared by every lane, so the API cost of waiting does not grow with the number of
+    runs in flight: two list calls per repository per refresh, plus one call to confirm each run
+    that has left the lists (a run in a rarer state such as "waiting" is simply confirmed as not
+    finished yet and checked again)."""
+
+    def __init__(self):
+        self.lock = threading.Lock()
+        self.seen = {}  # repo -> (fetched_at, ids of queued or running runs)
+
+    def unfinished(self, repo):
+        with self.lock:
+            at, ids = self.seen.get(repo, (0.0, None))
+            if ids is not None and time.time() - at < POLL_S:
+                return ids
+            ids = set()
+            for status in ("queued", "in_progress"):
+                data = gh.get(f"/repos/{repo}/actions/runs?status={status}&per_page=100")
+                ids |= {r["id"] for r in data.get("workflow_runs", [])}
+            self.seen[repo] = (time.time(), ids)
+            return ids
+
+
+ACTIVE = _ActiveRuns()
+
+
 def wait_all(items, timeout_s):
     """items: list of dicts with repo, run_id. Blocks until every run is completed or times out."""
     deadline = time.time() + timeout_s
     pending = {(i["repo"], i["run_id"]) for i in items if i.get("run_id")}
     while pending and time.time() < deadline:
-        for repo, rid in list(pending):
+        for repo in sorted({r for r, _ in pending}):
             try:
-                r = gh.get(f"/repos/{repo}/actions/runs/{rid}")
+                active = ACTIVE.unfinished(repo)
             except Exception as e:  # transient; retry on the next poll
-                print(f"[{now()}] poll error {repo} {rid}: {e}", file=sys.stderr)
+                print(f"[{now()}] poll error {repo}: {e}", file=sys.stderr)
                 continue
-            if r.get("status") == "completed":
-                pending.discard((repo, rid))
+            for rp, rid in [x for x in pending if x[0] == repo and x[1] not in active]:
+                try:
+                    if gh.get(f"/repos/{rp}/actions/runs/{rid}").get("status") == "completed":
+                        pending.discard((rp, rid))
+                except Exception as e:
+                    print(f"[{now()}] poll error {rp} {rid}: {e}", file=sys.stderr)
         if pending:
             time.sleep(POLL_S)
     return pending
