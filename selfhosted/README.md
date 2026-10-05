@@ -31,3 +31,8 @@ configuration as the Vitko Runners guest, so every workload, `codex-lint` includ
    `gcp/pool.sh down` afterwards.
 
 Deployment-specific values (project, repository, image ids) go in untracked `*.tfvars` files.
+
+Credentials: the launcher and `gcp/pool.sh` need a token that can register runners on the run
+repository (repository Administration: write; the launcher also reads Actions). The launcher takes
+`GITHUB_TOKEN`, or `GITHUB_TOKEN_CMD` (a command that prints a short-lived token, re-run every 20
+minutes, for example a GitHub App installation token); `pool.sh` uses the `gh` command line's login.

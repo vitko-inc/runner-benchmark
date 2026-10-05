@@ -69,7 +69,7 @@ class GitHub:
         url = path if path.startswith("http") else API + path
         data = json.dumps(body).encode() if body is not None else None
         req = urllib.request.Request(url, data=data, method=method)
-        req.add_header("Authorization", f"Bearer {self._token}")
+        req.add_header("Authorization", f"Bearer {self._token() if callable(self._token) else self._token}")
         req.add_header("Accept", "application/vnd.github+json")
         req.add_header("X-GitHub-Api-Version", "2022-11-28")
         if data is not None:
@@ -133,7 +133,20 @@ class GitHub:
             log(f"warn: could not delete runner {runner_id}: {e}")
 
 
+_TOKEN = {"value": None, "at": 0.0}
+
+
 def github_token():
+    """GITHUB_TOKEN; or the output of GITHUB_TOKEN_CMD, re-run every 20 minutes (short-lived tokens
+    such as a GitHub App installation token); or `gh auth token`."""
+    cmd = os.environ.get("GITHUB_TOKEN_CMD")
+    if cmd:
+        if not _TOKEN["value"] or time.time() - _TOKEN["at"] > 1200:
+            out = subprocess.run(cmd, shell=True, check=True, capture_output=True, text=True).stdout.strip()
+            if not out:
+                raise RuntimeError("GITHUB_TOKEN_CMD printed no token")
+            _TOKEN.update(value=out, at=time.time())
+        return _TOKEN["value"]
     if os.environ.get("GITHUB_TOKEN"):
         return os.environ["GITHUB_TOKEN"]
     return subprocess.run(["gh", "auth", "token"], check=True, capture_output=True, text=True).stdout.strip()
@@ -401,7 +414,9 @@ def main():
         p.error("--repo and --launch-template-id are required")
 
     store = Store(a.state_dir, a.resources_file)
-    gh = GitHub(a.repo, None if a.sweep_only else github_token())
+    if not a.sweep_only:
+        github_token()  # fail fast if no token can be had
+    gh = GitHub(a.repo, None if a.sweep_only else github_token)
     launcher = Launcher(a, gh, store)
     if a.sweep_only:
         launcher.monitor()
