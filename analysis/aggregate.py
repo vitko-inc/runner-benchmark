@@ -63,9 +63,14 @@ def job_cost(provider, prices, workload, job, extra, copies):
     if pr is None:
         return None, None
     run_s = ts(job["completed_at"]) - ts(job["started_at"])
+    rule = pr["billing"]
+    if rule == "external":  # priced per job by a collector (EC2 instance seconds, RunsOn, ...)
+        e = extra.get(str(job["id"]))
+        if e is None:
+            return None, None
+        return e["usd"], e["billed_seconds"]
     mult = provider.get("price_multiplier", {}).get(workload, 1)
     rate = pr["usd_per_min"] * mult
-    rule = pr["billing"]
     if rule == "job-rounded-up-to-minute":
         billed = math.ceil(max(run_s, 1) / 60) * 60
     elif rule == "per-second":
@@ -86,7 +91,9 @@ def job_cost(provider, prices, workload, job, extra, copies):
         split = [s for s in job["steps"] if "(split)" in (s.get("name") or "") and s.get("completed_at")]
         cps = copies.get(job.get("runner_name") or "")
         if split and cps:
-            st = ts(split[0]["completed_at"]) - ts(split[0]["started_at"])
+            # Every split step of the job (vite has four): the job is billed for its own time
+            # outside those steps plus the run time of every copy that ran them.
+            st = sum(ts(x["completed_at"]) - ts(x["started_at"]) for x in split)
             billed = run_s - st + sum(cps)
     return billed / 60 * rate, billed
 
