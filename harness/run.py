@@ -159,7 +159,9 @@ def dispatch(target, workload, tag, split, dry):
     repo = target["repo"]
     label = target.get("runs_on_by_workload", {}).get(workload["id"], target["runs_on"])
     inputs = {"runs_on": label, "tag": tag}
-    if workload.get("splittable") or split:
+    # Only workloads with a splittable test step have the workflow input `split`; sending it to
+    # any other workflow is rejected by GitHub (HTTP 422).
+    if workload.get("splittable"):
         inputs["split"] = "true" if split else "false"
     # Extra workflow inputs a provider needs (for example a Track B option), as strings.
     for k, v in target.get("inputs", {}).items():
