@@ -22,6 +22,8 @@ Billed interval per instance = LaunchTime -> termination time, floored at 60 s
 Cost = billed_s x on-demand $/h / 3600
      + root gp3 GB x $/GB-month prorated per second (1 month = 730 h)
      + public IPv4 $/h prorated per second (reported separately; also in total_usd)
+     + internet egress: bytes the instance sent out of the VPC, except to S3 in the same region,
+       measured from the VPC's flow logs (selfhosted/flowlogs.py) x the egress $/GB
 
 The job a runner actually executed can differ from the job that triggered its launch
 (JIT runners take any queued job with the label). With --resolve-jobs the script asks
@@ -40,6 +42,7 @@ import sys
 PRICE_PER_HOUR = {"m8a.large": 0.12172, "r8a.large": 0.15976}  # us-east-1 on-demand Linux, 2026-10-01
 GP3_PER_GB_MONTH = 0.08
 IPV4_PER_HOUR = 0.005
+EGRESS_PER_GB = 0.09  # EC2 data transfer out to the internet, first tier (prices file: aws-egress)
 HOURS_PER_MONTH = 730.0
 
 REASON_TS = re.compile(r"\((\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}) GMT\)")
@@ -104,6 +107,11 @@ def main():
     p.add_argument("--resolve-jobs", action="store_true", help="look up the job that actually ran on each runner")
     p.add_argument("--root-gb", type=float, default=75)
     p.add_argument("--out", default="-")
+    p.add_argument("--region", default=os.environ.get("AWS_REGION", "us-east-1"))
+    p.add_argument("--egress-usd-per-gb", type=float, default=EGRESS_PER_GB)
+    p.add_argument("--flowlogs-bucket", required=True, help="S3 bucket of the VPC's flow logs (terraform output)")
+    p.add_argument("--vpc-id", required=True)
+    p.add_argument("--workdir", default="/tmp")
     a = p.parse_args()
 
     launches = read_jsonl(os.path.join(a.state_dir, "launches.jsonl"))
@@ -111,12 +119,21 @@ def main():
     live = live_describe(rec["instance_id"] for rec in launches)
     jobs = resolve_jobs(a.repo, launches) if (a.resolve_jobs and a.repo) else {}
 
+    times = [parse_ts(r.get("launch_time")) for r in launches if r.get("launch_time")]
+    egress = {}
+    if times:
+        sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+        import flowlogs  # noqa: E402
+        egress = flowlogs.egress_by_instance(a.region, a.flowlogs_bucket, a.vpc_id, min(times),
+                                             max(times) + dt.timedelta(hours=3), a.workdir)
+
     ev_by_iid = {}
     for e in events:
         ev_by_iid.setdefault(e["instance_id"], []).append(e)
 
     cols = ["job_id", "trigger_job_id", "run_id", "runner_name", "instance_id", "instance_type",
             "launch_time", "end_time", "end_source", "billed_s", "compute_usd", "ebs_usd", "ipv4_usd",
+            "egress_bytes", "egress_usd",
             "total_usd", "job_started_at", "job_completed_at", "job_conclusion"]
     out = sys.stdout if a.out == "-" else open(a.out, "w", newline="")
     w = csv.DictWriter(out, fieldnames=cols)
@@ -159,8 +176,11 @@ def main():
             compute = billed * PRICE_PER_HOUR[itype] / 3600
             ebs = a.root_gb * GP3_PER_GB_MONTH * billed / (HOURS_PER_MONTH * 3600)
             ipv4 = IPV4_PER_HOUR * billed / 3600
+            out_b = egress.get(iid, {}).get("internet", 0)
+            egress_usd = out_b / 1e9 * a.egress_usd_per_gb
             row.update(billed_s=round(billed, 1), compute_usd=f"{compute:.6f}", ebs_usd=f"{ebs:.6f}",
-                       ipv4_usd=f"{ipv4:.6f}", total_usd=f"{compute + ebs + ipv4:.6f}")
+                       ipv4_usd=f"{ipv4:.6f}", egress_bytes=int(out_b), egress_usd=f"{egress_usd:.6f}",
+                       total_usd=f"{compute + ebs + ipv4 + egress_usd:.6f}")
         w.writerow(row)
     if out is not sys.stdout:
         out.close()

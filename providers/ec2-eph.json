@@ -6,5 +6,6 @@
  "price_ref": "aws-m8a.large-on-demand",
  "runs_on": "self-hosted label of the deployment",
  "setup": "selfhosted/aws",
- "swap": "zram, zstd, min(RAM, 8 GiB), priority 100, vm.swappiness=100, vm.page-cluster=0 (the same as the Vitko Runners guest); every workload, codex-lint included, runs at 2 vCPU / 8 GiB"
+ "swap": "zram, zstd, min(RAM, 8 GiB), priority 100, vm.swappiness=100, vm.page-cluster=0 (the same as the Vitko Runners guest); every workload, codex-lint included, runs at 2 vCPU / 8 GiB",
+ "note": "All-in (METHOD.md, Cost): instance seconds, root volume, public IPv4 and internet egress measured per job (cost_ec2.py, VPC flow logs), plus the launcher host as a fixed monthly cost."
 }

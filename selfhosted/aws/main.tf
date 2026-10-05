@@ -120,3 +120,39 @@ resource "aws_launch_template" "runner" {
     tags          = var.tags
   }
 }
+
+# All-in cost (METHOD.md, "Cost"): VPC flow logs measure each runner's internet egress, split
+# from traffic to S3 in the same region (free), by the cost collector (cost_ec2.py --flow-logs).
+data "aws_caller_identity" "current" {}
+
+resource "aws_s3_bucket" "flowlogs" {
+  bucket        = "${var.name}-flowlogs-${data.aws_caller_identity.current.account_id}"
+  force_destroy = true
+}
+
+resource "aws_s3_bucket_public_access_block" "flowlogs" {
+  bucket                  = aws_s3_bucket.flowlogs.id
+  block_public_acls       = true
+  ignore_public_acls      = true
+  block_public_policy     = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "flowlogs" {
+  bucket = aws_s3_bucket.flowlogs.id
+  rule {
+    id     = "expire"
+    status = "Enabled"
+    filter {}
+    expiration { days = 30 }
+  }
+}
+
+resource "aws_flow_log" "runner" {
+  vpc_id                   = aws_vpc.this.id
+  traffic_type             = "ALL"
+  log_destination_type     = "s3"
+  log_destination          = aws_s3_bucket.flowlogs.arn
+  max_aggregation_interval = 60
+  log_format               = "$${version} $${interface-id} $${instance-id} $${srcaddr} $${dstaddr} $${bytes} $${start} $${end} $${flow-direction} $${pkt-dst-aws-service} $${action}"
+}

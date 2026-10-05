@@ -5,6 +5,7 @@ Usage:
   python3 analysis/aggregate.py --raw results/<set>/raw/jobs.jsonl.gz --providers providers/ \
       --prices prices/<date>.json --out results/<set>/ [--reference gh2] [--index-providers a,b,...]
       [--extra-cost results/<set>/raw/selfhosted-cost.csv] [--split-copies results/<set>/raw/split-copies.jsonl]
+      [--fixed-costs results/<set>/raw/fixed-costs.json]
       [--boot 10000]
 
 Definitions (METHOD.md):
@@ -14,7 +15,10 @@ Definitions (METHOD.md):
            runs of the burst (makespan)
   burst dispatch spread = first to last dispatch request (harness clock, burst_dispatch.csv),
            and first to last job created (GitHub's clock)
-  cost   = per job, list price x billed time under the provider's billing rule, summed per run
+  cost   = per job, list price x billed time under the provider's billing rule (managed providers),
+           or the all-in cost a collector measured (self-hosted in your cloud), plus that option's
+           fixed monthly cost / the reference monthly job volume; summed per run. cost_usd_<n>
+           columns repeat it at the sensitivity volumes.
   cell   = (workload, provider): p50/p95 wall and queue, mean cost, success rate
   index  = geometric mean over workloads of (cell p50 wall / reference p50 wall), and the same for
            mean cost; 95% CIs by a block bootstrap over (session, round) blocks
@@ -108,6 +112,8 @@ def main():
     ap.add_argument("--index-providers", default="")
     ap.add_argument("--extra-cost")
     ap.add_argument("--split-copies")
+    ap.add_argument("--fixed-costs", help="JSON {provider: {usd_per_month: x}} measured by a collector "
+                    "(overrides the prices file's fixed_monthly_usd for that provider)")
     ap.add_argument("--boot", type=int, default=10000)
     ap.add_argument("--phase", default="measure")
     ap.add_argument("--index-workloads", choices=["all", "common"], default="all")
@@ -126,6 +132,21 @@ def main():
         for line in open(a.split_copies):
             c = json.loads(line)
             copies[c["parent_runner"]].append((c["finished_ms"] - c["started_ms"]) / 1000)
+
+    # All-in pricing (METHOD.md, "Cost"): fixed monthly costs of a self-hosted-in-your-cloud
+    # option (control plane, launcher/controller hosts, licence) are spread over a reference
+    # monthly job volume; other volumes are published as sensitivity.
+    allin = prices.get("allin", {})
+    ref_volume = allin.get("reference_jobs_per_month", 100000)
+    volumes = [ref_volume] + list(allin.get("sensitivity_jobs_per_month", []))
+    fixed_month = {}
+    for pid, pdef in providers.items():
+        pr = prices["providers"].get(pdef.get("price_ref"), {})
+        if pr.get("fixed_monthly_usd"):
+            fixed_month[pid] = float(pr["fixed_monthly_usd"])
+    if a.fixed_costs and os.path.exists(a.fixed_costs):
+        for pid, v in json.load(open(a.fixed_costs)).items():
+            fixed_month[pid] = float(v["usd_per_month"])
 
     rows = [json.loads(l) for l in gzip.open(a.raw, "rt") if l.strip()]
     rows = [r for r in rows if r.get("phase") == a.phase]
@@ -149,6 +170,7 @@ def main():
         row = {"workload": wl, "provider": prov, "session": key[2], "round": key[3], "runs": len(rs),
                "jobs": len(jobs), "ok": bool(ok), "wall_s": None, "queue_max_s": None, "queue_p50_s": None,
                "cost_usd": None, "billed_s": None,
+               **{f"cost_usd_{v}": None for v in volumes[1:]},
                "run_ids": " ".join(str(r["run_id"]) for r in rs)}
         if ok:
             first = min(ts(j["created_at"]) for j in jobs)
@@ -158,7 +180,11 @@ def main():
             if p:
                 cs = [job_cost(p, prices, wl, j, extra, copies) for j in jobs]
                 if all(c[0] is not None for c in cs):
-                    row["cost_usd"] = sum(c[0] for c in cs)
+                    variable = sum(c[0] for c in cs)
+                    fx = fixed_month.get(prov, 0.0)
+                    row["cost_usd"] = variable + fx / ref_volume * len(jobs)
+                    for v in volumes[1:]:
+                        row[f"cost_usd_{v}"] = variable + fx / v * len(jobs)
                     row["billed_s"] = sum(c[1] for c in cs)
         run_rows.append(row)
 
@@ -199,7 +225,9 @@ def main():
                 "p50_wall_s": pct(walls, 0.5), "p95_wall_s": pct(walls, 0.95),
                 "mean_wall_s": sum(walls) / len(walls) if walls else None, "max_wall_s": max(walls) if walls else None,
                 "p50_queue_s": pct(qs, 0.5), "p95_queue_s": pct([r["queue_max_s"] for r in okr], 0.95),
-                "mean_cost_usd": sum(costs) / len(costs) if costs else None, "p50_cost_usd": pct(costs, 0.5)}
+                "mean_cost_usd": sum(costs) / len(costs) if costs else None, "p50_cost_usd": pct(costs, 0.5),
+                **{f"mean_cost_usd_{v}": (sum(r[f"cost_usd_{v}"] for r in okr if r[f"cost_usd_{v}"] is not None)
+                                          / len(costs)) if costs else None for v in volumes[1:]}}
 
     summary = []
     for (wl, prov), rs in sorted(cells.items()):
@@ -240,13 +268,13 @@ def main():
         if r["ok"]:
             by_block[(r["session"], r["round"])].append(r)
 
-    def indices(block_list, wls):
+    def indices(block_list, wls, cost_col="cost_usd"):
         agg = defaultdict(lambda: {"w": [], "c": []})
         for b in block_list:
             for r in by_block[b]:
                 agg[(r["workload"], r["provider"])]["w"].append(r["wall_s"])
-                if r["cost_usd"] is not None:
-                    agg[(r["workload"], r["provider"])]["c"].append(r["cost_usd"])
+                if r[cost_col] is not None:
+                    agg[(r["workload"], r["provider"])]["c"].append(r[cost_col])
         out = {}
         for p in idx_provs:
             tr, cr = [], []
@@ -295,6 +323,12 @@ def main():
             v = indices(blocks, [w for w in workloads if w != wl])
             loo[wl] = {p: {"time": v[p][0], "cost": v[p][1]} for p in idx_provs} if v else None
         result["leave_one_out"] = loo
+        result["fixed_monthly_usd"] = fixed_month
+        result["reference_jobs_per_month"] = ref_volume
+        result["cost_sensitivity"] = {}
+        for v in volumes[1:]:
+            pv = indices(blocks, workloads, f"cost_usd_{v}")
+            result["cost_sensitivity"][str(v)] = {p: pv[p][1] for p in idx_provs} if pv else None
         result["per_session"] = {s: indices([b for b in blocks if b[0] == s], workloads)
                                  for s in sorted({b[0] for b in blocks})}
     with open(os.path.join(a.out, "results.json"), "w") as f:

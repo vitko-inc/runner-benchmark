@@ -1,10 +1,11 @@
 {
  "id": "gce-pool",
- "name": "Self-hosted: GCE n4d-standard-2 always-on pool (on-demand, U = 50%)",
+ "name": "Self-hosted: GCE n4d-standard-2 always-on pool (on-demand, U = 50%, all-in)",
  "size": "2 vCPU / 8 GiB",
  "track": "A",
  "price_ref": "gcp-n4d-standard-2-pool",
  "runs_on": "self-hosted label of the deployment",
  "setup": "selfhosted/gcp",
- "swap": "zram, zstd, min(RAM, 8 GiB), priority 100, vm.swappiness=100, vm.page-cluster=0 (the same as the Vitko Runners guest); every workload, codex-lint included, runs at 2 vCPU / 8 GiB"
+ "swap": "zram, zstd, min(RAM, 8 GiB), priority 100, vm.swappiness=100, vm.page-cluster=0 (the same as the Vitko Runners guest); every workload, codex-lint included, runs at 2 vCPU / 8 GiB",
+ "note": "All-in (METHOD.md, Cost): run time / U x (VM + boot disk + public IPv4), plus internet egress measured per job (cost_gce.py, Cloud Monitoring sent bytes). No controller host."
 }
