@@ -1,8 +1,10 @@
-# Pre-registration: result set v1 (draft)
+# Pre-registration: result set v1
 
 This file fixes the plan, the analysis and the exclusion rules for result set v1 **before** its
-first measured session. When it is final, the commit is tagged `prereg-v1`; anything changed
-after that tag is listed in the result set's `deviations.md`.
+first measured session. It is final: the commit tagged `prereg-v1` (2026-10-07) fixes it, including
+the plan's random seed. Anything changed after that tag is listed in the result set's
+`deviations.md`. The Vitko Runners service, the run repositories' workflows and the self-hosted
+images stay as they are at the tag until the last session ends.
 
 ## Plan
 
@@ -67,7 +69,10 @@ after that tag is listed in the result set's `deviations.md`.
   collectors and the cost rules. It is disclosed with the results and is not part of the result
   set. Changes it led to before the tag: all-in pricing for self-hosted options; RunsOn's
   `codex-lint` on its next memory size (2 vCPU / 16 GiB), applying METHOD.md's next-size rule after
-  it ran out of memory at 8 GiB; harness and analysis fixes (runner-benchmark #11, #12).
+  it ran out of memory at 8 GiB; harness and analysis fixes (runner-benchmark #11, #12). One
+  Vitko Runners service change also landed before the tag: when a host is full, a pool with queued
+  jobs now takes the capacity that another pool's idle standby runners were holding. In the pilot,
+  the second Vitko arm's burst had waited for the first arm's idle standbys to expire.
 - **Reference:** GitHub-hosted 2 vCPU.
 - **Indices** over all 12 workloads; a provider without a usable cell for every workload gets
   per-workload results only, and the reason is listed.
