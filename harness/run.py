@@ -31,6 +31,7 @@ provider=minutes raises the month's total to what the provider's own usage page 
 that is higher (for example minutes used outside the harness).
 """
 import argparse
+import collections
 import datetime as dt
 import json
 import math
@@ -45,6 +46,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 import gh  # noqa: E402
 
 LOCK = threading.Lock()
+DISPATCH_PATIENCE_S = 900
 POLL_S = 30  # a full session stays well inside a GitHub App's 5,000 requests/hour
 
 
@@ -173,17 +175,28 @@ def dispatch(target, workload, tag, split, dry):
     at_ms = round(time.time() * 1000)
     body = {"ref": target.get("ref", "main"), "inputs": inputs, "return_run_details": True}
     path = f"/repos/{repo}/actions/workflows/{workload['workflow']}/dispatches"
-    try:
-        # One attempt only: a retried POST could dispatch twice. On a connection error, look the
-        # run up by its tag, and dispatch again only if GitHub never created it.
-        resp = gh.request("POST", path, body=body, retries=1)
-    except Exception as e:
-        print(f"[{now()}] dispatch error for {tag}: {e}; checking whether the run exists", file=sys.stderr)
-        rid = find_run(repo, workload["workflow"], tag, since, timeout=60)
-        if rid:
-            return {"run_id": rid, "dispatched_at": at, "dispatched_at_ms": at_ms, "since": since}
-        at, at_ms = now(), round(time.time() * 1000)  # the dispatch that counts is this one
-        resp = gh.request("POST", path, body=body, retries=1)
+    # A POST is never retried blindly (it could dispatch twice): after a failure, look the run up
+    # by its tag and dispatch again only if GitHub never created it. API outages last minutes, so
+    # this repeats with back-off for up to about DISPATCH_PATIENCE_S before giving up on the cell.
+    deadline = time.time() + DISPATCH_PATIENCE_S
+    wait = 15
+    while True:
+        try:
+            resp = gh.request("POST", path, body=body, retries=1)
+            break
+        except Exception as e:
+            print(f"[{now()}] dispatch error for {tag}: {e}; checking whether the run exists", file=sys.stderr)
+            try:
+                rid = find_run(repo, workload["workflow"], tag, since, timeout=30)
+            except Exception:
+                rid = None
+            if rid:
+                return {"run_id": rid, "dispatched_at": at, "dispatched_at_ms": at_ms, "since": since}
+            if time.time() + wait > deadline:
+                raise
+            time.sleep(wait)
+            wait = min(wait * 2, 120)
+            at, at_ms = now(), round(time.time() * 1000)  # the dispatch that counts is the next one
     run_id = (resp or {}).get("workflow_run_id")
     return {"run_id": run_id, "dispatched_at": at, "dispatched_at_ms": at_ms, "since": since}
 
@@ -272,7 +285,16 @@ def run_group(plan, targets, workload, providers, meta, out, dry, copies=1):
 
     def send(p, c, tag, est):
         t = targets[p]
-        d = dispatch(t, workload, tag, bool(t.get("split")), dry)
+        try:
+            d = dispatch(t, workload, tag, bool(t.get("split")), dry)
+        except Exception as e:  # this cell only; the other providers' cells go ahead
+            print(f"[{now()}] DISPATCH FAILED {tag}: {e!r}", file=sys.stderr, flush=True)
+            record(out, dict(meta, workload=workload["id"], provider=p, copy=c, tag=tag,
+                             event="dispatch_failed", error=repr(e)))
+            if est is not None:
+                with LOCK:
+                    BUDGETS[p].reserved -= est
+            return None
         if not dry and d["run_id"] is None:
             d["run_id"] = find_run(t["repo"], workload["workflow"], tag, d["since"])
         rec = dict(meta, workload=workload["id"], provider=p, copy=c, tag=tag, repo=t["repo"],
@@ -293,7 +315,9 @@ def run_group(plan, targets, workload, providers, meta, out, dry, copies=1):
             tag = tag_of(p, 0)
             ok, est = reserve(p, 0, tag)
             if ok:
-                sent.append(send(p, 0, tag, est))
+                rec = send(p, 0, tag, est)
+                if rec:
+                    sent.append(rec)
     else:
         order = list(providers)
         random.shuffle(order)
@@ -305,7 +329,10 @@ def run_group(plan, targets, workload, providers, meta, out, dry, copies=1):
                 if ok:
                     batch.append((p, c, tag, est))
             with ThreadPoolExecutor(max_workers=max(1, len(batch))) as ex:
-                recs = list(ex.map(lambda b: send(*b), batch))
+                recs = [r for r in ex.map(lambda b: send(*b), batch) if r]
+            if len(recs) < len(batch):
+                record(out, dict(meta, workload=workload["id"], provider=p, event="burst_incomplete",
+                                 dispatched=len(recs), copies=copies))
             sent += recs
             ms = [r["dispatched_at_ms"] for r in recs if r.get("dispatched_at_ms")]
             if ms:
@@ -342,6 +369,66 @@ def lane_worker(plan, targets, wls, providers_for, meta, out, dry):
             record(out, dict(meta, workload=wid, event="error", error=repr(e)))
 
 
+def missing_cells(plan, providers_for, out):
+    """Measured (round, workload, provider) cells with no successfully dispatched run, including
+    bursts with fewer runs than copies (their runs are discarded and the burst is run again)."""
+    recs = [json.loads(l) for l in open(out) if l.strip()]
+    rounds = sorted({r["round"] for r in recs if r.get("event") == "round_end" and r.get("phase") == "measure"})
+    replaced = {(r["round"], w, p) for r in recs if r.get("event") == "superseded_partial"
+                for w, p in r.get("cells", [])}
+    got = collections.Counter((r["round"], r["workload"], r["provider"]) for r in recs
+                              if not r.get("event") and r.get("run_id") and r.get("phase") == "measure"
+                              and ((r["round"], r["workload"], r["provider"]) not in replaced
+                                   or r.get("replacement")))
+    miss = []
+    for rnd in rounds:
+        for wid, w in plan["workloads"].items():
+            need = w.get("copies", 1)
+            for p in providers_for(wid):
+                if got[(rnd, wid, p)] < need:
+                    miss.append((rnd, wid, p, got[(rnd, wid, p)]))
+    return miss
+
+
+def replace_rounds(plan, targets, providers_for, a):
+    miss = missing_cells(plan, providers_for, a.out)
+    print(f"[{now()}] replacement: {len(miss)} measured cells to re-dispatch", flush=True)
+    by_round = collections.defaultdict(list)
+    for rnd, wid, p, have in miss:
+        by_round[rnd].append((wid, p, have))
+    for rnd in sorted(by_round):
+        meta = {"set": plan["set"], "session": a.session, "round": rnd, "phase": "measure", "replacement": True}
+        record(a.out, dict(meta, event="replacement_start", at=now(),
+                           cells=[[w, p] for w, p, _ in by_round[rnd]]))
+        cells = by_round[rnd]
+        if any(have for _, _, have in cells):
+            # a burst cut short: its partial runs are set aside, the whole burst runs again
+            record(a.out, dict(meta, event="superseded_partial",
+                               cells=[[w, p] for w, p, have in cells if have]))
+        singles = [(w, p) for w, p, _ in cells if plan["workloads"][w].get("copies", 1) == 1]
+        bursts = [(w, p) for w, p, _ in cells if plan["workloads"][w].get("copies", 1) > 1]
+        lanes = []
+        for lane in plan["lanes"]:
+            wls = [w for w in lane if any(w == x for x, _ in singles)]
+            if wls:
+                lanes.append(wls)
+
+        def provs(wid, rnd_cells=singles):
+            return [p for w, p in rnd_cells if w == wid]
+
+        threads = []
+        for wls in lanes:
+            th = threading.Thread(target=lane_worker, args=(plan, targets, wls, provs, meta, a.out, a.dry_run))
+            th.start()
+            threads.append(th)
+        for th in threads:
+            th.join()
+        for wid, p in bursts:
+            w = plan["workloads"][wid]
+            run_group(plan, targets, w, [p], meta, a.out, a.dry_run, copies=w["copies"])
+        record(a.out, dict(meta, event="replacement_end", at=now()))
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--plan", required=True)
@@ -350,6 +437,10 @@ def main():
     ap.add_argument("--session", default="s1")
     ap.add_argument("--start-round", type=int, default=1)
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--replace", action="store_true",
+                    help="replacement round (PREREGISTRATION, exclusions): dispatch every measured cell "
+                         "of --out that never ran because of a harness-side failure, under its own round "
+                         "number, then exit")
     ap.add_argument("--usage-observed", action="append", default=[], metavar="PROVIDER=MINUTES",
                     help="minutes this month shown on the provider's own usage page")
     a = ap.parse_args()
@@ -388,6 +479,9 @@ def main():
                 and ("only" not in targets[p] or wid in targets[p]["only"])]
 
     total = plan["warmup_rounds"] + plan["measured_rounds"]
+    if a.replace:
+        replace_rounds(plan, targets, providers_for, a)
+        return
     for rnd in range(a.start_round, total + 1):
         phase = "warmup" if rnd <= plan["warmup_rounds"] else "measure"
         meta = {"set": plan["set"], "session": a.session, "round": rnd, "phase": phase}

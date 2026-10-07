@@ -160,6 +160,14 @@ def main():
         else:
             units[key + (r["copy"],)].append(r)
 
+    # A burst that a harness-side failure cut short is run again in a replacement round; only the
+    # replacement's runs count, and a burst with fewer runs than its copies is never used.
+    burst_copies = max((len(v) for k, v in units.items() if v and v[0].get("kind") == "burst"), default=0)
+    for key in [k for k, v in units.items() if v and v[0].get("kind") == "burst"]:
+        rs = units[key]
+        if any(r.get("replacement") for r in rs):
+            units[key] = [r for r in rs if r.get("replacement")]
+
     run_rows = []
     for key, rs in sorted(units.items(), key=lambda kv: str(kv[0])):
         wl, prov = key[0], key[1]
@@ -167,6 +175,8 @@ def main():
         jobs = [j for r in rs for j in r["jobs"]]
         ok = all(r["run"]["conclusion"] == "success" for r in rs) and jobs and all(
             j.get("started_at") and j.get("completed_at") for j in jobs)
+        if rs and rs[0].get("kind") == "burst" and len(rs) < burst_copies:
+            ok = False  # incomplete burst (harness-side failure); listed in losses
         row = {"workload": wl, "provider": prov, "session": key[2], "round": key[3], "runs": len(rs),
                "jobs": len(jobs), "ok": bool(ok), "wall_s": None, "queue_max_s": None, "queue_p50_s": None,
                "cost_usd": None, "billed_s": None,
