@@ -1,5 +1,5 @@
 """Minimal GitHub REST client (stdlib only). Reads the token from GITHUB_TOKEN, or runs
-GITHUB_TOKEN_CMD to get one (refreshed every 20 minutes); never logs it."""
+GITHUB_TOKEN_CMD to get one (refreshed every 10 minutes, and at once after an HTTP 401); never logs it."""
 import http.client
 import json
 import os
@@ -22,7 +22,7 @@ def _token():
     cmd = os.environ.get("GITHUB_TOKEN_CMD")
     if cmd:
         with _LOCK:
-            if not _CACHE["token"] or time.time() - _CACHE["at"] > 1200:
+            if not _CACHE["token"] or time.time() - _CACHE["at"] > 600:
                 out = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=60)
                 tok = out.stdout.strip()
                 if out.returncode != 0 or not tok:
@@ -52,6 +52,13 @@ def request(method, path, body=None, accept="application/vnd.github+json", raw=F
                     return payload
                 return json.loads(payload) if payload else None
         except urllib.error.HTTPError as e:
+            if e.code == 401 and os.environ.get("GITHUB_TOKEN_CMD"):
+                # A short-lived token expired before its scheduled refresh: the next request
+                # (this retry, or the caller's) fetches a new one.
+                with _LOCK:
+                    _CACHE["token"] = None
+                if attempt < retries - 1:
+                    continue
             if e.code in (403, 429) and e.headers.get("X-RateLimit-Remaining") == "0":
                 reset = int(e.headers.get("X-RateLimit-Reset", time.time() + 60))
                 time.sleep(max(5, reset - time.time() + 2))

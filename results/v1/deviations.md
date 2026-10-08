@@ -23,3 +23,11 @@ do that, without changing what is measured:
   counts.
 
 Applied from session 1's replacement round onward (sessions 2 and 3 run with it from the start).
+
+## 2026-10-08: harness refreshes an expired API token at once (harness)
+
+In session 1 the harness's short-lived GitHub App token sometimes expired a few minutes before its
+scheduled refresh; status polls then failed with HTTP 401 for about 5–7 minutes roughly every
+100 minutes (no dispatch failed). Polls are retried, so no run was lost; rounds only took a few
+minutes longer to notice finished runs. From session 2 the token is refreshed every 10 minutes and
+immediately after any 401. Nothing that is measured changes: times come from GitHub's job records.
