@@ -31,3 +31,14 @@ scheduled refresh; status polls then failed with HTTP 401 for about 5–7 minute
 100 minutes (no dispatch failed). Polls are retried, so no run was lost; rounds only took a few
 minutes longer to notice finished runs. From session 2 the token is refreshed every 10 minutes and
 immediately after any 401. Nothing that is measured changes: times come from GitHub's job records.
+
+## 2026-10-08: a Vitko Runners control-plane rollout between sessions 1 and 2 (rolled back)
+
+Between session 1 (ended 2026-10-08 04:43Z) and session 2 (starts 2026-10-09 00:00Z), a Vitko
+Runners production deploy ran outside the benchmark's change freeze. A new control-plane and broker
+image served a 10% slice from 09:55Z and all traffic from 10:05Z, and was rolled back automatically
+at 10:25Z (a latency check failed). Earlier the same morning (05:44–06:48Z) three attempts of the same
+rollout rolled back while still at a 10% slice. No benchmark job ran during any of these windows,
+the benchmark host was not changed, and the revisions serving every Vitko Runners job in sessions 2
+and 3 are the same as in session 1 (checked 2026-10-08 10:38Z). Listed for completeness; no
+measured run is affected.
