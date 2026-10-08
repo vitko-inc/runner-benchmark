@@ -42,3 +42,14 @@ rollout rolled back while still at a 10% slice. No benchmark job ran during any 
 the benchmark host was not changed, and the revisions serving every Vitko Runners job in sessions 2
 and 3 are the same as in session 1 (checked 2026-10-08 10:38Z). Listed for completeness; no
 measured run is affected.
+
+## 2026-10-08: Vitko Runners control-plane update between sessions 1 and 2
+
+Approved before it ran, as one attempt inside the gap between sessions. The Vitko Runners
+control plane and broker moved to a newer image (observability changes only, no change to how jobs
+are admitted or run on the benchmark host): a 10% slice from 10:47Z, all traffic from 11:00Z,
+settled 11:30Z. The benchmark host's software, image and configuration did not change. Sessions 2
+and 3 therefore run on a newer control-plane image than session 1; per-session results are
+published, so any effect would show there. One smoke job per Vitko arm afterwards (11:33Z) ran
+normally, including a warm start from the saved setup; those runs were deleted (they are not part of
+the result set).
