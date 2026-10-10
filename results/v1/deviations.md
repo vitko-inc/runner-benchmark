@@ -53,3 +53,35 @@ and 3 therefore run on a newer control-plane image than session 1; per-session r
 published, so any effect would show there. One smoke job per Vitko arm afterwards (11:33Z) ran
 normally, including a warm start from the saved setup; those runs were deleted (they are not part of
 the result set).
+
+## 2026-10-09: GitHub runner-registration stalls during session 2; Vitko arms slowed (counted, not replaced)
+
+Session 2 started at 00:00Z as planned, on the same harness commit as the earlier deviations entries.
+GitHub's runner-listing API stalled twice with no incident published on its status page: about
+23:25–23:31Z on 10-08 (before the session) and from 05:47Z to about 05:54Z on 10-09. During the second
+stall, runner registrations on the Vitko Runners benchmark host took 53–58 s instead of about 3 s. The
+host's client gives up after 30 s and retried under the same runner name; some retries were refused
+(a per-host registration cap, 429) or collided with the earlier registration (409 name already
+exists, 11 cases on 7 runners). The plain Vitko arm's warm pool then lost its standby runners and
+rebuilt its parent image in about 2 minutes (05:57:50–05:59:48Z), an ordinary rebuild with no change
+on our side (no push to the run repository; the cause of the rebuild is unconfirmed). The cap also
+refused registrations throughout the session whenever bursts of 20 jobs arrived, as it does for any
+user who exceeds it.
+
+Effect on measured runs: no Vitko run was lost. Burst round 5 of the plain Vitko arm (dispatched
+05:52Z) waited longer for a runner (median 128 s, maximum 528 s, against a typical 15–20 s), and burst
+round 11 also had a long wait (median 104 s, maximum 431 s). The cause of burst round 11's wait
+has not been established. Both are counted as measured, not voided and not replaced: the stall was
+GitHub's, but the slowdown came from how the Vitko host handled it, and the pre-registration voids
+only harness-side failures. A fix for the retry behaviour is planned after session 3 and is
+not part of the measured configuration. The replacement round for session 2 found no cell without a
+dispatched run (0 cells).
+
+## 2026-10-10: session 3 starts late
+
+Session 3 was planned for Saturday 2026-10-10 13:00Z. The benchmark operator's automation stopped
+between sessions, so the session's preparation did not run on time; nothing about the benchmark
+setup changed in the meantime. It starts at about 19:30Z on the same day, still within the
+pre-registration's weekend session and inside seven days of session 2. Pre-checks were re-run
+immediately beforehand: no run-repository changes, no non-benchmark runs, same Vitko Runners
+revisions, same benchmark host configuration.
