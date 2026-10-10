@@ -85,3 +85,23 @@ setup changed in the meantime. It starts at about 19:30Z on the same day, still 
 pre-registration's weekend session and inside seven days of session 2. Pre-checks were re-run
 immediately beforehand: no run-repository changes, no non-benchmark runs, same Vitko Runners
 revisions, same benchmark host configuration.
+
+## 2026-10-10: the benchmark host's build predates later cleanup of restored saved setups (affects `vitko-opt`)
+
+The Vitko Runners benchmark host runs the software build of 2026-10-05, frozen for all three
+sessions. Production builds from 2026-10-06 onward do more cleanup when a saved setup is stored and
+restored: package sources and keys, container state, created users, service units and certificate
+stores no longer carry over from one job to the next. On the benchmark host's build those paths still
+carry over. The saved-setup (`vitko-opt`) results were therefore measured without that cleanup, so
+the gain from saved setups may be somewhat larger than current production behaviour would show.
+Tool caches are not reset by either build.
+
+From the run logs of sessions 1 and 2 (step names and durations only, no host access), the
+saved-setup gain comes mostly from split tests (for example about 130–150 s of the 200–270 s
+difference on `cli`, `ts` and `vite`), not from skipped setup. Setup steps that ran faster on
+`vitko-opt` saved roughly 3–15 s per run. Only three workloads run steps that touch the affected
+paths: `codex-lint` (system package install, about 3 s), `container` (container builder setup, about
+2 s) and `vite` (browser install with system packages, about 7 s). The remaining setup savings are
+language toolchains, package caches and dependency installs. The pre-registered results stand as
+measured. A short supplementary measurement on a build with the cleanup is planned for after session
+3 and will be reported separately, clearly marked as not part of the pre-registered results.
