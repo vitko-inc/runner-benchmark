@@ -64,9 +64,10 @@ host's client gives up after 30 s and retried under the same runner name; some r
 (a per-host registration cap, 429) or collided with the earlier registration (409 name already
 exists, 11 cases on 7 runners). The plain Vitko arm's warm pool then lost its standby runners and
 rebuilt its parent image in about 2 minutes (05:57:50–05:59:48Z), an ordinary rebuild with no change
-on our side (no push to the run repository; the cause of the rebuild is unconfirmed). The cap also
-refused registrations throughout the session whenever bursts of 20 jobs arrived, as it does for any
-user who exceeds it.
+on our side (no push to the run repository; the cause of the rebuild is unconfirmed). The benchmark tenant's per-host registration cap (30) was lower than the combined maximum of the two
+Vitko pools (24 each, 48 in total), so the cap also refused registrations whenever bursts of 20 jobs
+arrived, throughout the session (315 refusals in the 05:40–06:00Z window alone, 12,434 over the whole
+session). That configuration is Vitko Runners' own and is counted against Vitko, not corrected.
 
 Effect on measured runs: no Vitko run was lost. Burst round 5 of the plain Vitko arm (dispatched
 05:52Z) waited longer for a runner (median 128 s, maximum 528 s, against a typical 15–20 s), and burst
@@ -105,3 +106,36 @@ paths: `codex-lint` (system package install, about 3 s), `container` (container 
 language toolchains, package caches and dependency installs. The pre-registered results stand as
 measured. A short supplementary measurement on a build with the cleanup is planned for after session
 3 and will be reported separately, clearly marked as not part of the pre-registered results.
+
+## 2026-10-11: session 3 events on the Vitko host and the self-hosted EC2 arm
+
+**Late start.** See the entry of 2026-10-10. Session 3 ran 2026-10-10 19:30:02Z to 2026-10-11 09:01:57Z.
+
+**Registration cap on the Vitko host (counted against Vitko, nothing replaced).** The per-host
+registration cap described under session 2 was still 30 against pool maxima of 24 + 24. In session 3
+it caused two parent-image rotations: at about 20:28–20:37Z (`vitko-opt`) and 02:20–02:30Z (`vitko`).
+Each time, refused registrations (HTTP 429, "host maxRunners reached"; 30 of 30 at 20:28:21Z for the
+first) were counted by the host as failed standby launches; after several in a row the host rebuilt
+the pool's parent image (about 2–3 minutes) and, on the second occasion, its pool executor was
+silent for about 4.5 minutes. No run was lost to either. For runs dispatched during them: `vitko-opt`
+burst round 1 had a slowest wait of 96 s and its four single-job runs of round 2 waited 65–70 s each
+(a cold start); `vitko` burst round 6 had a median wait of 14 s (maximum 126 s) and its four
+single-job runs of round 7 waited 59–63 s each. All of these are counted as measured.
+
+**The `ec2-eph` launcher's GitHub token expired mid-session (harness side; replaced).** The program
+that starts one EC2 instance per queued job holds a GitHub App token for up to 20 minutes after it
+fetches it, and the token tool hands out a cached token until fewer than 10 minutes remain, so the
+launcher could hold a token that expired before it was refreshed. At 00:34:52Z the token expired,
+the launcher misread the 401 answer as a low rate limit and slept for an hour, and the round 5
+`ec2-eph` burst (dispatched 00:37:34Z) waited about 45 minutes with no runner. The launcher was
+restarted at 01:19Z and now fetches a token with at least 1,300 s of life left. This is a failure of
+the benchmark's own harness, not of the provider; under the pre-registration's exclusion rule the 20
+runs of that burst were voided and the burst was run again in the replacement round (09:03Z), whose
+runs are the ones analysed. The other `ec2-eph` cells of the session were unaffected: every
+single-job run in that round had been launched before the token expired. The same restart
+mechanism fired once more in error at 02:30Z (a watchdog matched "401" inside a job number) and
+restarted the launcher within seconds; no queued job was waiting at the time, so no run was
+affected.
+
+**Failures in session 3.** Four measured runs failed, all `vite` (gh2 round 9, `vitko-opt` round 11,
+gh4 and blacksmith2 round 12); the plain `vitko` arm had none. They are counted.
