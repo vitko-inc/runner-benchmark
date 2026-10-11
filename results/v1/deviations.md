@@ -139,3 +139,34 @@ affected.
 
 **Failures in session 3.** Four measured runs failed, all `vite` (gh2 round 9, `vitko-opt` round 11,
 gh4 and blacksmith2 round 12); the plain `vitko` arm had none. They are counted.
+
+## 2026-10-11: host software update and a new commit in the saved-setup repository, for a supplementary measurement
+
+After the three sessions, and before the supplementary measurement described below, two things changed
+that the pre-registered result set does not include:
+
+- **The Vitko Runners benchmark host's software was updated** from the build frozen on 2026-10-05 to a
+  build that adds the later cleanup of restored saved setups (package sources and keys, container
+  state, created users, service units, certificate stores) and fixes to how the host retries
+  registrations and handles its registration cap. The host's configuration and image did not change.
+- **One comment-only commit was added to the default branch of `rb-runs-vitko-opt`** (`73b5567`, a
+  README comment), fast-forwarded from `adcfd28`, which stays reachable. Saved setups are captured only
+  from runs of the default branch for the current commit, so a new commit was the only way to replace
+  the setups saved before the update with ones made on the new build. All eleven non-burst workloads
+  were captured again from that commit. The workflow files are unchanged.
+
+A short probe confirmed the replacement on the one path it can observe. Before the update, and in
+the first three probe jobs after it, a restored saved setup carried a container (a Docker builder)
+saved before the cleanup existed. The next two probe jobs, after the host had adopted the new
+captures, restored setups saved from the new commit and carried only the job's own new container.
+The user, certificate, package-source and hosts paths could not be observed (they are absent in both
+cases). Adoption took about 25 minutes from the commit to the first job on a new setup (the host
+accepts captures one at a time, then rebuilds its warm image after a waiting period, and standby
+runners from the old image drain; by design it can take up to about an hour). The probe runs are
+kept (run ids 38129413205, 38129460963, 38129527292 on the old build; 38139014198, 38139058626,
+38139713498, 38139870088, 38139933114 on the new build; some of the first three are marked as
+discarded because the first probe design could not save a setup from a branch).
+
+The pre-registered results stand as measured on the earlier build. The supplementary measurement on the
+updated host (the plain and saved-setup configurations against GitHub-hosted 2 vCPU, two warm-up and
+five measured rounds) is reported separately.
