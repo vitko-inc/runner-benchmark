@@ -170,3 +170,15 @@ discarded because the first probe design could not save a setup from a branch).
 The pre-registered results stand as measured on the earlier build. The supplementary measurement on the
 updated host (the plain and saved-setup configurations against GitHub-hosted 2 vCPU, two warm-up and
 five measured rounds) is reported separately.
+
+## 2026-10-12: a manually dispatched workflow was added to the plain Vitko Runners run repository
+
+After the three sessions and the supplementary measurements, one file was added to the default branch of
+`rb-runs-vitko` (commit `2feb754`, a fast-forward from `6241486`, 2026-10-12 03:47Z): the workflow
+`pause-probe`, which runs only when dispatched by hand and is used for a separate test of the
+Vitko Runners host (jobs that print clock readings and make an HTTPS request while the host pauses their
+machines for a few seconds to minutes). No benchmark workflow, setting or branch changed, and the `bench`
+branch that all benchmark runs use is still at `6241486`. The plain configuration has no saved setups
+captured from the default branch, so moving it does not affect any warm-start data. Runs of the
+workflow `pause-probe` are not benchmark runs, some are expected to fail with a lost runner, and they are
+excluded from every analysis.
