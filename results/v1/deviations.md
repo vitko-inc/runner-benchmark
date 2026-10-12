@@ -182,3 +182,13 @@ branch that all benchmark runs use is still at `6241486`. The plain configuratio
 captured from the default branch, so moving it does not affect any warm-start data. Runs of the
 workflow `pause-probe` are not benchmark runs, some are expected to fail with a lost runner, and they are
 excluded from every analysis.
+
+## 2026-10-12: the manually dispatched workflow in the plain Vitko Runners run repository was extended
+
+The `pause-probe` workflow added to `rb-runs-vitko` earlier today (entry above) was replaced by a
+longer version of the same manually dispatched workflow: it adds a step that prints the clock source and a
+step that prints the restart count and watchdog setting of six system services and counts watchdog
+timeouts in the system log, and its kernel-log search is wider. Name, trigger, inputs and job names are
+unchanged, no benchmark workflow or branch changed (the `bench` branch is still at `6241486`), and its
+runs are excluded from every analysis.
+The replacement is commit `95d49f5` (a fast-forward from `2feb754`, 2026-10-12 20:25Z).
