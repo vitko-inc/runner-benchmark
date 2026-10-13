@@ -1,1 +1,4 @@
 # Justified exceptions: "<path glob> <sha256>  # reason". Keep this short.
+results/v1/out/runs.csv 14af13ae3e34736b4436d3e1047fe8cad378d86a8324cf7816d6bc473a0885b8  # a per-job cost value in USD that equals a deny-listed number; not a reference to anything internal
+results/v1/raw/selfhosted-cost.csv 14af13ae3e34736b4436d3e1047fe8cad378d86a8324cf7816d6bc473a0885b8  # same: a per-job cost value
+results/v1/README.md ec0002c89581d55f1e0b52e2aa9069d3228eeabe157f756f6d39cb146157c9c8  # the superlative describes the saved-setup configuration, whose time index (95% CI) does not overlap that of any other configuration in this result set

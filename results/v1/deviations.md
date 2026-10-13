@@ -192,3 +192,12 @@ timeouts in the system log, and its kernel-log search is wider. Name, trigger, i
 unchanged, no benchmark workflow or branch changed (the `bench` branch is still at `6241486`), and its
 runs are excluded from every analysis.
 The replacement is commit `95d49f5` (a fast-forward from `2feb754`, 2026-10-12 20:25Z).
+
+## 2026-10-11: the split-copy input is published keyed by job id
+
+The timing of each split-test copy (the billing input for the saved-setup configuration) was read from
+the host's records under the name of the runner that started it. To publish it without runner names,
+`raw/split-copies.jsonl` is keyed by the id of the job that started each copy, and
+`analysis/aggregate.py` reads either form (a `job_id` field, else the earlier `parent_runner`).
+Re-running the analysis from the published file gives output byte-identical to the original
+(`out/results.json` and `out/runs.csv` compared with `cmp`). The analysis tag `prereg-v1` is unchanged.

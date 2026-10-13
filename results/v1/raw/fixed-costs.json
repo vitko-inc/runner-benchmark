@@ -1,0 +1,12 @@
+{
+ "runson2": {
+  "usd_per_month": 40.8273,
+  "items": {
+   "fargate_worker": 7.2088,
+   "fargate_worker_ipv4": 3.65,
+   "secrets": 0.8,
+   "logs_storage": 0.0025,
+   "licence": 29.1667
+  }
+ }
+}

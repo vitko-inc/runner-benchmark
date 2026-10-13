@@ -1,0 +1,3448 @@
+{
+ "blocks": 30,
+ "cells": [
+  {
+   "max_wall_s": 955.0,
+   "mean_cost_usd": 0.1656000000000001,
+   "mean_cost_usd_1000": 0.1656000000000001,
+   "mean_cost_usd_10000": 0.1656000000000001,
+   "mean_wall_s": 135.8,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.1600000000000001,
+   "p50_queue_s": 9.0,
+   "p50_wall_s": 97.0,
+   "p95_queue_s": 16.0,
+   "p95_wall_s": 190.0,
+   "provider": "blacksmith2",
+   "success_rate": 1.0,
+   "workload": "burst"
+  },
+  {
+   "max_wall_s": 216.0,
+   "mean_cost_usd": 0.11121256666666667,
+   "mean_cost_usd_1000": 0.17191936666666668,
+   "mean_cost_usd_10000": 0.11673136666666671,
+   "mean_wall_s": 164.4,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.1113837,
+   "p50_queue_s": 65.25,
+   "p50_wall_s": 160.5,
+   "p95_queue_s": 92.64999999999999,
+   "p95_wall_s": 181.84999999999997,
+   "provider": "ec2-eph",
+   "success_rate": 1.0,
+   "workload": "burst"
+  },
+  {
+   "max_wall_s": 183.0,
+   "mean_cost_usd": 0.1350805333333333,
+   "mean_cost_usd_1000": 0.1350805333333333,
+   "mean_cost_usd_10000": 0.1350805333333333,
+   "mean_wall_s": 149.33333333333334,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.13467099999999999,
+   "p50_queue_s": 2.0,
+   "p50_wall_s": 153.0,
+   "p95_queue_s": 2.549999999999997,
+   "p95_wall_s": 164.84999999999997,
+   "provider": "gce-pool",
+   "success_rate": 1.0,
+   "workload": "burst"
+  },
+  {
+   "max_wall_s": 288.0,
+   "mean_cost_usd": 0.49980000000000013,
+   "mean_cost_usd_1000": 0.49980000000000013,
+   "mean_cost_usd_10000": 0.49980000000000013,
+   "mean_wall_s": 261.73333333333335,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.5040000000000002,
+   "p50_queue_s": 3.0,
+   "p50_wall_s": 259.0,
+   "p95_queue_s": 31.34999999999995,
+   "p95_wall_s": 282.55,
+   "provider": "gh2",
+   "success_rate": 1.0,
+   "workload": "burst"
+  },
+  {
+   "max_wall_s": 201.0,
+   "mean_cost_usd": 0.6356000000000003,
+   "mean_cost_usd_1000": 0.6356000000000003,
+   "mean_cost_usd_10000": 0.6356000000000003,
+   "mean_wall_s": 158.16666666666666,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.6480000000000004,
+   "p50_queue_s": 3.0,
+   "p50_wall_s": 153.5,
+   "p95_queue_s": 38.55,
+   "p95_wall_s": 178.55,
+   "provider": "gh4",
+   "success_rate": 1.0,
+   "workload": "burst"
+  },
+  {
+   "max_wall_s": 442.0,
+   "mean_cost_usd": 0.05105799333333332,
+   "mean_cost_usd_1000": 0.8594385333333334,
+   "mean_cost_usd_10000": 0.12454713333333335,
+   "mean_wall_s": 197.33333333333334,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.05172846,
+   "p50_queue_s": 22.5,
+   "p50_wall_s": 177.0,
+   "p95_queue_s": 193.64999999999947,
+   "p95_wall_s": 339.9499999999995,
+   "provider": "runson2",
+   "success_rate": 1.0,
+   "workload": "burst"
+  },
+  {
+   "max_wall_s": 383.0,
+   "mean_cost_usd": 0.06233333333333335,
+   "mean_cost_usd_1000": 0.06233333333333335,
+   "mean_cost_usd_10000": 0.06233333333333335,
+   "mean_wall_s": 207.63333333333333,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.06250000000000001,
+   "p50_queue_s": 18.0,
+   "p50_wall_s": 203.0,
+   "p95_queue_s": 127.49999999999974,
+   "p95_wall_s": 270.7999999999998,
+   "provider": "ubicloud2",
+   "success_rate": 1.0,
+   "workload": "burst"
+  },
+  {
+   "max_wall_s": 609.0,
+   "mean_cost_usd": 0.05564888888888889,
+   "mean_cost_usd_1000": 0.05564888888888889,
+   "mean_cost_usd_10000": 0.05564888888888889,
+   "mean_wall_s": 178.03333333333333,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.05545,
+   "p50_queue_s": 18.0,
+   "p50_wall_s": 159.5,
+   "p95_queue_s": 294.6499999999991,
+   "p95_wall_s": 371.99999999999915,
+   "provider": "vitko",
+   "success_rate": 1.0,
+   "workload": "burst"
+  },
+  {
+   "max_wall_s": 237.0,
+   "mean_cost_usd": 0.052021111111111115,
+   "mean_cost_usd_1000": 0.052021111111111115,
+   "mean_cost_usd_10000": 0.052021111111111115,
+   "mean_wall_s": 137.26666666666668,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.05228333333333335,
+   "p50_queue_s": 17.25,
+   "p50_wall_s": 131.0,
+   "p95_queue_s": 115.1,
+   "p95_wall_s": 191.1,
+   "provider": "vitko-opt",
+   "success_rate": 1.0,
+   "workload": "burst"
+  },
+  {
+   "max_wall_s": 345.0,
+   "mean_cost_usd": 0.02040000000000001,
+   "mean_cost_usd_1000": 0.02040000000000001,
+   "mean_cost_usd_10000": 0.02040000000000001,
+   "mean_wall_s": 290.23333333333335,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.02,
+   "p50_queue_s": 8.0,
+   "p50_wall_s": 286.0,
+   "p95_queue_s": 9.549999999999997,
+   "p95_wall_s": 323.04999999999995,
+   "provider": "blacksmith2",
+   "success_rate": 1.0,
+   "workload": "cli"
+  },
+  {
+   "max_wall_s": 3436.0,
+   "mean_cost_usd": 0.013919793333333336,
+   "mean_cost_usd_1000": 0.016955133333333334,
+   "mean_cost_usd_10000": 0.014195733333333332,
+   "mean_wall_s": 460.46666666666664,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.01380766,
+   "p50_queue_s": 68.0,
+   "p50_wall_s": 357.0,
+   "p95_queue_s": 104.64999999999999,
+   "p95_wall_s": 398.29999999999995,
+   "provider": "ec2-eph",
+   "success_rate": 1.0,
+   "workload": "cli"
+  },
+  {
+   "max_wall_s": 351.0,
+   "mean_cost_usd": 0.017276633333333333,
+   "mean_cost_usd_1000": 0.017276633333333333,
+   "mean_cost_usd_10000": 0.017276633333333333,
+   "mean_wall_s": 311.8666666666667,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.017121,
+   "p50_queue_s": 1.0,
+   "p50_wall_s": 310.0,
+   "p95_queue_s": 2.0,
+   "p95_wall_s": 326.0,
+   "provider": "gce-pool",
+   "success_rate": 1.0,
+   "workload": "cli"
+  },
+  {
+   "max_wall_s": 399.0,
+   "mean_cost_usd": 0.03940000000000002,
+   "mean_cost_usd_1000": 0.03940000000000002,
+   "mean_cost_usd_10000": 0.03940000000000002,
+   "mean_wall_s": 358.93333333333334,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.042,
+   "p50_queue_s": 3.0,
+   "p50_wall_s": 368.0,
+   "p95_queue_s": 3.549999999999997,
+   "p95_wall_s": 382.2,
+   "provider": "gh2",
+   "success_rate": 1.0,
+   "workload": "cli"
+  },
+  {
+   "max_wall_s": 220.0,
+   "mean_cost_usd": 0.04520000000000002,
+   "mean_cost_usd_1000": 0.04520000000000002,
+   "mean_cost_usd_10000": 0.04520000000000002,
+   "mean_wall_s": 190.1,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.048,
+   "p50_queue_s": 3.0,
+   "p50_wall_s": 191.5,
+   "p95_queue_s": 3.0,
+   "p95_wall_s": 198.0,
+   "provider": "gh4",
+   "success_rate": 1.0,
+   "workload": "cli"
+  },
+  {
+   "max_wall_s": 340.0,
+   "mean_cost_usd": 0.004067606333333334,
+   "mean_cost_usd_1000": 0.04448663333333335,
+   "mean_cost_usd_10000": 0.007742063333333332,
+   "mean_wall_s": 323.06666666666666,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.004084773,
+   "p50_queue_s": 18.0,
+   "p50_wall_s": 327.0,
+   "p95_queue_s": 21.0,
+   "p95_wall_s": 333.55,
+   "provider": "runson2",
+   "success_rate": 1.0,
+   "workload": "cli"
+  },
+  {
+   "max_wall_s": 439.0,
+   "mean_cost_usd": 0.0077916666666666716,
+   "mean_cost_usd_1000": 0.0077916666666666716,
+   "mean_cost_usd_10000": 0.0077916666666666716,
+   "mean_wall_s": 364.06666666666666,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.0075,
+   "p50_queue_s": 20.0,
+   "p50_wall_s": 359.0,
+   "p95_queue_s": 25.099999999999994,
+   "p95_wall_s": 428.69999999999993,
+   "provider": "ubicloud2",
+   "success_rate": 1.0,
+   "workload": "cli"
+  },
+  {
+   "max_wall_s": 326.0,
+   "mean_cost_usd": 0.00969888888888889,
+   "mean_cost_usd_1000": 0.00969888888888889,
+   "mean_cost_usd_10000": 0.00969888888888889,
+   "mean_wall_s": 292.3333333333333,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.009000000000000001,
+   "p50_queue_s": 1.0,
+   "p50_wall_s": 272.0,
+   "p95_queue_s": 2.0,
+   "p95_wall_s": 325.55,
+   "provider": "vitko",
+   "success_rate": 1.0,
+   "workload": "cli"
+  },
+  {
+   "max_wall_s": 145.0,
+   "mean_cost_usd": 0.011680937777777782,
+   "mean_cost_usd_1000": 0.011680937777777782,
+   "mean_cost_usd_10000": 0.011680937777777782,
+   "mean_wall_s": 139.8,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.011657500000000001,
+   "p50_queue_s": 1.0,
+   "p50_wall_s": 140.0,
+   "p95_queue_s": 2.0,
+   "p95_wall_s": 144.55,
+   "provider": "vitko-opt",
+   "success_rate": 1.0,
+   "workload": "cli"
+  },
+  {
+   "max_wall_s": 808.0,
+   "mean_cost_usd": 0.03360000000000001,
+   "mean_cost_usd_1000": 0.03360000000000001,
+   "mean_cost_usd_10000": 0.03360000000000001,
+   "mean_wall_s": 489.0,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.032,
+   "p50_queue_s": 8.0,
+   "p50_wall_s": 448.0,
+   "p95_queue_s": 10.0,
+   "p95_wall_s": 748.0999999999998,
+   "provider": "blacksmith2",
+   "success_rate": 1.0,
+   "workload": "codex-lint"
+  },
+  {
+   "max_wall_s": 646.0,
+   "mean_cost_usd": 0.048871126666666674,
+   "mean_cost_usd_1000": 0.05190646666666667,
+   "mean_cost_usd_10000": 0.04914706666666667,
+   "mean_wall_s": 526.7666666666667,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.048283160000000006,
+   "p50_queue_s": 52.0,
+   "p50_wall_s": 511.5,
+   "p95_queue_s": 93.29999999999998,
+   "p95_wall_s": 598.1,
+   "provider": "ec2-eph",
+   "success_rate": 1.0,
+   "workload": "codex-lint"
+  },
+  {
+   "max_wall_s": 675.0,
+   "mean_cost_usd": 0.06356559999999999,
+   "mean_cost_usd_1000": 0.06356559999999999,
+   "mean_cost_usd_10000": 0.06356559999999999,
+   "mean_wall_s": 564.8666666666667,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.065621,
+   "p50_queue_s": 1.0,
+   "p50_wall_s": 580.5,
+   "p95_queue_s": 2.0,
+   "p95_wall_s": 624.6999999999999,
+   "provider": "gce-pool",
+   "success_rate": 1.0,
+   "workload": "codex-lint"
+  },
+  {
+   "max_wall_s": 973.0,
+   "mean_cost_usd": 0.0872,
+   "mean_cost_usd_1000": 0.0872,
+   "mean_cost_usd_10000": 0.0872,
+   "mean_wall_s": 848.9,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.09,
+   "p50_queue_s": 3.0,
+   "p50_wall_s": 884.0,
+   "p95_queue_s": 4.0,
+   "p95_wall_s": 934.25,
+   "provider": "gh2",
+   "success_rate": 1.0,
+   "workload": "codex-lint"
+  },
+  {
+   "max_wall_s": 528.0,
+   "mean_cost_usd": 0.09889655172413798,
+   "mean_cost_usd_1000": 0.09889655172413798,
+   "mean_cost_usd_10000": 0.09889655172413798,
+   "mean_wall_s": 470.62068965517244,
+   "n": 30,
+   "ok": 29,
+   "p50_cost_usd": 0.096,
+   "p50_queue_s": 3.0,
+   "p50_wall_s": 476.0,
+   "p95_queue_s": 3.599999999999998,
+   "p95_wall_s": 511.4,
+   "provider": "gh4",
+   "success_rate": 0.9666666666666667,
+   "workload": "codex-lint"
+  },
+  {
+   "max_wall_s": 775.0,
+   "mean_cost_usd": 0.010076439666666664,
+   "mean_cost_usd_1000": 0.05049546666666667,
+   "mean_cost_usd_10000": 0.013750896666666668,
+   "mean_wall_s": 620.9666666666667,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.010253273,
+   "p50_queue_s": 18.0,
+   "p50_wall_s": 622.5,
+   "p95_queue_s": 23.099999999999994,
+   "p95_wall_s": 661.85,
+   "provider": "runson2",
+   "success_rate": 1.0,
+   "workload": "codex-lint"
+  },
+  {
+   "max_wall_s": 1182.0,
+   "mean_cost_usd": 0.014916666666666667,
+   "mean_cost_usd_1000": 0.014916666666666667,
+   "mean_cost_usd_10000": 0.014916666666666667,
+   "mean_wall_s": 701.5333333333333,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.014374999999999999,
+   "p50_queue_s": 18.5,
+   "p50_wall_s": 681.5,
+   "p95_queue_s": 26.0,
+   "p95_wall_s": 881.3,
+   "provider": "ubicloud2",
+   "success_rate": 1.0,
+   "workload": "codex-lint"
+  },
+  {
+   "max_wall_s": 499.0,
+   "mean_cost_usd": 0.013525555555555553,
+   "mean_cost_usd_1000": 0.013525555555555553,
+   "mean_cost_usd_10000": 0.013525555555555553,
+   "mean_wall_s": 408.8666666666667,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.013416666666666667,
+   "p50_queue_s": 1.5,
+   "p50_wall_s": 404.0,
+   "p95_queue_s": 2.0,
+   "p95_wall_s": 440.84999999999985,
+   "provider": "vitko",
+   "success_rate": 1.0,
+   "workload": "codex-lint"
+  },
+  {
+   "max_wall_s": 444.0,
+   "mean_cost_usd": 0.013534444444444444,
+   "mean_cost_usd_1000": 0.013534444444444444,
+   "mean_cost_usd_10000": 0.013534444444444444,
+   "mean_wall_s": 407.6,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.013466666666666667,
+   "p50_queue_s": 2.0,
+   "p50_wall_s": 405.0,
+   "p95_queue_s": 2.0,
+   "p95_wall_s": 424.79999999999995,
+   "provider": "vitko-opt",
+   "success_rate": 1.0,
+   "workload": "codex-lint"
+  },
+  {
+   "max_wall_s": 1501.0,
+   "mean_cost_usd": 0.030666666666666682,
+   "mean_cost_usd_1000": 0.030666666666666682,
+   "mean_cost_usd_10000": 0.030666666666666682,
+   "mean_wall_s": 437.6333333333333,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.028,
+   "p50_queue_s": 8.0,
+   "p50_wall_s": 386.0,
+   "p95_queue_s": 9.0,
+   "p95_wall_s": 662.9499999999994,
+   "provider": "blacksmith2",
+   "success_rate": 1.0,
+   "workload": "container"
+  },
+  {
+   "max_wall_s": 331.0,
+   "mean_cost_usd": 0.04362249333333334,
+   "mean_cost_usd_1000": 0.046657833333333336,
+   "mean_cost_usd_10000": 0.04389843333333332,
+   "mean_wall_s": 250.0,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.04352916,
+   "p50_queue_s": 52.5,
+   "p50_wall_s": 246.5,
+   "p95_queue_s": 84.74999999999999,
+   "p95_wall_s": 300.29999999999995,
+   "provider": "ec2-eph",
+   "success_rate": 1.0,
+   "workload": "container"
+  },
+  {
+   "max_wall_s": 216.0,
+   "mean_cost_usd": 0.05317456666666665,
+   "mean_cost_usd_1000": 0.05317456666666665,
+   "mean_cost_usd_10000": 0.05317456666666665,
+   "mean_wall_s": 181.73333333333332,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.0548335,
+   "p50_queue_s": 1.0,
+   "p50_wall_s": 178.0,
+   "p95_queue_s": 2.0,
+   "p95_wall_s": 200.55,
+   "provider": "gce-pool",
+   "success_rate": 1.0,
+   "workload": "container"
+  },
+  {
+   "max_wall_s": 299.0,
+   "mean_cost_usd": 0.026600000000000016,
+   "mean_cost_usd_1000": 0.026600000000000016,
+   "mean_cost_usd_10000": 0.026600000000000016,
+   "mean_wall_s": 238.73333333333332,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.024,
+   "p50_queue_s": 3.0,
+   "p50_wall_s": 238.5,
+   "p95_queue_s": 3.0,
+   "p95_wall_s": 281.65,
+   "provider": "gh2",
+   "success_rate": 1.0,
+   "workload": "container"
+  },
+  {
+   "max_wall_s": 220.0,
+   "mean_cost_usd": 0.04240000000000002,
+   "mean_cost_usd_1000": 0.04240000000000002,
+   "mean_cost_usd_10000": 0.04240000000000002,
+   "mean_wall_s": 187.33333333333334,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.048,
+   "p50_queue_s": 3.0,
+   "p50_wall_s": 185.0,
+   "p95_queue_s": 4.549999999999997,
+   "p95_wall_s": 215.1,
+   "provider": "gh4",
+   "success_rate": 1.0,
+   "workload": "container"
+  },
+  {
+   "max_wall_s": 189.0,
+   "mean_cost_usd": 0.005954806333333331,
+   "mean_cost_usd_1000": 0.04637383333333333,
+   "mean_cost_usd_10000": 0.009629263333333332,
+   "mean_wall_s": 172.53333333333333,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.0060132729999999995,
+   "p50_queue_s": 18.0,
+   "p50_wall_s": 174.0,
+   "p95_queue_s": 21.549999999999997,
+   "p95_wall_s": 187.55,
+   "provider": "runson2",
+   "success_rate": 1.0,
+   "workload": "container"
+  },
+  {
+   "max_wall_s": 270.0,
+   "mean_cost_usd": 0.004708333333333334,
+   "mean_cost_usd_1000": 0.004708333333333334,
+   "mean_cost_usd_10000": 0.004708333333333334,
+   "mean_wall_s": 208.83333333333334,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.005,
+   "p50_queue_s": 18.0,
+   "p50_wall_s": 213.0,
+   "p95_queue_s": 21.549999999999997,
+   "p95_wall_s": 261.55,
+   "provider": "ubicloud2",
+   "success_rate": 1.0,
+   "workload": "container"
+  },
+  {
+   "max_wall_s": 222.0,
+   "mean_cost_usd": 0.005973333333333332,
+   "mean_cost_usd_1000": 0.005973333333333332,
+   "mean_cost_usd_10000": 0.005973333333333332,
+   "mean_wall_s": 181.93333333333334,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.005933333333333334,
+   "p50_queue_s": 1.0,
+   "p50_wall_s": 179.0,
+   "p95_queue_s": 2.0,
+   "p95_wall_s": 198.59999999999997,
+   "provider": "vitko",
+   "success_rate": 1.0,
+   "workload": "container"
+  },
+  {
+   "max_wall_s": 271.0,
+   "mean_cost_usd": 0.006058888888888888,
+   "mean_cost_usd_1000": 0.006058888888888888,
+   "mean_cost_usd_10000": 0.006058888888888888,
+   "mean_wall_s": 183.13333333333333,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.005900000000000001,
+   "p50_queue_s": 1.0,
+   "p50_wall_s": 178.0,
+   "p95_queue_s": 2.0,
+   "p95_wall_s": 208.39999999999992,
+   "provider": "vitko-opt",
+   "success_rate": 1.0,
+   "workload": "container"
+  },
+  {
+   "max_wall_s": 118.0,
+   "mean_cost_usd": 0.00546666666666667,
+   "mean_cost_usd_1000": 0.00546666666666667,
+   "mean_cost_usd_10000": 0.00546666666666667,
+   "mean_wall_s": 67.06666666666666,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.004,
+   "p50_queue_s": 8.0,
+   "p50_wall_s": 64.5,
+   "p95_queue_s": 9.549999999999997,
+   "p95_wall_s": 81.19999999999999,
+   "provider": "blacksmith2",
+   "success_rate": 1.0,
+   "workload": "fd"
+  },
+  {
+   "max_wall_s": 170.0,
+   "mean_cost_usd": 0.00473376,
+   "mean_cost_usd_1000": 0.007769099999999999,
+   "mean_cost_usd_10000": 0.005009700000000001,
+   "mean_wall_s": 115.2,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.00467216,
+   "p50_queue_s": 56.5,
+   "p50_wall_s": 113.5,
+   "p95_queue_s": 81.29999999999998,
+   "p95_wall_s": 139.49999999999997,
+   "provider": "ec2-eph",
+   "success_rate": 1.0,
+   "workload": "fd"
+  },
+  {
+   "max_wall_s": 88.0,
+   "mean_cost_usd": 0.0034668999999999998,
+   "mean_cost_usd_1000": 0.0034668999999999998,
+   "mean_cost_usd_10000": 0.0034668999999999998,
+   "mean_wall_s": 64.4,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.0034955000000000003,
+   "p50_queue_s": 1.0,
+   "p50_wall_s": 64.0,
+   "p95_queue_s": 2.0,
+   "p95_wall_s": 71.64999999999999,
+   "provider": "gce-pool",
+   "success_rate": 1.0,
+   "workload": "fd"
+  },
+  {
+   "max_wall_s": 129.0,
+   "mean_cost_usd": 0.012000000000000007,
+   "mean_cost_usd_1000": 0.012000000000000007,
+   "mean_cost_usd_10000": 0.012000000000000007,
+   "mean_wall_s": 89.86666666666666,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.012,
+   "p50_queue_s": 3.0,
+   "p50_wall_s": 91.5,
+   "p95_queue_s": 3.549999999999997,
+   "p95_wall_s": 119.54999999999994,
+   "provider": "gh2",
+   "success_rate": 1.0,
+   "workload": "fd"
+  },
+  {
+   "max_wall_s": 84.0,
+   "mean_cost_usd": 0.01920000000000001,
+   "mean_cost_usd_1000": 0.01920000000000001,
+   "mean_cost_usd_10000": 0.01920000000000001,
+   "mean_wall_s": 64.3,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.024,
+   "p50_queue_s": 3.0,
+   "p50_wall_s": 65.5,
+   "p95_queue_s": 4.0,
+   "p95_wall_s": 80.64999999999999,
+   "provider": "gh4",
+   "success_rate": 1.0,
+   "workload": "fd"
+  },
+  {
+   "max_wall_s": 95.0,
+   "mean_cost_usd": 0.0018041729999999998,
+   "mean_cost_usd_1000": 0.042223200000000016,
+   "mean_cost_usd_10000": 0.00547863,
+   "mean_wall_s": 86.86666666666666,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.001819773,
+   "p50_queue_s": 18.5,
+   "p50_wall_s": 88.5,
+   "p95_queue_s": 20.0,
+   "p95_wall_s": 92.55,
+   "provider": "runson2",
+   "success_rate": 1.0,
+   "workload": "fd"
+  },
+  {
+   "max_wall_s": 143.0,
+   "mean_cost_usd": 0.0020833333333333337,
+   "mean_cost_usd_1000": 0.0020833333333333337,
+   "mean_cost_usd_10000": 0.0020833333333333337,
+   "mean_wall_s": 92.03333333333333,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.0025,
+   "p50_queue_s": 16.5,
+   "p50_wall_s": 87.0,
+   "p95_queue_s": 29.64999999999999,
+   "p95_wall_s": 125.0,
+   "provider": "ubicloud2",
+   "success_rate": 1.0,
+   "workload": "fd"
+  },
+  {
+   "max_wall_s": 72.0,
+   "mean_cost_usd": 0.00158,
+   "mean_cost_usd_1000": 0.00158,
+   "mean_cost_usd_10000": 0.00158,
+   "mean_wall_s": 50.2,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.0016,
+   "p50_queue_s": 2.0,
+   "p50_wall_s": 49.0,
+   "p95_queue_s": 9.199999999999989,
+   "p95_wall_s": 55.55,
+   "provider": "vitko",
+   "success_rate": 1.0,
+   "workload": "fd"
+  },
+  {
+   "max_wall_s": 250.0,
+   "mean_cost_usd": 0.0014499999999999997,
+   "mean_cost_usd_1000": 0.0014499999999999997,
+   "mean_cost_usd_10000": 0.0014499999999999997,
+   "mean_wall_s": 51.733333333333334,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.0014666666666666667,
+   "p50_queue_s": 1.0,
+   "p50_wall_s": 45.0,
+   "p95_queue_s": 2.549999999999997,
+   "p95_wall_s": 47.55,
+   "provider": "vitko-opt",
+   "success_rate": 1.0,
+   "workload": "fd"
+  },
+  {
+   "max_wall_s": 60.0,
+   "mean_cost_usd": 0.004000000000000003,
+   "mean_cost_usd_1000": 0.004000000000000003,
+   "mean_cost_usd_10000": 0.004000000000000003,
+   "mean_wall_s": 24.633333333333333,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.004,
+   "p50_queue_s": 8.0,
+   "p50_wall_s": 22.0,
+   "p95_queue_s": 10.0,
+   "p95_wall_s": 35.84999999999998,
+   "provider": "blacksmith2",
+   "success_rate": 1.0,
+   "workload": "flask"
+  },
+  {
+   "max_wall_s": 143.0,
+   "mean_cost_usd": 0.0035805600000000004,
+   "mean_cost_usd_1000": 0.006615899999999999,
+   "mean_cost_usd_10000": 0.0038564999999999993,
+   "mean_wall_s": 77.26666666666667,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.00321866,
+   "p50_queue_s": 50.0,
+   "p50_wall_s": 70.0,
+   "p95_queue_s": 106.09999999999994,
+   "p95_wall_s": 133.54999999999995,
+   "provider": "ec2-eph",
+   "success_rate": 1.0,
+   "workload": "flask"
+  },
+  {
+   "max_wall_s": 45.0,
+   "mean_cost_usd": 0.0010947666666666668,
+   "mean_cost_usd_1000": 0.0010947666666666668,
+   "mean_cost_usd_10000": 0.0010947666666666668,
+   "mean_wall_s": 13.866666666666667,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.00062,
+   "p50_queue_s": 1.0,
+   "p50_wall_s": 11.0,
+   "p95_queue_s": 2.0,
+   "p95_wall_s": 32.09999999999994,
+   "provider": "gce-pool",
+   "success_rate": 1.0,
+   "workload": "flask"
+  },
+  {
+   "max_wall_s": 28.0,
+   "mean_cost_usd": 0.006000000000000003,
+   "mean_cost_usd_1000": 0.006000000000000003,
+   "mean_cost_usd_10000": 0.006000000000000003,
+   "mean_wall_s": 22.733333333333334,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.006,
+   "p50_queue_s": 3.0,
+   "p50_wall_s": 23.0,
+   "p95_queue_s": 3.0,
+   "p95_wall_s": 28.0,
+   "provider": "gh2",
+   "success_rate": 1.0,
+   "workload": "flask"
+  },
+  {
+   "max_wall_s": 25.0,
+   "mean_cost_usd": 0.012000000000000005,
+   "mean_cost_usd_1000": 0.012000000000000005,
+   "mean_cost_usd_10000": 0.012000000000000005,
+   "mean_wall_s": 20.4,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.012,
+   "p50_queue_s": 3.0,
+   "p50_wall_s": 21.0,
+   "p95_queue_s": 3.0,
+   "p95_wall_s": 23.549999999999997,
+   "provider": "gh4",
+   "success_rate": 1.0,
+   "workload": "flask"
+  },
+  {
+   "max_wall_s": 45.0,
+   "mean_cost_usd": 0.001418406333333333,
+   "mean_cost_usd_1000": 0.04183743333333335,
+   "mean_cost_usd_10000": 0.005092863333333334,
+   "mean_wall_s": 37.766666666666666,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.0014137730000000001,
+   "p50_queue_s": 19.0,
+   "p50_wall_s": 38.0,
+   "p95_queue_s": 21.0,
+   "p95_wall_s": 40.0,
+   "provider": "runson2",
+   "success_rate": 1.0,
+   "workload": "flask"
+  },
+  {
+   "max_wall_s": 52.0,
+   "mean_cost_usd": 0.0012500000000000005,
+   "mean_cost_usd_1000": 0.0012500000000000005,
+   "mean_cost_usd_10000": 0.0012500000000000005,
+   "mean_wall_s": 34.86666666666667,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.00125,
+   "p50_queue_s": 18.0,
+   "p50_wall_s": 36.0,
+   "p95_queue_s": 23.549999999999997,
+   "p95_wall_s": 46.19999999999999,
+   "provider": "ubicloud2",
+   "success_rate": 1.0,
+   "workload": "flask"
+  },
+  {
+   "max_wall_s": 44.0,
+   "mean_cost_usd": 0.0004811111111111113,
+   "mean_cost_usd_1000": 0.0004811111111111113,
+   "mean_cost_usd_10000": 0.0004811111111111113,
+   "mean_wall_s": 16.933333333333334,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.00046666666666666666,
+   "p50_queue_s": 1.0,
+   "p50_wall_s": 16.0,
+   "p95_queue_s": 5.099999999999994,
+   "p95_wall_s": 20.099999999999994,
+   "provider": "vitko",
+   "success_rate": 1.0,
+   "workload": "flask"
+  },
+  {
+   "max_wall_s": 61.0,
+   "mean_cost_usd": 0.0003777777777777777,
+   "mean_cost_usd_1000": 0.0003777777777777777,
+   "mean_cost_usd_10000": 0.0003777777777777777,
+   "mean_wall_s": 14.2,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.00036666666666666667,
+   "p50_queue_s": 1.0,
+   "p50_wall_s": 13.0,
+   "p95_queue_s": 2.0,
+   "p95_wall_s": 14.099999999999994,
+   "provider": "vitko-opt",
+   "success_rate": 1.0,
+   "workload": "flask"
+  },
+  {
+   "max_wall_s": 901.0,
+   "mean_cost_usd": 0.05120000000000003,
+   "mean_cost_usd_1000": 0.05120000000000003,
+   "mean_cost_usd_10000": 0.05120000000000003,
+   "mean_wall_s": 746.5,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.052000000000000005,
+   "p50_queue_s": 8.0,
+   "p50_wall_s": 735.0,
+   "p95_queue_s": 10.0,
+   "p95_wall_s": 874.5999999999999,
+   "provider": "blacksmith2",
+   "success_rate": 1.0,
+   "workload": "guava"
+  },
+  {
+   "max_wall_s": 817.0,
+   "mean_cost_usd": 0.03181296,
+   "mean_cost_usd_1000": 0.034848300000000006,
+   "mean_cost_usd_10000": 0.0320889,
+   "mean_wall_s": 723.7333333333333,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.027458659999999996,
+   "p50_queue_s": 51.0,
+   "p50_wall_s": 716.5,
+   "p95_queue_s": 108.14999999999985,
+   "p95_wall_s": 782.8499999999999,
+   "provider": "ec2-eph",
+   "success_rate": 1.0,
+   "workload": "guava"
+  },
+  {
+   "max_wall_s": 874.0,
+   "mean_cost_usd": 0.04487086666666666,
+   "mean_cost_usd_1000": 0.04487086666666666,
+   "mean_cost_usd_10000": 0.04487086666666666,
+   "mean_wall_s": 823.7,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.044787,
+   "p50_queue_s": 1.0,
+   "p50_wall_s": 819.5,
+   "p95_queue_s": 2.0,
+   "p95_wall_s": 854.1,
+   "provider": "gce-pool",
+   "success_rate": 1.0,
+   "workload": "guava"
+  },
+  {
+   "max_wall_s": 1253.0,
+   "mean_cost_usd": 0.10900000000000001,
+   "mean_cost_usd_1000": 0.10900000000000001,
+   "mean_cost_usd_10000": 0.10900000000000001,
+   "mean_wall_s": 1061.2,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.12,
+   "p50_queue_s": 3.0,
+   "p50_wall_s": 1166.5,
+   "p95_queue_s": 5.6499999999999915,
+   "p95_wall_s": 1249.3,
+   "provider": "gh2",
+   "success_rate": 1.0,
+   "workload": "guava"
+  },
+  {
+   "max_wall_s": 1004.0,
+   "mean_cost_usd": 0.18080000000000004,
+   "mean_cost_usd_1000": 0.18080000000000004,
+   "mean_cost_usd_10000": 0.18080000000000004,
+   "mean_wall_s": 875.2333333333333,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.192,
+   "p50_queue_s": 3.0,
+   "p50_wall_s": 945.5,
+   "p95_queue_s": 13.599999999999966,
+   "p95_wall_s": 982.85,
+   "provider": "gh4",
+   "success_rate": 1.0,
+   "workload": "guava"
+  },
+  {
+   "max_wall_s": 948.0,
+   "mean_cost_usd": 0.009614306333333333,
+   "mean_cost_usd_1000": 0.05003333333333334,
+   "mean_cost_usd_10000": 0.013288763333333335,
+   "mean_wall_s": 870.1333333333333,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.009843273,
+   "p50_queue_s": 18.0,
+   "p50_wall_s": 896.5,
+   "p95_queue_s": 22.549999999999997,
+   "p95_wall_s": 918.9499999999999,
+   "provider": "runson2",
+   "success_rate": 1.0,
+   "workload": "guava"
+  },
+  {
+   "max_wall_s": 1105.0,
+   "mean_cost_usd": 0.019208333333333334,
+   "mean_cost_usd_1000": 0.019208333333333334,
+   "mean_cost_usd_10000": 0.019208333333333334,
+   "mean_wall_s": 911.0666666666667,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.01875,
+   "p50_queue_s": 19.0,
+   "p50_wall_s": 881.0,
+   "p95_queue_s": 23.0,
+   "p95_wall_s": 1086.1999999999998,
+   "provider": "ubicloud2",
+   "success_rate": 1.0,
+   "workload": "guava"
+  },
+  {
+   "max_wall_s": 698.0,
+   "mean_cost_usd": 0.021754444444444448,
+   "mean_cost_usd_1000": 0.021754444444444448,
+   "mean_cost_usd_10000": 0.021754444444444448,
+   "mean_wall_s": 655.4666666666667,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.021783333333333335,
+   "p50_queue_s": 1.0,
+   "p50_wall_s": 655.0,
+   "p95_queue_s": 2.0,
+   "p95_wall_s": 660.55,
+   "provider": "vitko",
+   "success_rate": 1.0,
+   "workload": "guava"
+  },
+  {
+   "max_wall_s": 694.0,
+   "mean_cost_usd": 0.021637777777777787,
+   "mean_cost_usd_1000": 0.021637777777777787,
+   "mean_cost_usd_10000": 0.021637777777777787,
+   "mean_wall_s": 650.5666666666667,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.021650000000000003,
+   "p50_queue_s": 1.0,
+   "p50_wall_s": 650.5,
+   "p95_queue_s": 2.0,
+   "p95_wall_s": 660.55,
+   "provider": "vitko-opt",
+   "success_rate": 1.0,
+   "workload": "guava"
+  },
+  {
+   "max_wall_s": 361.0,
+   "mean_cost_usd": 0.014000000000000007,
+   "mean_cost_usd_1000": 0.014000000000000007,
+   "mean_cost_usd_10000": 0.014000000000000007,
+   "mean_wall_s": 194.46666666666667,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.012,
+   "p50_queue_s": 8.0,
+   "p50_wall_s": 176.5,
+   "p95_queue_s": 12.649999999999991,
+   "p95_wall_s": 291.29999999999995,
+   "provider": "blacksmith2",
+   "success_rate": 1.0,
+   "workload": "monorepo"
+  },
+  {
+   "max_wall_s": 395.0,
+   "mean_cost_usd": 0.011573426666666668,
+   "mean_cost_usd_1000": 0.014608766666666665,
+   "mean_cost_usd_10000": 0.011849366666666668,
+   "mean_wall_s": 288.7,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.01111266,
+   "p50_queue_s": 50.5,
+   "p50_wall_s": 280.5,
+   "p95_queue_s": 78.89999999999995,
+   "p95_wall_s": 342.4999999999999,
+   "provider": "ec2-eph",
+   "success_rate": 1.0,
+   "workload": "monorepo"
+  },
+  {
+   "max_wall_s": 323.0,
+   "mean_cost_usd": 0.015754300000000002,
+   "mean_cost_usd_1000": 0.015754300000000002,
+   "mean_cost_usd_10000": 0.015754300000000002,
+   "mean_wall_s": 280.6,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.0156665,
+   "p50_queue_s": 2.0,
+   "p50_wall_s": 277.5,
+   "p95_queue_s": 2.0,
+   "p95_wall_s": 296.65,
+   "provider": "gce-pool",
+   "success_rate": 1.0,
+   "workload": "monorepo"
+  },
+  {
+   "max_wall_s": 410.0,
+   "mean_cost_usd": 0.03960000000000001,
+   "mean_cost_usd_1000": 0.03960000000000001,
+   "mean_cost_usd_10000": 0.03960000000000001,
+   "mean_wall_s": 368.8333333333333,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.042,
+   "p50_queue_s": 3.0,
+   "p50_wall_s": 384.0,
+   "p95_queue_s": 4.0,
+   "p95_wall_s": 401.15,
+   "provider": "gh2",
+   "success_rate": 1.0,
+   "workload": "monorepo"
+  },
+  {
+   "max_wall_s": 275.0,
+   "mean_cost_usd": 0.046400000000000025,
+   "mean_cost_usd_1000": 0.046400000000000025,
+   "mean_cost_usd_10000": 0.046400000000000025,
+   "mean_wall_s": 213.23333333333332,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.048,
+   "p50_queue_s": 3.0,
+   "p50_wall_s": 219.5,
+   "p95_queue_s": 3.549999999999997,
+   "p95_wall_s": 235.0,
+   "provider": "gh4",
+   "success_rate": 1.0,
+   "workload": "monorepo"
+  },
+  {
+   "max_wall_s": 321.0,
+   "mean_cost_usd": 0.0038854063333333337,
+   "mean_cost_usd_1000": 0.04430443333333334,
+   "mean_cost_usd_10000": 0.007559863333333332,
+   "mean_wall_s": 280.6,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.003926272999999999,
+   "p50_queue_s": 18.0,
+   "p50_wall_s": 288.0,
+   "p95_queue_s": 27.549999999999997,
+   "p95_wall_s": 312.65,
+   "provider": "runson2",
+   "success_rate": 1.0,
+   "workload": "monorepo"
+  },
+  {
+   "max_wall_s": 367.0,
+   "mean_cost_usd": 0.006083333333333337,
+   "mean_cost_usd_1000": 0.006083333333333337,
+   "mean_cost_usd_10000": 0.006083333333333337,
+   "mean_wall_s": 277.7,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.00625,
+   "p50_queue_s": 16.5,
+   "p50_wall_s": 276.0,
+   "p95_queue_s": 27.099999999999994,
+   "p95_wall_s": 365.65,
+   "provider": "ubicloud2",
+   "success_rate": 1.0,
+   "workload": "monorepo"
+  },
+  {
+   "max_wall_s": 363.0,
+   "mean_cost_usd": 0.005816666666666666,
+   "mean_cost_usd_1000": 0.005816666666666666,
+   "mean_cost_usd_10000": 0.005816666666666666,
+   "mean_wall_s": 186.76666666666668,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.005866666666666667,
+   "p50_queue_s": 2.0,
+   "p50_wall_s": 179.5,
+   "p95_queue_s": 37.849999999999866,
+   "p95_wall_s": 210.5499999999999,
+   "provider": "vitko",
+   "success_rate": 1.0,
+   "workload": "monorepo"
+  },
+  {
+   "max_wall_s": 364.0,
+   "mean_cost_usd": 0.005606666666666665,
+   "mean_cost_usd_1000": 0.005606666666666665,
+   "mean_cost_usd_10000": 0.005606666666666665,
+   "mean_wall_s": 179.13333333333333,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.0056,
+   "p50_queue_s": 2.0,
+   "p50_wall_s": 172.0,
+   "p95_queue_s": 19.89999999999995,
+   "p95_wall_s": 191.2,
+   "provider": "vitko-opt",
+   "success_rate": 1.0,
+   "workload": "monorepo"
+  },
+  {
+   "max_wall_s": 151.0,
+   "mean_cost_usd": 0.008666666666666671,
+   "mean_cost_usd_1000": 0.008666666666666671,
+   "mean_cost_usd_10000": 0.008666666666666671,
+   "mean_wall_s": 110.4,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.008,
+   "p50_queue_s": 8.0,
+   "p50_wall_s": 103.0,
+   "p95_queue_s": 11.0,
+   "p95_wall_s": 144.64999999999998,
+   "provider": "blacksmith2",
+   "success_rate": 1.0,
+   "workload": "pydantic"
+  },
+  {
+   "max_wall_s": 200.0,
+   "mean_cost_usd": 0.006351960000000003,
+   "mean_cost_usd_1000": 0.0093873,
+   "mean_cost_usd_10000": 0.006627900000000002,
+   "mean_wall_s": 157.76666666666668,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.00621966,
+   "p50_queue_s": 49.5,
+   "p50_wall_s": 154.0,
+   "p95_queue_s": 67.84999999999998,
+   "p95_wall_s": 184.39999999999998,
+   "provider": "ec2-eph",
+   "success_rate": 1.0,
+   "workload": "pydantic"
+  },
+  {
+   "max_wall_s": 129.0,
+   "mean_cost_usd": 0.006544133333333332,
+   "mean_cost_usd_1000": 0.006544133333333332,
+   "mean_cost_usd_10000": 0.006544133333333332,
+   "mean_wall_s": 119.66666666666667,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.006515,
+   "p50_queue_s": 2.0,
+   "p50_wall_s": 119.0,
+   "p95_queue_s": 2.549999999999997,
+   "p95_wall_s": 129.0,
+   "provider": "gce-pool",
+   "success_rate": 1.0,
+   "workload": "pydantic"
+  },
+  {
+   "max_wall_s": 198.0,
+   "mean_cost_usd": 0.01960000000000001,
+   "mean_cost_usd_1000": 0.01960000000000001,
+   "mean_cost_usd_10000": 0.01960000000000001,
+   "mean_wall_s": 168.63333333333333,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.018000000000000002,
+   "p50_queue_s": 3.0,
+   "p50_wall_s": 179.0,
+   "p95_queue_s": 4.0,
+   "p95_wall_s": 196.0,
+   "provider": "gh2",
+   "success_rate": 1.0,
+   "workload": "pydantic"
+  },
+  {
+   "max_wall_s": 181.0,
+   "mean_cost_usd": 0.03320000000000002,
+   "mean_cost_usd_1000": 0.03320000000000002,
+   "mean_cost_usd_10000": 0.03320000000000002,
+   "mean_wall_s": 145.9,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.036000000000000004,
+   "p50_queue_s": 3.0,
+   "p50_wall_s": 154.0,
+   "p95_queue_s": 4.0,
+   "p95_wall_s": 172.55,
+   "provider": "gh4",
+   "success_rate": 1.0,
+   "workload": "pydantic"
+  },
+  {
+   "max_wall_s": 156.0,
+   "mean_cost_usd": 0.002373273,
+   "mean_cost_usd_1000": 0.042792300000000005,
+   "mean_cost_usd_10000": 0.006047729999999999,
+   "mean_wall_s": 142.9,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.002396773,
+   "p50_queue_s": 18.5,
+   "p50_wall_s": 146.5,
+   "p95_queue_s": 22.0,
+   "p95_wall_s": 152.0,
+   "provider": "runson2",
+   "success_rate": 1.0,
+   "workload": "pydantic"
+  },
+  {
+   "max_wall_s": 225.0,
+   "mean_cost_usd": 0.0036666666666666683,
+   "mean_cost_usd_1000": 0.0036666666666666683,
+   "mean_cost_usd_10000": 0.0036666666666666683,
+   "mean_wall_s": 160.76666666666668,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.00375,
+   "p50_queue_s": 18.5,
+   "p50_wall_s": 158.5,
+   "p95_queue_s": 27.549999999999997,
+   "p95_wall_s": 204.14999999999998,
+   "provider": "ubicloud2",
+   "success_rate": 1.0,
+   "workload": "pydantic"
+  },
+  {
+   "max_wall_s": 290.0,
+   "mean_cost_usd": 0.0034122222222222214,
+   "mean_cost_usd_1000": 0.0034122222222222214,
+   "mean_cost_usd_10000": 0.0034122222222222214,
+   "mean_wall_s": 114.2,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.0034333333333333334,
+   "p50_queue_s": 2.0,
+   "p50_wall_s": 105.0,
+   "p95_queue_s": 37.849999999999866,
+   "p95_wall_s": 140.09999999999988,
+   "provider": "vitko",
+   "success_rate": 1.0,
+   "workload": "pydantic"
+  },
+  {
+   "max_wall_s": 273.0,
+   "mean_cost_usd": 0.0022122222222222213,
+   "mean_cost_usd_1000": 0.0022122222222222213,
+   "mean_cost_usd_10000": 0.0022122222222222213,
+   "mean_wall_s": 78.66666666666667,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.0022,
+   "p50_queue_s": 2.5,
+   "p50_wall_s": 68.5,
+   "p95_queue_s": 47.89999999999995,
+   "p95_wall_s": 118.59999999999997,
+   "provider": "vitko-opt",
+   "success_rate": 1.0,
+   "workload": "pydantic"
+  },
+  {
+   "max_wall_s": 641.0,
+   "mean_cost_usd": 0.029866666666666684,
+   "mean_cost_usd_1000": 0.029866666666666684,
+   "mean_cost_usd_10000": 0.029866666666666684,
+   "mean_wall_s": 422.5,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.028,
+   "p50_queue_s": 8.0,
+   "p50_wall_s": 400.5,
+   "p95_queue_s": 11.0,
+   "p95_wall_s": 569.5999999999999,
+   "provider": "blacksmith2",
+   "success_rate": 1.0,
+   "workload": "ts"
+  },
+  {
+   "max_wall_s": 548.0,
+   "mean_cost_usd": 0.016819693333333326,
+   "mean_cost_usd_1000": 0.01985503333333333,
+   "mean_cost_usd_10000": 0.017095633333333336,
+   "mean_wall_s": 437.56666666666666,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.01660966,
+   "p50_queue_s": 50.0,
+   "p50_wall_s": 433.0,
+   "p95_queue_s": 73.89999999999995,
+   "p95_wall_s": 467.0499999999999,
+   "provider": "ec2-eph",
+   "success_rate": 1.0,
+   "workload": "ts"
+  },
+  {
+   "max_wall_s": 593.0,
+   "mean_cost_usd": 0.028983699999999998,
+   "mean_cost_usd_1000": 0.028983699999999998,
+   "mean_cost_usd_10000": 0.028983699999999998,
+   "mean_wall_s": 534.4333333333333,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.0289735,
+   "p50_queue_s": 2.0,
+   "p50_wall_s": 532.5,
+   "p95_queue_s": 3.0999999999999943,
+   "p95_wall_s": 581.5999999999999,
+   "provider": "gce-pool",
+   "success_rate": 1.0,
+   "workload": "ts"
+  },
+  {
+   "max_wall_s": 875.0,
+   "mean_cost_usd": 0.07740000000000001,
+   "mean_cost_usd_1000": 0.07740000000000001,
+   "mean_cost_usd_10000": 0.07740000000000001,
+   "mean_wall_s": 747.2,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.081,
+   "p50_queue_s": 3.0,
+   "p50_wall_s": 784.0,
+   "p95_queue_s": 5.099999999999994,
+   "p95_wall_s": 824.2,
+   "provider": "gh2",
+   "success_rate": 1.0,
+   "workload": "ts"
+  },
+  {
+   "max_wall_s": 593.0,
+   "mean_cost_usd": 0.09920000000000005,
+   "mean_cost_usd_1000": 0.09920000000000005,
+   "mean_cost_usd_10000": 0.09920000000000005,
+   "mean_wall_s": 464.6666666666667,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.096,
+   "p50_queue_s": 3.0,
+   "p50_wall_s": 434.5,
+   "p95_queue_s": 3.0,
+   "p95_wall_s": 548.0,
+   "provider": "gh4",
+   "success_rate": 1.0,
+   "workload": "ts"
+  },
+  {
+   "max_wall_s": 606.0,
+   "mean_cost_usd": 0.006050006333333333,
+   "mean_cost_usd_1000": 0.046469033333333326,
+   "mean_cost_usd_10000": 0.009724463333333332,
+   "mean_wall_s": 546.1666666666666,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.006332272999999999,
+   "p50_queue_s": 18.0,
+   "p50_wall_s": 569.5,
+   "p95_queue_s": 25.64999999999999,
+   "p95_wall_s": 596.5999999999999,
+   "provider": "runson2",
+   "success_rate": 1.0,
+   "workload": "ts"
+  },
+  {
+   "max_wall_s": 1126.0,
+   "mean_cost_usd": 0.012000000000000002,
+   "mean_cost_usd_1000": 0.012000000000000002,
+   "mean_cost_usd_10000": 0.012000000000000002,
+   "mean_wall_s": 597.4333333333333,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.01125,
+   "p50_queue_s": 18.0,
+   "p50_wall_s": 559.5,
+   "p95_queue_s": 248.04999999999893,
+   "p95_wall_s": 843.6499999999996,
+   "provider": "ubicloud2",
+   "success_rate": 1.0,
+   "workload": "ts"
+  },
+  {
+   "max_wall_s": 547.0,
+   "mean_cost_usd": 0.012223333333333333,
+   "mean_cost_usd_1000": 0.012223333333333333,
+   "mean_cost_usd_10000": 0.012223333333333333,
+   "mean_wall_s": 378.6333333333333,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.01225,
+   "p50_queue_s": 2.0,
+   "p50_wall_s": 372.0,
+   "p95_queue_s": 39.59999999999985,
+   "p95_wall_s": 404.39999999999986,
+   "provider": "vitko",
+   "success_rate": 1.0,
+   "workload": "ts"
+  },
+  {
+   "max_wall_s": 386.0,
+   "mean_cost_usd": 0.02739017888888889,
+   "mean_cost_usd_1000": 0.02739017888888889,
+   "mean_cost_usd_10000": 0.02739017888888889,
+   "mean_wall_s": 254.4,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.02845325,
+   "p50_queue_s": 2.0,
+   "p50_wall_s": 243.0,
+   "p95_queue_s": 20.299999999999983,
+   "p95_wall_s": 331.7499999999998,
+   "provider": "vitko-opt",
+   "success_rate": 1.0,
+   "workload": "ts"
+  },
+  {
+   "max_wall_s": 592.0,
+   "mean_cost_usd": 0.026370370370370384,
+   "mean_cost_usd_1000": 0.026370370370370384,
+   "mean_cost_usd_10000": 0.026370370370370384,
+   "mean_wall_s": 377.962962962963,
+   "n": 30,
+   "ok": 27,
+   "p50_cost_usd": 0.024,
+   "p50_queue_s": 8.0,
+   "p50_wall_s": 360.0,
+   "p95_queue_s": 10.0,
+   "p95_wall_s": 510.8999999999999,
+   "provider": "blacksmith2",
+   "success_rate": 0.9,
+   "workload": "vite"
+  },
+  {
+   "max_wall_s": 673.0,
+   "mean_cost_usd": 0.016343826666666665,
+   "mean_cost_usd_1000": 0.019379166666666663,
+   "mean_cost_usd_10000": 0.016619766666666667,
+   "mean_wall_s": 418.26666666666665,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.015922159999999998,
+   "p50_queue_s": 48.5,
+   "p50_wall_s": 402.5,
+   "p95_queue_s": 90.29999999999998,
+   "p95_wall_s": 503.15,
+   "provider": "ec2-eph",
+   "success_rate": 1.0,
+   "workload": "vite"
+  },
+  {
+   "max_wall_s": 823.0,
+   "mean_cost_usd": 0.02308865517241379,
+   "mean_cost_usd_1000": 0.02308865517241379,
+   "mean_cost_usd_10000": 0.02308865517241379,
+   "mean_wall_s": 416.62068965517244,
+   "n": 30,
+   "ok": 29,
+   "p50_cost_usd": 0.022259,
+   "p50_queue_s": 2.0,
+   "p50_wall_s": 401.0,
+   "p95_queue_s": 2.0,
+   "p95_wall_s": 457.19999999999993,
+   "provider": "gce-pool",
+   "success_rate": 0.9666666666666667,
+   "workload": "vite"
+  },
+  {
+   "max_wall_s": 918.0,
+   "mean_cost_usd": 0.06088888888888893,
+   "mean_cost_usd_1000": 0.06088888888888893,
+   "mean_cost_usd_10000": 0.06088888888888893,
+   "mean_wall_s": 581.2962962962963,
+   "n": 30,
+   "ok": 27,
+   "p50_cost_usd": 0.06,
+   "p50_queue_s": 3.0,
+   "p50_wall_s": 603.0,
+   "p95_queue_s": 4.699999999999999,
+   "p95_wall_s": 753.1999999999999,
+   "provider": "gh2",
+   "success_rate": 0.9,
+   "workload": "vite"
+  },
+  {
+   "max_wall_s": 375.0,
+   "mean_cost_usd": 0.060428571428571456,
+   "mean_cost_usd_1000": 0.060428571428571456,
+   "mean_cost_usd_10000": 0.060428571428571456,
+   "mean_wall_s": 281.32142857142856,
+   "n": 30,
+   "ok": 28,
+   "p50_cost_usd": 0.06,
+   "p50_queue_s": 3.0,
+   "p50_wall_s": 288.0,
+   "p95_queue_s": 4.0,
+   "p95_wall_s": 314.55,
+   "provider": "gh4",
+   "success_rate": 0.9333333333333333,
+   "workload": "vite"
+  },
+  {
+   "max_wall_s": 461.0,
+   "mean_cost_usd": 0.005317307482758621,
+   "mean_cost_usd_1000": 0.04573633448275862,
+   "mean_cost_usd_10000": 0.008991764482758617,
+   "mean_wall_s": 434.51724137931035,
+   "n": 30,
+   "ok": 29,
+   "p50_cost_usd": 0.0053792729999999995,
+   "p50_queue_s": 19.0,
+   "p50_wall_s": 437.0,
+   "p95_queue_s": 26.599999999999998,
+   "p95_wall_s": 455.6,
+   "provider": "runson2",
+   "success_rate": 0.9666666666666667,
+   "workload": "vite"
+  },
+  {
+   "max_wall_s": 602.0,
+   "mean_cost_usd": 0.010689655172413796,
+   "mean_cost_usd_1000": 0.010689655172413796,
+   "mean_cost_usd_10000": 0.010689655172413796,
+   "mean_wall_s": 499.48275862068965,
+   "n": 30,
+   "ok": 29,
+   "p50_cost_usd": 0.01125,
+   "p50_queue_s": 18.0,
+   "p50_wall_s": 502.0,
+   "p95_queue_s": 28.599999999999987,
+   "p95_wall_s": 594.0,
+   "provider": "ubicloud2",
+   "success_rate": 0.9666666666666667,
+   "workload": "vite"
+  },
+  {
+   "max_wall_s": 524.0,
+   "mean_cost_usd": 0.01150777777777778,
+   "mean_cost_usd_1000": 0.01150777777777778,
+   "mean_cost_usd_10000": 0.01150777777777778,
+   "mean_wall_s": 357.56666666666666,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.0115,
+   "p50_queue_s": 2.0,
+   "p50_wall_s": 349.5,
+   "p95_queue_s": 40.74999999999987,
+   "p95_wall_s": 388.7499999999999,
+   "provider": "vitko",
+   "success_rate": 1.0,
+   "workload": "vite"
+  },
+  {
+   "max_wall_s": 364.0,
+   "mean_cost_usd": 0.012721476543209879,
+   "mean_cost_usd_1000": 0.012721476543209879,
+   "mean_cost_usd_10000": 0.012721476543209879,
+   "mean_wall_s": 205.11111111111111,
+   "n": 30,
+   "ok": 27,
+   "p50_cost_usd": 0.012768400000000001,
+   "p50_queue_s": 2.0,
+   "p50_wall_s": 199.0,
+   "p95_queue_s": 13.299999999999994,
+   "p95_wall_s": 212.2,
+   "provider": "vitko-opt",
+   "success_rate": 0.9,
+   "workload": "vite"
+  },
+  {
+   "max_wall_s": 117.0,
+   "mean_cost_usd": 0.007733333333333339,
+   "mean_cost_usd_1000": 0.007733333333333339,
+   "mean_cost_usd_10000": 0.007733333333333339,
+   "mean_wall_s": 80.03333333333333,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.008,
+   "p50_queue_s": 7.0,
+   "p50_wall_s": 76.0,
+   "p95_queue_s": 10.0,
+   "p95_wall_s": 104.1,
+   "provider": "blacksmith2",
+   "success_rate": 1.0,
+   "workload": "vue"
+  },
+  {
+   "max_wall_s": 163.0,
+   "mean_cost_usd": 0.005120460000000002,
+   "mean_cost_usd_1000": 0.008155800000000001,
+   "mean_cost_usd_10000": 0.005396400000000001,
+   "mean_wall_s": 120.16666666666667,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.004910660000000001,
+   "p50_queue_s": 51.0,
+   "p50_wall_s": 116.5,
+   "p95_queue_s": 89.55,
+   "p95_wall_s": 155.2,
+   "provider": "ec2-eph",
+   "success_rate": 1.0,
+   "workload": "vue"
+  },
+  {
+   "max_wall_s": 118.0,
+   "mean_cost_usd": 0.004365066666666667,
+   "mean_cost_usd_1000": 0.004365066666666667,
+   "mean_cost_usd_10000": 0.004365066666666667,
+   "mean_wall_s": 78.4,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.0042545,
+   "p50_queue_s": 1.0,
+   "p50_wall_s": 75.5,
+   "p95_queue_s": 2.0,
+   "p95_wall_s": 108.74999999999999,
+   "provider": "gce-pool",
+   "success_rate": 1.0,
+   "workload": "vue"
+  },
+  {
+   "max_wall_s": 133.0,
+   "mean_cost_usd": 0.014000000000000009,
+   "mean_cost_usd_1000": 0.014000000000000009,
+   "mean_cost_usd_10000": 0.014000000000000009,
+   "mean_wall_s": 114.43333333333334,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.012,
+   "p50_queue_s": 3.0,
+   "p50_wall_s": 120.5,
+   "p95_queue_s": 4.0,
+   "p95_wall_s": 128.64999999999998,
+   "provider": "gh2",
+   "success_rate": 1.0,
+   "workload": "vue"
+  },
+  {
+   "max_wall_s": 101.0,
+   "mean_cost_usd": 0.02000000000000001,
+   "mean_cost_usd_1000": 0.02000000000000001,
+   "mean_cost_usd_10000": 0.02000000000000001,
+   "mean_wall_s": 66.93333333333334,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.024,
+   "p50_queue_s": 3.0,
+   "p50_wall_s": 67.0,
+   "p95_queue_s": 22.699999999999903,
+   "p95_wall_s": 88.19999999999993,
+   "provider": "gh4",
+   "success_rate": 1.0,
+   "workload": "vue"
+  },
+  {
+   "max_wall_s": 110.0,
+   "mean_cost_usd": 0.0020194396666666664,
+   "mean_cost_usd_1000": 0.042438466666666654,
+   "mean_cost_usd_10000": 0.0056938966666666676,
+   "mean_wall_s": 98.96666666666667,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.002027773,
+   "p50_queue_s": 19.0,
+   "p50_wall_s": 101.0,
+   "p95_queue_s": 21.549999999999997,
+   "p95_wall_s": 108.0,
+   "provider": "runson2",
+   "success_rate": 1.0,
+   "workload": "vue"
+  },
+  {
+   "max_wall_s": 169.0,
+   "mean_cost_usd": 0.0027083333333333343,
+   "mean_cost_usd_1000": 0.0027083333333333343,
+   "mean_cost_usd_10000": 0.0027083333333333343,
+   "mean_wall_s": 117.73333333333333,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.0025,
+   "p50_queue_s": 18.0,
+   "p50_wall_s": 114.0,
+   "p95_queue_s": 22.0,
+   "p95_wall_s": 152.39999999999998,
+   "provider": "ubicloud2",
+   "success_rate": 1.0,
+   "workload": "vue"
+  },
+  {
+   "max_wall_s": 79.0,
+   "mean_cost_usd": 0.0020377777777777772,
+   "mean_cost_usd_1000": 0.0020377777777777772,
+   "mean_cost_usd_10000": 0.0020377777777777772,
+   "mean_wall_s": 63.2,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.002033333333333333,
+   "p50_queue_s": 1.5,
+   "p50_wall_s": 63.0,
+   "p95_queue_s": 2.0,
+   "p95_wall_s": 64.0,
+   "provider": "vitko",
+   "success_rate": 1.0,
+   "workload": "vue"
+  },
+  {
+   "max_wall_s": 61.0,
+   "mean_cost_usd": 0.0017340955555555555,
+   "mean_cost_usd_1000": 0.0017340955555555555,
+   "mean_cost_usd_10000": 0.0017340955555555555,
+   "mean_wall_s": 32.6,
+   "n": 30,
+   "ok": 30,
+   "p50_cost_usd": 0.0017356666666666666,
+   "p50_queue_s": 1.5,
+   "p50_wall_s": 32.0,
+   "p95_queue_s": 2.0,
+   "p95_wall_s": 33.0,
+   "provider": "vitko-opt",
+   "success_rate": 1.0,
+   "workload": "vue"
+  }
+ ],
+ "cost_sensitivity": {
+  "1000": {
+   "blacksmith2": 0.4819099617883684,
+   "ec2-eph": 0.5081528053275769,
+   "gce-pool": 0.4091972152529274,
+   "gh2": 1.0,
+   "gh4": 1.3865382870375302,
+   "runson2": 1.4309613832193078,
+   "ubicloud2": 0.173031443550082,
+   "vitko": 0.15695320768684262,
+   "vitko-opt": 0.15795009911006683
+  },
+  "10000": {
+   "blacksmith2": 0.4819099617883684,
+   "ec2-eph": 0.39525506712426867,
+   "gce-pool": 0.4091972152529274,
+   "gh2": 1.0,
+   "gh4": 1.3865382870375302,
+   "runson2": 0.24968223371260265,
+   "ubicloud2": 0.173031443550082,
+   "vitko": 0.15695320768684262,
+   "vitko-opt": 0.15795009911006683
+  }
+ },
+ "excluded_from_index": {},
+ "fixed_monthly_usd": {
+  "ec2-eph": 3.066,
+  "runson2": 40.8273
+ },
+ "index_providers": [
+  "blacksmith2",
+  "ec2-eph",
+  "gce-pool",
+  "gh2",
+  "gh4",
+  "runson2",
+  "ubicloud2",
+  "vitko",
+  "vitko-opt"
+ ],
+ "indices": {
+  "blacksmith2": {
+   "cost": 0.4819099617883684,
+   "cost_ci95": [
+    0.4348661826361074,
+    0.536828857122815
+   ],
+   "time": 0.6447438856567357,
+   "time_ci95": [
+    0.6055168940216563,
+    0.758511742764654
+   ]
+  },
+  "ec2-eph": {
+   "cost": 0.3832181899876041,
+   "cost_ci95": [
+    0.35795451170615605,
+    0.4048864428629014
+   ],
+   "time": 0.8694979288546704,
+   "time_ci95": [
+    0.8334114330461212,
+    0.9465331580314131
+   ]
+  },
+  "gce-pool": {
+   "cost": 0.4091972152529274,
+   "cost_ci95": [
+    0.38622402991145527,
+    0.43962827857967535
+   ],
+   "time": 0.6672792283872533,
+   "time_ci95": [
+    0.658397792801653,
+    0.691589797860649
+   ]
+  },
+  "gh2": {
+   "cost": 1.0,
+   "cost_ci95": [
+    1.0,
+    1.0
+   ],
+   "time": 1.0,
+   "time_ci95": [
+    1.0,
+    1.0
+   ]
+  },
+  "gh4": {
+   "cost": 1.3865382870375302,
+   "cost_ci95": [
+    1.3499175492773452,
+    1.424342490459159
+   ],
+   "time": 0.6423996690481145,
+   "time_ci95": [
+    0.6285342060143753,
+    0.6688512655357152
+   ]
+  },
+  "runson2": {
+   "cost": 0.12115808817928787,
+   "cost_ci95": [
+    0.11684518338304858,
+    0.12504695882142836
+   ],
+   "time": 0.827955962158924,
+   "time_ci95": [
+    0.8155945426406781,
+    0.85863111767463
+   ]
+  },
+  "ubicloud2": {
+   "cost": 0.173031443550082,
+   "cost_ci95": [
+    0.16732292412110183,
+    0.17952190405643903
+   ],
+   "time": 0.8786269156377937,
+   "time_ci95": [
+    0.8470027647369374,
+    0.9211051448287981
+   ]
+  },
+  "vitko": {
+   "cost": 0.15695320768684262,
+   "cost_ci95": [
+    0.15473446972418925,
+    0.15935858109113957
+   ],
+   "time": 0.5743124960009596,
+   "time_ci95": [
+    0.556304437481638,
+    0.6023039697677781
+   ]
+  },
+  "vitko-opt": {
+   "cost": 0.15795009911006683,
+   "cost_ci95": [
+    0.15571157691069443,
+    0.16043078340781391
+   ],
+   "time": 0.43622940897636925,
+   "time_ci95": [
+    0.4232423044682284,
+    0.45899848046716574
+   ]
+  }
+ },
+ "leave_one_out": {
+  "burst": {
+   "blacksmith2": {
+    "cost": 0.4986054012030051,
+    "time": 0.6773826586132199
+   },
+   "ec2-eph": {
+    "cost": 0.4026323876399166,
+    "time": 0.8966865760252508
+   },
+   "gce-pool": {
+    "cost": 0.42492147814923076,
+    "time": 0.6747115519618639
+   },
+   "gh2": {
+    "cost": 1.0,
+    "time": 1.0
+   },
+   "gh4": {
+    "cost": 1.3974779953275112,
+    "time": 0.6471229855425277
+   },
+   "runson2": {
+    "cost": 0.12305163953004496,
+    "time": 0.842525457036882
+   },
+   "ubicloud2": {
+    "cost": 0.17825937863193408,
+    "time": 0.8877983677742767
+   },
+   "vitko": {
+    "cost": 0.16192937734482055,
+    "time": 0.5706798911223002
+   },
+   "vitko-opt": {
+    "cost": 0.16405401365980468,
+    "time": 0.43040115935732776
+   }
+  },
+  "cli": {
+   "blacksmith2": {
+    "cost": 0.47877608105246017,
+    "time": 0.6338867711891354
+   },
+   "ec2-eph": {
+    "cost": 0.3860611271895265,
+    "time": 0.86088602290521
+   },
+   "gce-pool": {
+    "cost": 0.4066330266704395,
+    "time": 0.6532915428084594
+   },
+   "gh2": {
+    "cost": 1.0,
+    "time": 1.0
+   },
+   "gh4": {
+    "cost": 1.4106287924382461,
+    "time": 0.6548201990773648
+   },
+   "runson2": {
+    "cost": 0.12293384834632975,
+    "time": 0.822653581466893
+   },
+   "ubicloud2": {
+    "cost": 0.17094306058353673,
+    "time": 0.8703088519522592
+   },
+   "vitko": {
+    "cost": 0.15066122977561458,
+    "time": 0.5612897358067059
+   },
+   "vitko-opt": {
+    "cost": 0.14916253604311955,
+    "time": 0.4416905396957165
+   }
+  },
+  "codex-lint": {
+   "blacksmith2": {
+    "cost": 0.4918097064996061,
+    "time": 0.6590112395792257
+   },
+   "ec2-eph": {
+    "cost": 0.3702013141615611,
+    "time": 0.9022940916611254
+   },
+   "gce-pool": {
+    "cost": 0.38827115210497365,
+    "time": 0.6682517724587619
+   },
+   "gh2": {
+    "cost": 1.0,
+    "time": 1.0
+   },
+   "gh4": {
+    "cost": 1.4120993348276158,
+    "time": 0.6527900809989072
+   },
+   "runson2": {
+    "cost": 0.12168069039918397,
+    "time": 0.8402334723479338
+   },
+   "ubicloud2": {
+    "cost": 0.17321154069660485,
+    "time": 0.8891341950603393
+   },
+   "vitko": {
+    "cost": 0.15712189273250451,
+    "time": 0.5863652032553565
+   },
+   "vitko-opt": {
+    "cost": 0.15820144428044117,
+    "time": 0.43428985525672015
+   }
+  },
+  "container": {
+   "blacksmith2": {
+    "cost": 0.44517196862146785,
+    "time": 0.5929933266404859
+   },
+   "ec2-eph": {
+    "cost": 0.3357744798563956,
+    "time": 0.8559431418435379
+   },
+   "gce-pool": {
+    "cost": 0.3542471275330561,
+    "time": 0.6605219299486149
+   },
+   "gh2": {
+    "cost": 1.0,
+    "time": 1.0
+   },
+   "gh4": {
+    "cost": 1.369074580478169,
+    "time": 0.6314832721307949
+   },
+   "runson2": {
+    "cost": 0.11458110182923945,
+    "time": 0.8375338385394377
+   },
+   "ubicloud2": {
+    "cost": 0.17267466367654635,
+    "time": 0.8773244972933603
+   },
+   "vitko": {
+    "cost": 0.15192454019640833,
+    "time": 0.5605097096483385
+   },
+   "vitko-opt": {
+    "cost": 0.15277986947958588,
+    "time": 0.4154448929428909
+   }
+  },
+  "fd": {
+   "blacksmith2": {
+    "cost": 0.48438012856523766,
+    "time": 0.6395350906507061
+   },
+   "ec2-eph": {
+    "cost": 0.38221047143967657,
+    "time": 0.8418616264714933
+   },
+   "gce-pool": {
+    "cost": 0.4223530484759232,
+    "time": 0.6644287240666786
+   },
+   "gh2": {
+    "cost": 1.0,
+    "time": 1.0
+   },
+   "gh4": {
+    "cost": 1.368605879284966,
+    "time": 0.636108541119506
+   },
+   "runson2": {
+    "cost": 0.11880375911057958,
+    "time": 0.8163370659317948
+   },
+   "ubicloud2": {
+    "cost": 0.17297884256873824,
+    "time": 0.8723422320748647
+   },
+   "vitko": {
+    "cost": 0.1594799336663946,
+    "time": 0.5779755582297521
+   },
+   "vitko-opt": {
+    "cost": 0.16184364217107852,
+    "time": 0.4314999158948859
+   }
+  },
+  "flask": {
+   "blacksmith2": {
+    "cost": 0.46789986373552966,
+    "time": 0.6220335550187173
+   },
+   "ec2-eph": {
+    "cost": 0.3680945821674106,
+    "time": 0.7758982374074211
+   },
+   "gce-pool": {
+    "cost": 0.44037246507771544,
+    "time": 0.6877917267597817
+   },
+   "gh2": {
+    "cost": 1.0,
+    "time": 1.0
+   },
+   "gh4": {
+    "cost": 1.3411223499380727,
+    "time": 0.6221924680062599
+   },
+   "runson2": {
+    "cost": 0.1140149432469598,
+    "time": 0.7775531756584627
+   },
+   "ubicloud2": {
+    "cost": 0.17013540206254146,
+    "time": 0.8336950363200857
+   },
+   "vitko": {
+    "cost": 0.16683462952994052,
+    "time": 0.5643917285485968
+   },
+   "vitko-opt": {
+    "cost": 0.17172445721817695,
+    "time": 0.4260765334638557
+   }
+  },
+  "guava": {
+   "blacksmith2": {
+    "cost": 0.4830332589886067,
+    "time": 0.646092837394324
+   },
+   "ec2-eph": {
+    "cost": 0.39282380695471475,
+    "time": 0.8974083505742054
+   },
+   "gce-pool": {
+    "cost": 0.40897411842260106,
+    "time": 0.6641637788319344
+   },
+   "gh2": {
+    "cost": 1.0,
+    "time": 1.0
+   },
+   "gh4": {
+    "cost": 1.3641291743006345,
+    "time": 0.6289644264871688
+   },
+   "runson2": {
+    "cost": 0.1247053902425341,
+    "time": 0.8335802018193217
+   },
+   "ubicloud2": {
+    "cost": 0.17274416260536027,
+    "time": 0.8907963790240556
+   },
+   "vitko": {
+    "cost": 0.15356198374873595,
+    "time": 0.575490847668059
+   },
+   "vitko-opt": {
+    "cost": 0.15470191784702453,
+    "time": 0.42659887208269365
+   }
+  },
+  "monorepo": {
+   "blacksmith2": {
+    "cost": 0.4956740484571148,
+    "time": 0.6648879803490209
+   },
+   "ec2-eph": {
+    "cost": 0.3927753613521153,
+    "time": 0.8833795920417514
+   },
+   "gce-pool": {
+    "cost": 0.41024601724662707,
+    "time": 0.6624604501042619
+   },
+   "gh2": {
+    "cost": 1.0,
+    "time": 1.0
+   },
+   "gh4": {
+    "cost": 1.4079205426841481,
+    "time": 0.6492539223402287
+   },
+   "runson2": {
+    "cost": 0.12350390754138767,
+    "time": 0.8354325984638599
+   },
+   "ubicloud2": {
+    "cost": 0.17491340162066568,
+    "time": 0.8948169420799371
+   },
+   "vitko": {
+    "cost": 0.1579019808534562,
+    "time": 0.5851630644400683
+   },
+   "vitko-opt": {
+    "cost": 0.15952877328665832,
+    "time": 0.43518217354505667
+   }
+  },
+  "pydantic": {
+   "blacksmith2": {
+    "cost": 0.4856944780205658,
+    "time": 0.6514459936988554
+   },
+   "ec2-eph": {
+    "cost": 0.389102293720598,
+    "time": 0.8703357279917345
+   },
+   "gce-pool": {
+    "cost": 0.4168341283350282,
+    "time": 0.6675046627864182
+   },
+   "gh2": {
+    "cost": 1.0,
+    "time": 1.0
+   },
+   "gh4": {
+    "cost": 1.3615302905106073,
+    "time": 0.6255648884646084
+   },
+   "runson2": {
+    "cost": 0.12116470225757256,
+    "time": 0.8288269076482925
+   },
+   "ubicloud2": {
+    "cost": 0.17180828079335722,
+    "time": 0.8780070074810867
+   },
+   "vitko": {
+    "cost": 0.1554813429697449,
+    "time": 0.5732089897631719
+   },
+   "vitko-opt": {
+    "cost": 0.16285002597123457,
+    "time": 0.44145415980090497
+   }
+  },
+  "ts": {
+   "blacksmith2": {
+    "cost": 0.49174557356919696,
+    "time": 0.6585340141460369
+   },
+   "ec2-eph": {
+    "cost": 0.40349977543977783,
+    "time": 0.9061215001469699
+   },
+   "gce-pool": {
+    "cost": 0.4125099893561482,
+    "time": 0.6662051333547313
+   },
+   "gh2": {
+    "cost": 1.0,
+    "time": 1.0
+   },
+   "gh4": {
+    "cost": 1.396488700347291,
+    "time": 0.6510816465437954
+   },
+   "runson2": {
+    "cost": 0.12608279415032414,
+    "time": 0.8378640614678697
+   },
+   "ubicloud2": {
+    "cost": 0.174767232007518,
+    "time": 0.8953966299550647
+   },
+   "vitko": {
+    "cost": 0.15686523195491342,
+    "time": 0.5843681990938306
+   },
+   "vitko-opt": {
+    "cost": 0.14678151191655162,
+    "time": 0.44999542457879055
+   }
+  },
+  "vite": {
+   "blacksmith2": {
+    "cost": 0.486612173794467,
+    "time": 0.6492676756344656
+   },
+   "ec2-eph": {
+    "cost": 0.39582518725035987,
+    "time": 0.8906493017963923
+   },
+   "gce-pool": {
+    "cost": 0.4120398518215109,
+    "time": 0.6674860613103499
+   },
+   "gh2": {
+    "cost": 1.0,
+    "time": 1.0
+   },
+   "gh4": {
+    "cost": 1.4293361389597132,
+    "time": 0.6599454635618163
+   },
+   "runson2": {
+    "cost": 0.12481867412174605,
+    "time": 0.8380418418829706
+   },
+   "ubicloud2": {
+    "cost": 0.1728033858819222,
+    "time": 0.8829445317262361
+   },
+   "vitko": {
+    "cost": 0.15432467020582374,
+    "time": 0.5738340332242509
+   },
+   "vitko-opt": {
+    "cost": 0.15398425121368034,
+    "time": 0.4474363149626286
+   }
+  },
+  "vue": {
+   "blacksmith2": {
+    "cost": 0.475967685373369,
+    "time": 0.6460355033338017
+   },
+   "ec2-eph": {
+    "cost": 0.3848472643403743,
+    "time": 0.8611530425573128
+   },
+   "gce-pool": {
+    "cost": 0.41943656678558133,
+    "time": 0.6711100780341813
+   },
+   "gh2": {
+    "cost": 1.0,
+    "time": 1.0
+   },
+   "gh4": {
+    "cost": 1.3827789733800477,
+    "time": 0.6508889583219233
+   },
+   "runson2": {
+    "cost": 0.11925209257106469,
+    "time": 0.8270332248598039
+   },
+   "ubicloud2": {
+    "cost": 0.17128548907126345,
+    "time": 0.8727404639774173
+   },
+   "vitko": {
+    "cost": 0.15803260086594734,
+    "time": 0.5792377804127969
+   },
+   "vitko-opt": {
+    "cost": 0.16147958408171523,
+    "time": 0.45636315928007637
+   }
+  }
+ },
+ "pairwise": {
+  "blacksmith2/ec2-eph": {
+   "cost": 1.257534152551466,
+   "cost_ci95": [
+    1.1837496443619042,
+    1.3574547824834295
+   ],
+   "time": 0.7415128481168579,
+   "time_ci95": [
+    0.71507686423518,
+    0.8213877389518199
+   ]
+  },
+  "blacksmith2/gce-pool": {
+   "cost": 1.17769609328963,
+   "cost_ci95": [
+    1.1018442521812215,
+    1.2804160221548473
+   ],
+   "time": 0.9662280170402078,
+   "time_ci95": [
+    0.9129485536189466,
+    1.1096603072612514
+   ]
+  },
+  "blacksmith2/gh2": {
+   "cost": 0.4819099617883684,
+   "cost_ci95": [
+    0.4348661826361074,
+    0.536828857122815
+   ],
+   "time": 0.6447438856567357,
+   "time_ci95": [
+    0.6055168940216563,
+    0.758511742764654
+   ]
+  },
+  "blacksmith2/gh4": {
+   "cost": 0.34756340037173766,
+   "cost_ci95": [
+    0.31543009242601633,
+    0.3808336255842719
+   ],
+   "time": 1.003649156002983,
+   "time_ci95": [
+    0.9397388785070336,
+    1.1493258653529688
+   ]
+  },
+  "blacksmith2/runson2": {
+   "cost": 3.977530258444203,
+   "cost_ci95": [
+    3.7072896097408585,
+    4.303266755327454
+   ],
+   "time": 0.7787176071243495,
+   "time_ci95": [
+    0.7339282305867808,
+    0.8923526217489367
+   ]
+  },
+  "blacksmith2/ubicloud2": {
+   "cost": 2.785100510641495,
+   "cost_ci95": [
+    2.5439352548792646,
+    3.1657687332410425
+   ],
+   "time": 0.7338084847864207,
+   "time_ci95": [
+    0.6970751865010126,
+    0.8531381388563563
+   ]
+  },
+  "blacksmith2/vitko": {
+   "cost": 3.0704053067197488,
+   "cost_ci95": [
+    2.7513299415934753,
+    3.4223199274551694
+   ],
+   "time": 1.1226360041722971,
+   "time_ci95": [
+    1.0329400114639733,
+    1.3245305803931333
+   ]
+  },
+  "blacksmith2/vitko-opt": {
+   "cost": 3.051026650211543,
+   "cost_ci95": [
+    2.7437579649933017,
+    3.3987429081673
+   ],
+   "time": 1.4779927084000468,
+   "time_ci95": [
+    1.4019115560077478,
+    1.7641848919132583
+   ]
+  },
+  "ec2-eph/blacksmith2": {
+   "cost": 0.7952070311339507,
+   "cost_ci95": [
+    0.7366727885922857,
+    0.844773221063869
+   ],
+   "time": 1.3485942995318216,
+   "time_ci95": [
+    1.2174518227872468,
+    1.3984510617846448
+   ]
+  },
+  "ec2-eph/gce-pool": {
+   "cost": 0.936512213922899,
+   "cost_ci95": [
+    0.8838066748436586,
+    1.0117063404703186
+   ],
+   "time": 1.30304959582836,
+   "time_ci95": [
+    1.2539797751086759,
+    1.3904461380692055
+   ]
+  },
+  "ec2-eph/gh2": {
+   "cost": 0.3832181899876041,
+   "cost_ci95": [
+    0.35795451170615605,
+    0.4048864428629014
+   ],
+   "time": 0.8694979288546704,
+   "time_ci95": [
+    0.8334114330461212,
+    0.9465331580314131
+   ]
+  },
+  "ec2-eph/gh4": {
+   "cost": 0.27638485974043014,
+   "cost_ci95": [
+    0.2593578366574657,
+    0.2927910224415193
+   ],
+   "time": 1.3535155305155466,
+   "time_ci95": [
+    1.2907900791459221,
+    1.4569263886138362
+   ]
+  },
+  "ec2-eph/runson2": {
+   "cost": 3.1629600280628702,
+   "cost_ci95": [
+    3.0504971290780554,
+    3.2844264043351488
+   ],
+   "time": 1.0501741259129582,
+   "time_ci95": [
+    1.012567945776554,
+    1.1185230904860943
+   ]
+  },
+  "ec2-eph/ubicloud2": {
+   "cost": 2.2147315084768735,
+   "cost_ci95": [
+    2.1020758630600334,
+    2.354069644741903
+   ],
+   "time": 0.9896099395310504,
+   "time_ci95": [
+    0.9520232800248852,
+    1.0683966416968056
+   ]
+  },
+  "ec2-eph/vitko": {
+   "cost": 2.4416078883345387,
+   "cost_ci95": [
+    2.2628500585774516,
+    2.589490653473484
+   ],
+   "time": 1.5139805156759423,
+   "time_ci95": [
+    1.4166458283202223,
+    1.6427578015270834
+   ]
+  },
+  "ec2-eph/vitko-opt": {
+   "cost": 2.426197844425284,
+   "cost_ci95": [
+    2.2572261395191946,
+    2.5689717772196863
+   ],
+   "time": 1.9932125412979012,
+   "time_ci95": [
+    1.9167004989724228,
+    2.183521875232749
+   ]
+  },
+  "gce-pool/blacksmith2": {
+   "cost": 0.8491154939698612,
+   "cost_ci95": [
+    0.780996162736134,
+    0.9075692849782085
+   ],
+   "time": 1.0349523946358377,
+   "time_ci95": [
+    0.9011766877040936,
+    1.095351973598905
+   ]
+  },
+  "gce-pool/ec2-eph": {
+   "cost": 1.067791733127709,
+   "cost_ci95": [
+    0.9884291122854733,
+    1.1314691645979253
+   ],
+   "time": 0.7674304978117822,
+   "time_ci95": [
+    0.7191936261470951,
+    0.7974610275791235
+   ]
+  },
+  "gce-pool/gh2": {
+   "cost": 0.4091972152529274,
+   "cost_ci95": [
+    0.38622402991145527,
+    0.43962827857967535
+   ],
+   "time": 0.6672792283872533,
+   "time_ci95": [
+    0.658397792801653,
+    0.691589797860649
+   ]
+  },
+  "gce-pool/gh4": {
+   "cost": 0.29512146839249265,
+   "cost_ci95": [
+    0.27977254523302814,
+    0.3131959785347491
+   ],
+   "time": 1.0387290973795245,
+   "time_ci95": [
+    1.0164438605249928,
+    1.0653496902505366
+   ]
+  },
+  "gce-pool/runson2": {
+   "cost": 3.377382570178919,
+   "cost_ci95": [
+    3.196933320631168,
+    3.5691567355620464
+   ],
+   "time": 0.8059356522384349,
+   "time_ci95": [
+    0.7993972046266103,
+    0.8151306266082612
+   ]
+  },
+  "gce-pool/ubicloud2": {
+   "cost": 2.3648719958490663,
+   "cost_ci95": [
+    2.187227303856001,
+    2.569058823166257
+   ],
+   "time": 0.7594568485338017,
+   "time_ci95": [
+    0.73530358457628,
+    0.7900513551944086
+   ]
+  },
+  "gce-pool/vitko": {
+   "cost": 2.6071287187030228,
+   "cost_ci95": [
+    2.465692239889373,
+    2.802608572346348
+   ],
+   "time": 1.1618748208225271,
+   "time_ci95": [
+    1.1166197091598702,
+    1.2102206892874139
+   ]
+  },
+  "gce-pool/vitko-opt": {
+   "cost": 2.5906740012095852,
+   "cost_ci95": [
+    2.446426885359965,
+    2.786267399649185
+   ],
+   "time": 1.5296520928129358,
+   "time_ci95": [
+    1.4786517910788342,
+    1.5922743997934916
+   ]
+  },
+  "gh2/blacksmith2": {
+   "cost": 2.0750764235895827,
+   "cost_ci95": [
+    1.8627910685472362,
+    2.299557978957752
+   ],
+   "time": 1.551003463928007,
+   "time_ci95": [
+    1.3183711622334608,
+    1.6514815852196851
+   ]
+  },
+  "gh2/ec2-eph": {
+   "cost": 2.609479471818253,
+   "cost_ci95": [
+    2.469828313142422,
+    2.7936510570439586
+   ],
+   "time": 1.1500889959763687,
+   "time_ci95": [
+    1.0564870248244498,
+    1.1998875469799872
+   ]
+  },
+  "gh2/gce-pool": {
+   "cost": 2.4438093973388693,
+   "cost_ci95": [
+    2.2746489452833494,
+    2.5891708504843587
+   ],
+   "time": 1.498623001373652,
+   "time_ci95": [
+    1.4459438284210082,
+    1.5188386275695807
+   ]
+  },
+  "gh2/gh4": {
+   "cost": 0.7212206178140196,
+   "cost_ci95": [
+    0.7020783320768966,
+    0.7407859839554292
+   ],
+   "time": 1.5566633175290474,
+   "time_ci95": [
+    1.4951007070401912,
+    1.5910033065880107
+   ]
+  },
+  "gh2/runson2": {
+   "cost": 8.253679263411746,
+   "cost_ci95": [
+    7.996995764087596,
+    8.55833309564689
+   ],
+   "time": 1.2077937060715949,
+   "time_ci95": [
+    1.1646444899291442,
+    1.2260994252930415
+   ]
+  },
+  "gh2/ubicloud2": {
+   "cost": 5.7792964069594746,
+   "cost_ci95": [
+    5.570350901056528,
+    5.976467394033435
+   ],
+   "time": 1.1381395017635008,
+   "time_ci95": [
+    1.0856523879107465,
+    1.1806336905059953
+   ]
+  },
+  "gh2/vitko": {
+   "cost": 6.371325662838491,
+   "cost_ci95": [
+    6.275156274406843,
+    6.462684118080755
+   ],
+   "time": 1.7412123312015297,
+   "time_ci95": [
+    1.6602912333485826,
+    1.797576889270669
+   ]
+  },
+  "gh2/vitko-opt": {
+   "cost": 6.331113469597473,
+   "cost_ci95": [
+    6.233217707802118,
+    6.422130067918095
+   ],
+   "time": 2.2923718103888095,
+   "time_ci95": [
+    2.1786564500013337,
+    2.362712775783039
+   ]
+  },
+  "gh4/blacksmith2": {
+   "cost": 2.8771729098358643,
+   "cost_ci95": [
+    2.62581855390904,
+    3.170274568000185
+   ],
+   "time": 0.996364111919831,
+   "time_ci95": [
+    0.8700752591116494,
+    1.0641253894030782
+   ]
+  },
+  "gh4/ec2-eph": {
+   "cost": 3.6181431969144793,
+   "cost_ci95": [
+    3.4154052664158567,
+    3.855676824306452
+   ],
+   "time": 0.7388167903910976,
+   "time_ci95": [
+    0.6863764757641442,
+    0.7747193104111025
+   ]
+  },
+  "gh4/gce-pool": {
+   "cost": 3.388435295632455,
+   "cost_ci95": [
+    3.192889016902837,
+    3.5743321395183827
+   ],
+   "time": 0.962714920110326,
+   "time_ci95": [
+    0.9386589297693558,
+    0.9838221655294725
+   ]
+  },
+  "gh4/gh2": {
+   "cost": 1.3865382870375302,
+   "cost_ci95": [
+    1.3499175492773452,
+    1.424342490459159
+   ],
+   "time": 0.6423996690481145,
+   "time_ci95": [
+    0.6285342060143753,
+    0.6688512655357152
+   ]
+  },
+  "gh4/runson2": {
+   "cost": 11.444042307648106,
+   "cost_ci95": [
+    11.120319867582793,
+    11.816017024507994
+   ],
+   "time": 0.7758862770587883,
+   "time_ci95": [
+    0.7580156078342574,
+    0.7918933013703663
+   ]
+  },
+  "gh4/ubicloud2": {
+   "cost": 8.013215740387743,
+   "cost_ci95": [
+    7.628551286711311,
+    8.387289034331214
+   ],
+   "time": 0.7311404392634588,
+   "time_ci95": [
+    0.699052610417614,
+    0.7680859565564473
+   ]
+  },
+  "gh4/vitko": {
+   "cost": 8.83408697071034,
+   "cost_ci95": [
+    8.626580204472605,
+    9.04579830421041
+   ],
+   "time": 1.1185542253063587,
+   "time_ci95": [
+    1.066502247508157,
+    1.1727666576367792
+   ]
+  },
+  "gh4/vitko-opt": {
+   "cost": 8.778331225175915,
+   "cost_ci95": [
+    8.574569069519693,
+    8.984830630179903
+   ],
+   "time": 1.4726188923289985,
+   "time_ci95": [
+    1.4054417484711013,
+    1.548543206678084
+   ]
+  },
+  "runson2/blacksmith2": {
+   "cost": 0.251412292308028,
+   "cost_ci95": [
+    0.23238159685506135,
+    0.2697388403035256
+   ],
+   "time": 1.284162565288337,
+   "time_ci95": [
+    1.1206332298290742,
+    1.3625310464109233
+   ]
+  },
+  "runson2/ec2-eph": {
+   "cost": 0.3161595439485974,
+   "cost_ci95": [
+    0.3044671662243131,
+    0.3278154207942122
+   ],
+   "time": 0.9522230412320053,
+   "time_ci95": [
+    0.8940360807298398,
+    0.9875880469762452
+   ]
+  },
+  "runson2/gce-pool": {
+   "cost": 0.29608727445615507,
+   "cost_ci95": [
+    0.2801782253035549,
+    0.3127997677219247
+   ],
+   "time": 1.2407938490158164,
+   "time_ci95": [
+    1.226797236373898,
+    1.2509425779987582
+   ]
+  },
+  "runson2/gh2": {
+   "cost": 0.12115808817928787,
+   "cost_ci95": [
+    0.11684518338304858,
+    0.12504695882142836
+   ],
+   "time": 0.827955962158924,
+   "time_ci95": [
+    0.8155945426406781,
+    0.85863111767463
+   ]
+  },
+  "runson2/gh4": {
+   "cost": 0.08738171120983146,
+   "cost_ci95": [
+    0.08463088686599467,
+    0.08992547084145841
+   ],
+   "time": 1.288848674822265,
+   "time_ci95": [
+    1.2627963871822498,
+    1.3192340496292174
+   ]
+  },
+  "runson2/ubicloud2": {
+   "cost": 0.7002085036886376,
+   "cost_ci95": [
+    0.6762456151764781,
+    0.7339354960511864
+   ],
+   "time": 0.9423293862536777,
+   "time_ci95": [
+    0.9105929543993736,
+    0.9804350360507121
+   ]
+  },
+  "runson2/vitko": {
+   "cost": 0.7719376364771457,
+   "cost_ci95": [
+    0.7419501507828465,
+    0.796229089106662
+   ],
+   "time": 1.4416471310029455,
+   "time_ci95": [
+    1.382327074291361,
+    1.4986689564817737
+   ]
+  },
+  "runson2/vitko-opt": {
+   "cost": 0.7670656040225678,
+   "cost_ci95": [
+    0.7399869590564583,
+    0.7909019881721998
+   ],
+   "time": 1.8979829078964612,
+   "time_ci95": [
+    1.8298971153631658,
+    1.9785457272332658
+   ]
+  },
+  "ubicloud2/blacksmith2": {
+   "cost": 0.3590534690504469,
+   "cost_ci95": [
+    0.3158790436908374,
+    0.3930917652416789
+   ],
+   "time": 1.362753389654599,
+   "time_ci95": [
+    1.17214312522505,
+    1.4345654806912644
+   ]
+  },
+  "ubicloud2/ec2-eph": {
+   "cost": 0.4515219999230178,
+   "cost_ci95": [
+    0.42479626817580063,
+    0.4757202238702922
+   ],
+   "time": 1.010499147243684,
+   "time_ci95": [
+    0.9359819766112936,
+    1.0503944819267854
+   ]
+  },
+  "ubicloud2/gce-pool": {
+   "cost": 0.4228558677828004,
+   "cost_ci95": [
+    0.3892476073280533,
+    0.4571998521824415
+   ],
+   "time": 1.3167305054007847,
+   "time_ci95": [
+    1.265740503358582,
+    1.3599824902451028
+   ]
+  },
+  "ubicloud2/gh2": {
+   "cost": 0.173031443550082,
+   "cost_ci95": [
+    0.16732292412110183,
+    0.17952190405643903
+   ],
+   "time": 0.8786269156377937,
+   "time_ci95": [
+    0.8470027647369374,
+    0.9211051448287981
+   ]
+  },
+  "ubicloud2/gh4": {
+   "cost": 0.12479384461844178,
+   "cost_ci95": [
+    0.11922803612905253,
+    0.13108648843240636
+   ],
+   "time": 1.3677262893670423,
+   "time_ci95": [
+    1.3019376171123596,
+    1.4305074971465366
+   ]
+  },
+  "ubicloud2/runson2": {
+   "cost": 1.4281460375475117,
+   "cost_ci95": [
+    1.3625175582610412,
+    1.4787526566822058
+   ],
+   "time": 1.0612000586924255,
+   "time_ci95": [
+    1.0199553904446808,
+    1.098185523154037
+   ]
+  },
+  "ubicloud2/vitko": {
+   "cost": 1.102439676768627,
+   "cost_ci95": [
+    1.0661919920434917,
+    1.1431842967563415
+   ],
+   "time": 1.5298760200340926,
+   "time_ci95": [
+    1.4510519223706333,
+    1.5943899941698885
+   ]
+  },
+  "ubicloud2/vitko-opt": {
+   "cost": 1.0954817029238189,
+   "cost_ci95": [
+    1.0609586673037392,
+    1.1346411021266716
+   ],
+   "time": 2.014139573256945,
+   "time_ci95": [
+    1.9547548187480526,
+    2.0900008008739777
+   ]
+  },
+  "vitko-opt/blacksmith2": {
+   "cost": 0.3277585267669376,
+   "cost_ci95": [
+    0.2942264322942214,
+    0.3644636344614431
+   ],
+   "time": 0.676593324389616,
+   "time_ci95": [
+    0.5668340125038085,
+    0.7133117604448292
+   ]
+  },
+  "vitko-opt/ec2-eph": {
+   "cost": 0.4121675411993779,
+   "cost_ci95": [
+    0.38926079642843814,
+    0.4430216284015244
+   ],
+   "time": 0.5017026429849972,
+   "time_ci95": [
+    0.4579757190965857,
+    0.5217299210556531
+   ]
+  },
+  "vitko-opt/gce-pool": {
+   "cost": 0.38599993651578707,
+   "cost_ci95": [
+    0.35890309744302745,
+    0.4087594058063434
+   ],
+   "time": 0.6537434261676207,
+   "time_ci95": [
+    0.6280324547895219,
+    0.676291744980394
+   ]
+  },
+  "vitko-opt/gh2": {
+   "cost": 0.15795009911006683,
+   "cost_ci95": [
+    0.15571157691069443,
+    0.16043078340781391
+   ],
+   "time": 0.43622940897636925,
+   "time_ci95": [
+    0.4232423044682284,
+    0.45899848046716574
+   ]
+  },
+  "vitko-opt/gh4": {
+   "cost": 0.11391686806394802,
+   "cost_ci95": [
+    0.11129870347541211,
+    0.11662393665415331
+   ],
+   "time": 0.6790623189808905,
+   "time_ci95": [
+    0.6457682263481822,
+    0.7115200619933879
+   ]
+  },
+  "vitko-opt/runson2": {
+   "cost": 1.3036694576785886,
+   "cost_ci95": [
+    1.264379170817795,
+    1.3513751667162515
+   ],
+   "time": 0.5268751345649905,
+   "time_ci95": [
+    0.5054217278052844,
+    0.5464788110792617
+   ]
+  },
+  "vitko-opt/ubicloud2": {
+   "cost": 0.9128404402657021,
+   "cost_ci95": [
+    0.8813359556049163,
+    0.9425437868800974
+   ],
+   "time": 0.4964899221869513,
+   "time_ci95": [
+    0.47846871618126147,
+    0.511573109029447
+   ]
+  },
+  "vitko-opt/vitko": {
+   "cost": 1.0063515199078519,
+   "cost_ci95": [
+    0.9998293256898663,
+    1.0142710373587718
+   ],
+   "time": 0.7595680261424094,
+   "time_ci95": [
+    0.7287619264336321,
+    0.7801488191833442
+   ]
+  },
+  "vitko/blacksmith2": {
+   "cost": 0.32568990087772637,
+   "cost_ci95": [
+    0.29219944985289126,
+    0.3634605886063825
+   ],
+   "time": 0.890760670674628,
+   "time_ci95": [
+    0.7549844571540509,
+    0.9681104313319953
+   ]
+  },
+  "vitko/ec2-eph": {
+   "cost": 0.40956617349484264,
+   "cost_ci95": [
+    0.38617633112254646,
+    0.4419205754330104
+   ],
+   "time": 0.6605104819024259,
+   "time_ci95": [
+    0.608732461442326,
+    0.7058927362173747
+   ]
+  },
+  "vitko/gce-pool": {
+   "cost": 0.3835637238875852,
+   "cost_ci95": [
+    0.35681044088115477,
+    0.4055656192011
+   ],
+   "time": 0.8606779164833515,
+   "time_ci95": [
+    0.8262955747259727,
+    0.8955600477018817
+   ]
+  },
+  "vitko/gh2": {
+   "cost": 0.15695320768684262,
+   "cost_ci95": [
+    0.15473446972418925,
+    0.15935858109113957
+   ],
+   "time": 0.5743124960009596,
+   "time_ci95": [
+    0.556304437481638,
+    0.6023039697677781
+   ]
+  },
+  "vitko/gh4": {
+   "cost": 0.11319788941579677,
+   "cost_ci95": [
+    0.11054856258898291,
+    0.11592079089793413
+   ],
+   "time": 0.8940111953232415,
+   "time_ci95": [
+    0.8526845417103712,
+    0.9376445313139707
+   ]
+  },
+  "vitko/runson2": {
+   "cost": 1.29544143561085,
+   "cost_ci95": [
+    1.2559199527889238,
+    1.3477994430581395
+   ],
+   "time": 0.693651017988227,
+   "time_ci95": [
+    0.6672587669752061,
+    0.7234177920729569
+   ]
+  },
+  "vitko/ubicloud2": {
+   "cost": 0.9070791092453337,
+   "cost_ci95": [
+    0.8747495944769451,
+    0.9379173802363246
+   ],
+   "time": 0.6536477380550847,
+   "time_ci95": [
+    0.6271991192382689,
+    0.6891552153366148
+   ]
+  },
+  "vitko/vitko-opt": {
+   "cost": 0.993688567282699,
+   "cost_ci95": [
+    0.9859297595683899,
+    1.0001707034452842
+   ],
+   "time": 1.3165377761866357,
+   "time_ci95": [
+    1.2818067212538802,
+    1.372190236248108
+   ]
+  }
+ },
+ "per_session": {
+  "s1": {
+   "blacksmith2": [
+    0.7697724366197981,
+    0.5398973497784328
+   ],
+   "ec2-eph": [
+    0.9376872784495835,
+    0.3975271582085509
+   ],
+   "gce-pool": [
+    0.6820170103549372,
+    0.4333621007730848
+   ],
+   "gh2": [
+    1.0,
+    1.0
+   ],
+   "gh4": [
+    0.6587146532454736,
+    1.4135559474928603
+   ],
+   "runson2": [
+    0.8460694145204803,
+    0.12488914248978492
+   ],
+   "ubicloud2": [
+    0.8869143600176707,
+    0.16984444547246988
+   ],
+   "vitko": [
+    0.5703516083198632,
+    0.15681303509195962
+   ],
+   "vitko-opt": [
+    0.4273909171415561,
+    0.15787099755913783
+   ]
+  },
+  "s2": {
+   "blacksmith2": [
+    0.6575220995745887,
+    0.46812951466970104
+   ],
+   "ec2-eph": [
+    0.900420307796759,
+    0.39450362144761214
+   ],
+   "gce-pool": [
+    0.6716884538912629,
+    0.39107551642288796
+   ],
+   "gh2": [
+    1.0,
+    1.0
+   ],
+   "gh4": [
+    0.641642899945954,
+    1.3651648693824414
+   ],
+   "runson2": [
+    0.8322745680671365,
+    0.12205224897253762
+   ],
+   "ubicloud2": [
+    0.909395020518309,
+    0.17947562326561797
+   ],
+   "vitko": [
+    0.5849553601822104,
+    0.1565409559700424
+   ],
+   "vitko-opt": [
+    0.45462324283061833,
+    0.15812205860833697
+   ]
+  },
+  "s3": {
+   "blacksmith2": [
+    0.6010234098596714,
+    0.4332075963566498
+   ],
+   "ec2-eph": [
+    0.8310741622671581,
+    0.35645311813139996
+   ],
+   "gce-pool": [
+    0.660591253904477,
+    0.3940614085341766
+   ],
+   "gh2": [
+    1.0,
+    1.0
+   ],
+   "gh4": [
+    0.6400006467996495,
+    1.3800375666735158
+   ],
+   "runson2": [
+    0.8219078888632573,
+    0.1168240188116947
+   ],
+   "ubicloud2": [
+    0.8500044237736918,
+    0.16974698006187444
+   ],
+   "vitko": [
+    0.5693306694609352,
+    0.15781157479438473
+   ],
+   "vitko-opt": [
+    0.42731992264649993,
+    0.15816882510441632
+   ]
+  }
+ },
+ "reference": "gh2",
+ "reference_jobs_per_month": 100000,
+ "schema": "runner-benchmark/v2",
+ "workloads": [
+  "burst",
+  "cli",
+  "codex-lint",
+  "container",
+  "fd",
+  "flask",
+  "guava",
+  "monorepo",
+  "pydantic",
+  "ts",
+  "vite",
+  "vue"
+ ]
+}

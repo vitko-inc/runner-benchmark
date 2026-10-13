@@ -93,7 +93,7 @@ def job_cost(provider, prices, workload, job, extra, copies):
         raise ValueError(rule)
     if provider.get("split_billing") and copies is not None:
         split = [s for s in job["steps"] if "(split)" in (s.get("name") or "") and s.get("completed_at")]
-        cps = copies.get(job.get("runner_name") or "")
+        cps = copies.get(str(job.get("id"))) or copies.get(job.get("runner_name") or "")
         if split and cps:
             # Every split step of the job (vite has four): the job is billed for its own time
             # outside those steps plus the run time of every copy that ran them.
@@ -131,7 +131,8 @@ def main():
         copies = defaultdict(list)
         for line in open(a.split_copies):
             c = json.loads(line)
-            copies[c["parent_runner"]].append((c["finished_ms"] - c["started_ms"]) / 1000)
+            # keyed by the job's public id when the file has one (published form), else by the parent runner name
+            copies[str(c["job_id"]) if "job_id" in c else c["parent_runner"]].append((c["finished_ms"] - c["started_ms"]) / 1000)
 
     # All-in pricing (METHOD.md, "Cost"): fixed monthly costs of a self-hosted-in-your-cloud
     # option (control plane, launcher/controller hosts, licence) are spread over a reference
