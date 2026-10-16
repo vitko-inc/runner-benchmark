@@ -1,13 +1,43 @@
-# Runner benchmark
+# Runner benchmark: an open, reproducible benchmark of GitHub Actions runners
 
 An open benchmark of GitHub Actions runners: GitHub-hosted runners, third-party runner
 services and self-hosted cloud VMs, measured on the CI jobs of well-known open-source projects.
+Time and cost per job, with the method, the workflows, the analysis and every raw job record in
+this repository.
 
 **Maintained by Vitko**, which sells one of the products measured here (Vitko Runners). The
 method, the workflows, the analysis and every raw job record are in this repository so that
 anyone can check or rerun the numbers. Corrections are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md).
 
-**Status:** method and harness in place; no result set has been published yet.
+## Results: CI Bench v1
+
+**Measured October 7–11, 2026** (three sessions, 930 measured runs per configuration):
+Vitko Runners with warm starts and test parallelization ran 2.29x as fast as GitHub-hosted
+2 vCPU at 84% lower cost per job; plain Vitko Runners ran 1.74x as fast at 84% lower cost. One
+self-hosted configuration, RunsOn on AWS, has a lower cost index at high volume (see the cost
+notes in the results).
+
+Time and cost per job relative to GitHub-hosted 2 vCPU (= 1.00); geometric mean over 12
+workloads; lower is better; 95% intervals from a block bootstrap over sessions and rounds. Sorted
+by time index.
+
+| Configuration | Time index | 95% CI | Cost index | 95% CI | Faster than GitHub 2 vCPU | Lower cost | Time x cost |
+|---|---|---|---|---|---|---|---|
+| Vitko Runners, recommended configuration (warm starts + split tests) | 0.436 | 0.423–0.459 | 0.158 | 0.156–0.160 | 2.29x (2.18–2.36x) | 84% | 0.069 |
+| Vitko Runners | 0.574 | 0.556–0.602 | 0.157 | 0.155–0.159 | 1.74x (1.66–1.80x) | 84% | 0.090 |
+| GitHub-hosted, 4 vCPU | 0.642 | 0.629–0.669 | 1.387 | 1.350–1.424 | 1.56x (1.50–1.59x) | 39% higher | 0.891 |
+| Blacksmith, 2 vCPU | 0.645 | 0.606–0.759 | 0.482 | 0.435–0.537 | 1.55x (1.32–1.65x) | 52% | 0.311 |
+| Self-hosted: GCE n4d-standard-2 always-on pool (on-demand, U = 50%, all-in) | 0.667 | 0.658–0.692 | 0.409 | 0.386–0.440 | 1.50x (1.45–1.52x) | 59% | 0.273 |
+| RunsOn (self-hosted on AWS, defaults: spot), 2 vCPU | 0.828 | 0.816–0.859 | 0.121 | 0.117–0.125 | 1.21x (1.16–1.23x) | 88% | 0.100 |
+| Self-hosted: AWS EC2 m8a.large, one VM per job (on-demand) | 0.869 | 0.833–0.947 | 0.383 | 0.358–0.405 | 1.15x (1.06–1.20x) | 62% | 0.333 |
+| Ubicloud standard, 2 vCPU | 0.879 | 0.847–0.921 | 0.173 | 0.167–0.180 | 1.14x (1.09–1.18x) | 83% | 0.152 |
+| GitHub-hosted, 2 vCPU | 1.000 | 1.000–1.000 | 1.000 | 1.000–1.000 | — | — | 1.000 |
+
+- Full results, per-workload tables, limitations and pairwise ratios: [results/v1/](results/v1/)
+  (tag [`results-v1`](https://github.com/vitko-inc/runner-benchmark/tree/results-v1/results/v1)).
+- Every measured run: [results/v1/out/](results/v1/out/) (`runs.csv`, `summary.csv`, `results.json`).
+- Dated changes after pre-registration: [results/v1/deviations.md](results/v1/deviations.md).
+- The same results, with charts: <https://runners.vitko.inc/benchmarks/>.
 
 ## What is measured
 
