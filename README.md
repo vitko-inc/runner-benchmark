@@ -17,7 +17,23 @@ Vitko Runners with warm starts and test parallelization ran 2.29x as fast as Git
 self-hosted configuration, RunsOn on AWS, has a lower cost index at high volume (see the cost
 notes in the results).
 
-Time and cost per job relative to GitHub-hosted 2 vCPU (= 1.00); geometric mean over 12
+**At a glance:** time and cost per job of each runner against GitHub-hosted 2 vCPU, at list price
+(self-hosted options all-in at 100,000 jobs a month; RunsOn's cost index is 0.250 at 10,000 and
+1.431 at 1,000 jobs a month, because its fixed monthly costs are spread over fewer jobs).
+
+| Runner | Time per job vs GitHub-hosted 2 vCPU | Cost per job vs GitHub-hosted 2 vCPU |
+|---|---|---|
+| Vitko Runners, warm starts + test parallelization | 2.29x faster | 84% lower |
+| Vitko Runners | 1.74x faster | 84% lower |
+| GitHub-hosted, 4 vCPU | 1.56x faster | 39% higher |
+| Blacksmith, 2 vCPU | 1.55x faster | 52% lower |
+| Self-hosted Google Cloud pool (all-in) | 1.50x faster | 59% lower |
+| RunsOn, self-hosted on AWS (all-in) | 1.21x faster | 88% lower |
+| Self-hosted AWS EC2, one VM per job (all-in) | 1.15x faster | 62% lower |
+| Ubicloud standard, 2 vCPU | 1.14x faster | 83% lower |
+| GitHub-hosted, 2 vCPU | baseline | baseline |
+
+**Full table.** Time and cost per job relative to GitHub-hosted 2 vCPU (= 1.00); geometric mean over 12
 workloads; lower is better; 95% intervals from a block bootstrap over sessions and rounds. Sorted
 by time index.
 
