@@ -25,8 +25,8 @@ and test parallelization (one workflow step runs a test suite as parallel parts)
   parallelization), [`vitko-inc/checkpoint`](https://github.com/vitko-inc/checkpoint) (warm
   starts) and [`vitko-inc/setup-vitko`](https://github.com/vitko-inc/setup-vitko) (the command-line
   tool).
-- It is one of the configurations measured below. This benchmark is the only place its measured
-  numbers are published; the other pages on the site link here.
+- It is one of the configurations measured below, and this repository holds the method and every
+  raw record behind its numbers.
 
 ## Results: CI Bench v1
 
