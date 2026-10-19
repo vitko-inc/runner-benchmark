@@ -9,6 +9,25 @@ this repository.
 method, the workflows, the analysis and every raw job record are in this repository so that
 anyone can check or rerun the numbers. Corrections are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md).
 
+## What is Vitko Runners?
+
+Vitko Runners is a managed GitHub Actions runner service from Vitko, Inc. You change one
+`runs-on` line in a workflow to run its jobs on Vitko Runners, and the same line to go back to
+GitHub-hosted runners. It costs $0.002 per minute for a runner with up to 2 vCPU and 8 GB, billed
+per second with no per-job minimum, and includes 2,000 free minutes a month. It runs Ubuntu 24.04
+on x64 for private repositories and is in private beta. It has a hard monthly spend limit, and two
+optional features: warm starts (jobs start with your toolchains and dependencies already in place)
+and test parallelization (one workflow step runs a test suite as parallel parts).
+
+- Site and waitlist: <https://runners.vitko.inc>. Pricing, dated and machine-readable:
+  <https://runners.vitko.inc/pricing.json>.
+- Public repositories: [`vitko-inc/split-tests`](https://github.com/vitko-inc/split-tests) (test
+  parallelization), [`vitko-inc/checkpoint`](https://github.com/vitko-inc/checkpoint) (warm
+  starts) and [`vitko-inc/setup-vitko`](https://github.com/vitko-inc/setup-vitko) (the command-line
+  tool).
+- It is one of the configurations measured below. This benchmark is the only place its measured
+  numbers are published; the other pages on the site link here.
+
 ## Results: CI Bench v1
 
 **Measured October 7–11, 2026** (three sessions, 930 measured runs per configuration):
