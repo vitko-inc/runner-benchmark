@@ -31,8 +31,8 @@ not re-indexed against v2's reference.
   - Namespace: the runner profile `namespace-profile-rb-2x8` (Linux x64, 2 vCPU / 8 GB RAM), only
     `runs-on` changed. **No Namespace accelerator is configured:** `actions/cache` is served by
     GitHub's cache service, and Namespace Cache Volumes (`nscloud-cache-action`) are not used. This
-    is a limitation published with the results: Namespace documents Cache Volumes as its fastest
-    caching option.
+    is a limitation published with the results: Namespace documents Cache Volumes as the option with
+    local, no-transfer cache hits.
 - **Sessions:** 3 sessions on 3 different days within 7 days (weekday US working hours, weekday
   night UTC, weekend). Each: 2 warm-up rounds (discarded), then 10 measured rounds.
 - **Rounds and burst:** as v1. Every workload is dispatched to every provider within seconds, in
