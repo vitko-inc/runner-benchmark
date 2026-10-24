@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-24",
+  "note": "Public list prices read on the date, Linux x64, for the size each provider is tested at. Free minutes, plans and discounts are excluded from per-run cost.",
+  "providers": {
+    "github-2vcpu": {
+      "usd_per_min": 0.006,
+      "billing": "job-rounded-up-to-minute",
+      "source": "https://docs.github.com/en/billing/reference/actions-runner-pricing"
+    },
+    "namespace-2vcpu-8gb": {
+      "usd_per_min": 0.006,
+      "billing": "job-rounded-up-to-minute",
+      "source": "https://namespace.so/pricing",
+      "note": "Linux 2 vCPU / 8 GB is 4 unit minutes per minute; overage (pay as you go) rate $0.006 per minute, plan-prepaid rate $0.004 per minute. Seconds are billed as whole minutes (150 seconds as 3 minutes). The pay-as-you-go rate is used."
+    },
+    "depot-2vcpu": {
+      "usd_per_min": 0.006,
+      "billing": "per-second",
+      "source": "https://depot.dev/docs/github-actions/runner-types"
+    }
+  }
+}
