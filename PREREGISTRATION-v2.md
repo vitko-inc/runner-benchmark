@@ -29,10 +29,16 @@ not re-indexed against v2's reference.
   repository copy so no provider's cache serves another:
   - GitHub-hosted 2 vCPU: the provider's default with only `runs-on` changed.
   - Namespace: the runner profile `namespace-profile-rb-2x8` (Linux x64, 2 vCPU / 8 GB RAM), only
-    `runs-on` changed. **No Namespace accelerator is configured:** `actions/cache` is served by
-    GitHub's cache service, and Namespace Cache Volumes (`nscloud-cache-action`) are not used. This
-    is a limitation published with the results: Namespace documents Cache Volumes as the option with
-    local, no-transfer cache hits.
+    `runs-on` changed. **Accelerator, by the v1 rule.** v1 ([PREREGISTRATION.md](PREREGISTRATION.md),
+    "Providers' documented accelerators") configures each provider's documented accelerator
+    wherever it applies, and does not use build-output persistence (sticky disks). For Namespace
+    that is its Cache Volumes: enabled on the runner profile at the 20 GB minimum, with the profile's
+    four built-in layers on (container images, git checkouts, toolchain downloads, action
+    downloads). No workflow is changed: `nscloud-cache-action` and its path caches (build-output
+    persistence, excluded in v1) are not used, and the workloads' own `actions/cache` and setup-action
+    caches run unchanged. The profile is recorded in [providers/namespace2.json](providers/namespace2.json).
+    A limitation published with the results: Cache Volumes need a ramp-up before hit rates settle,
+    which is why the first run of a session is reported separately (below).
 - **Sessions:** 3 sessions on 3 different days within 7 days (weekday US working hours, weekday
   night UTC, weekend). Each: 2 warm-up rounds (discarded), then 10 measured rounds.
 - **Rounds and burst:** as v1. Every workload is dispatched to every provider within seconds, in

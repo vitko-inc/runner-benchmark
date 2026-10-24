@@ -5,5 +5,15 @@
  "track": "A",
  "price_ref": "namespace-2vcpu-8gb",
  "runs_on": "namespace-profile-rb-2x8",
- "accelerators": "None configured. actions/cache is served by GitHub's cache service; Namespace Cache Volumes (nscloud-cache-action) are not used in v2 (listed as a limitation)."
+ "accelerators": "Cache Volumes enabled on the runner profile at 20 GB, with container images, git checkouts, toolchain downloads and action downloads on. No workflow change; nscloud-cache-action is not used (build-output persistence is excluded, as in v1).",
+ "profile": {
+  "name": "rb-2x8",
+  "cache_volume_gb": 20,
+  "layers": [
+   "container-images",
+   "git-checkouts",
+   "toolchains",
+   "action-downloads"
+  ]
+ }
 }
