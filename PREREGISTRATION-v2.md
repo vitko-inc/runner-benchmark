@@ -58,6 +58,21 @@ pairwise ratios with CIs; leave-one-workload-out; per-session indices; burst dis
 With two measured providers the index is the Namespace-to-GitHub-hosted ratio over all 12
 workloads, and per-workload results are published for every cell.
 
+## Cold first run (added to the fixed analysis)
+
+Round 1 of each session is a warm-up round and is already dispatched, recorded and collected like
+every other round. v2 reports it as its own metric, the **first run of the session**: time per job
+and cost per job for round 1 of each of the 3 sessions, per provider and workload, next to (not
+mixed into) the measured rounds. Round 1 is the first use of that provider's cache in the session
+(the cache may still hold entries from earlier sessions), so it is described as a first run of a
+session, not as a guaranteed empty-cache cold start. It has 3 values per cell, so it is published
+as individual values with no confidence interval, and it does not enter the index.
+
+## Parallelism
+
+Every job in v2 runs on one runner of 2 vCPU / 8 GB, on both providers, with the workload's own
+parallelism unchanged. No arm splits tests across extra runners.
+
 ## Stop rules and spending cap (fixed)
 
 - **Cap:** total benchmark spending for v2 is capped at $150. Estimated spend is $72 to $98. If a
