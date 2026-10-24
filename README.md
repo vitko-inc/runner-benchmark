@@ -73,6 +73,7 @@ by time index.
 - Every measured run: [results/v1/out/](results/v1/out/) (`runs.csv`, `summary.csv`, `results.json`).
 - Dated changes after pre-registration: [results/v1/deviations.md](results/v1/deviations.md).
 - The same results, with charts: <https://runners.vitko.inc/benchmarks/>.
+- The same results, with a page per runner and per workload, a cost calculator and the changelog: <https://cibench.com>.
 
 ## What is measured
 
