@@ -17,6 +17,12 @@ and keeps the reference:
   `depot-ubuntu-24.04` label starts a job on the repository's workflow). If it does not, v2
   reports "Not measured in v2" with the reason and the evidence, and no Depot cells are published.
 
+**Depot start check, before the tag:** failed. One job on `depot-ubuntu-24.04` in
+`vitko-inc/rb-runs-depot` stayed queued with no runner for over 14 minutes, twice (GitHub runs
+40075835037 and 40076526869), with the plan active, the Depot GitHub app installed on the repository
+and Depot's dashboard recording no job. Depot is therefore not in the v2 plan and is reported as
+"Not measured in v2", with this reason.
+
 v2 is not a re-run of v1: its numbers are reported as their own result set, and v1 numbers are
 not re-indexed against v2's reference.
 
