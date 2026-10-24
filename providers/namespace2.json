@@ -1,0 +1,9 @@
+{
+ "id": "namespace2",
+ "name": "Namespace, 2 vCPU",
+ "size": "2 vCPU / 8 GB",
+ "track": "A",
+ "price_ref": "namespace-2vcpu-8gb",
+ "runs_on": "namespace-profile-rb-2x8",
+ "accelerators": "None configured. actions/cache is served by GitHub's cache service; Namespace Cache Volumes (nscloud-cache-action) are not used in v2 (listed as a limitation)."
+}
