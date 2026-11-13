@@ -1,0 +1,36 @@
+{
+  "date": "2026-11-13",
+  "note": "Public list prices read on the date, Linux x64, for the size each provider is tested at. Free minutes, plans and discounts are excluded from per-run cost. A flat monthly price (\"flat-monthly\") is a fixed monthly cost spread over the monthly job volume (METHOD.md, Cost), with the number of plans the volume needs.",
+  "providers": {
+    "github-2vcpu": {
+      "usd_per_min": 0.006,
+      "billing": "job-rounded-up-to-minute",
+      "source": "https://docs.github.com/en/billing/reference/actions-runner-pricing"
+    },
+    "github-4vcpu": {
+      "usd_per_min": 0.012,
+      "billing": "job-rounded-up-to-minute",
+      "source": "https://docs.github.com/en/billing/reference/actions-runner-pricing"
+    },
+    "skipbox-s": {
+      "billing": "flat-monthly",
+      "usd_per_min": null,
+      "usd_per_month": 39,
+      "usd_per_year": 390,
+      "concurrent_jobs": 1,
+      "minutes": "unlimited",
+      "usage_charges": "none",
+      "utilization": 0.5,
+      "hours_per_month": 730,
+      "source": "https://skipbox.dev/pricing",
+      "method": "Plans needed at a monthly volume V of a workload's job = the concurrency V needs: ceil(V x mean job run time / (730 h x 3,600 s x U)), with U = 50% as for the always-on pool (gce-pool). Cost per job = $39 x plans / V. No per-minute price: the plan is billed per month whatever its use. The monthly price is used, not the yearly one."
+    }
+  },
+  "allin": {
+    "reference_jobs_per_month": 100000,
+    "sensitivity_jobs_per_month": [
+      10000,
+      1000
+    ]
+  }
+}
