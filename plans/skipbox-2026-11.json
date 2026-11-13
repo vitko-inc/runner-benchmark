@@ -1,0 +1,84 @@
+{
+  "set": "skipbox-2026-11",
+  "method_version": "1.0",
+  "seed": 20261113,
+  "sessions": [
+    "s1"
+  ],
+  "warmup_rounds": 2,
+  "measured_rounds": 3,
+  "run_timeout_s": 7200,
+  "providers": [
+    "gh4",
+    "skipbox"
+  ],
+  "lanes": [
+    [
+      "fd",
+      "flask",
+      "vue",
+      "pydantic",
+      "cli",
+      "container",
+      "monorepo",
+      "vite",
+      "ts",
+      "codex-lint",
+      "guava"
+    ]
+  ],
+  "bursts": [],
+  "workloads": {
+    "fd": {
+      "id": "fd",
+      "workflow": "wl-fd.yml"
+    },
+    "flask": {
+      "id": "flask",
+      "workflow": "wl-flask.yml",
+      "splittable": true
+    },
+    "vue": {
+      "id": "vue",
+      "workflow": "wl-vue.yml",
+      "splittable": true
+    },
+    "pydantic": {
+      "id": "pydantic",
+      "workflow": "wl-pydantic.yml",
+      "splittable": true
+    },
+    "cli": {
+      "id": "cli",
+      "workflow": "wl-cli.yml",
+      "splittable": true
+    },
+    "container": {
+      "id": "container",
+      "workflow": "wl-container.yml"
+    },
+    "monorepo": {
+      "id": "monorepo",
+      "workflow": "wl-monorepo.yml"
+    },
+    "vite": {
+      "id": "vite",
+      "workflow": "wl-vite.yml",
+      "splittable": true
+    },
+    "ts": {
+      "id": "ts",
+      "workflow": "wl-ts.yml",
+      "splittable": true
+    },
+    "codex-lint": {
+      "id": "codex-lint",
+      "workflow": "wl-codex-lint.yml"
+    },
+    "guava": {
+      "id": "guava",
+      "workflow": "wl-guava.yml"
+    }
+  },
+  "note": "Submitted run for the provider skipbox (CONTRIBUTING.md, Submitting runs). Reduced from plans/pilot.json: one session, 2 warm-up and 3 measured rounds; one lane, so at most one job per provider runs at a time (an S plan runs 1 job at a time, and the Skipbox host serves customers); no burst (20 jobs at once need 20 S plans). gh4 (ubuntu-24.04 in a public repository, GitHub's free 4 vCPU / 16 GB runner) is the side-by-side arm, in its own repository: a 2-core larger runner (gh2 in a public repository) needs an organization on a paid GitHub plan."
+}
