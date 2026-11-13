@@ -1,0 +1,20 @@
+{
+ "id": "skipbox",
+ "name": "Skipbox S, 4 vCPU",
+ "size": "4 vCPU / 8 GB",
+ "track": "A",
+ "price_ref": "skipbox-s",
+ "runs_on": "skipbox",
+ "price_url": "https://skipbox.dev/pricing",
+ "billing": "Flat monthly price per plan, no usage charges: plan S is $39 a month ($390 a year) with unlimited minutes. One S plan runs 1 job at a time; an account's jobs run at once up to the number of plans it holds. Priced in prices/2026-11-13.json with the rule \"flat-monthly\" (METHOD.md, Cost: fixed monthly cost spread over the monthly job volume).",
+ "plan": "S, billed monthly, one plan per job that must run at the same time. A new account starts with a 7-day trial (no card, up to 3,000 job-minutes) at the same size, 1 job at a time, then subscribes to S.",
+ "setup": [
+  "Sign in at https://skipbox.dev and install the Skipbox GitHub App on the organization (on a personal account, the Skipbox (personal) app), covering the run repository.",
+  "Start the trial or subscribe to plan S.",
+  "Dispatch with runs_on = skipbox (the workflows' runs_on input)."
+ ],
+ "terms_publish_url": "https://docs.skipbox.dev/benchmarks#publish-your-own-benchmarks",
+ "hardware": "A customer's own machine runs on a Fluxenic host or on Hetzner Cloud (Finland or Germany). The submitted runs come from Fluxenic's own GitHub account, whose jobs run only on Fluxenic's host home-1 in Japan: an Intel Core Ultra 7 265F (8 performance and 12 efficiency cores, 64 GB), each job in a VM of 4 vCPU / 8 GB with each vCPU pinned to one host core, performance cores first. The same host runs other Skipbox jobs and Fluxenic's own CI at the same time. Hetzner Cloud machines run on other CPUs and were not measured.",
+ "accelerators": "None added to the workflows. By default each plan has its own machine, kept between the account's jobs: Docker images, layers and build cache, package caches, the tool cache, git checkouts with cargo's target/ directories, and an actions/cache store on the machine's disk (actions/cache is served from it). Credentials and processes are removed after every job. Jobs from people without write access, and jobs that find every own machine busy, run on a fresh VM deleted after the job.",
+ "note": "Skipbox is made by Fluxenic Inc. This definition and the submitted runs are Fluxenic's. The account that ran them holds 4 S plans (Fluxenic's own account, not billed), so up to 4 of its jobs can run at once and a job can land on any of its 4 own machines; the harness ran one Skipbox job at a time."
+}
