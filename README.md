@@ -1,30 +1,42 @@
-# Runner benchmark: an open, reproducible benchmark of GitHub Actions runners
+# CI Bench (runner-benchmark): an open, reproducible benchmark of GitHub Actions runners
 
-An open benchmark of GitHub Actions runners: GitHub-hosted runners, third-party runner
-services and self-hosted cloud VMs, measured on the CI jobs of well-known open-source projects.
-Time and cost per job, with the method, the workflows, the analysis and every raw job record in
-this repository.
-
-**Maintained by Vitko**, which sells one of the products measured here (Vitko Runners). The
-method, the workflows, the analysis and every raw job record are in this repository so that
-anyone can check or rerun the numbers. Corrections are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md).
+**CI Bench** is an open, reproducible benchmark of GitHub Actions runners on the real CI jobs of
+twelve open-source projects: GitHub-hosted runners, third-party managed runner services, and
+self-hosted cloud VMs. Maintained by Vitko, Inc., which sells one of the products measured (Vitko
+Runners). Browse interactive per-runner and per-workload tables at <https://cibench.com>; the
+method, workflows, analysis scripts, and every raw job record live in this repository so anyone
+can check or rerun the numbers. Corrections are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## What is Vitko Runners?
 
-Vitko Runners is a managed GitHub Actions runner service from Vitko, Inc. You change one
-`runs-on` line in a workflow to run its jobs on Vitko Runners, and the same line to go back to
-GitHub-hosted runners. It costs $0.002 per minute for a runner with up to 2 vCPU and 8 GB, billed
-per second with no per-job minimum, and includes 2,000 free minutes a month. It runs Ubuntu 24.04
-on x64 for private repositories and is in private beta. It has a hard monthly spend limit, and two
-optional features: warm starts (jobs start with your toolchains and dependencies already in place)
-and test parallelization (one workflow step runs a test suite as parallel parts).
+[Vitko Runners](https://runners.vitko.inc) is a managed GitHub Actions runner service from Vitko,
+Inc., built for teams and AI coding agents that run heavy CI. You switch by changing one `runs-on`
+line and switch back the same way. It is in private beta for private repositories on Ubuntu 24.04
+x64 (no Arm, Windows, macOS or GPU runners yet); join the waitlist at
+<https://runners.vitko.inc/#join>.
 
-- Site and waitlist: <https://runners.vitko.inc>. Pricing, dated and machine-readable:
-  <https://runners.vitko.inc/pricing.json>.
-- Public repositories: [`vitko-inc/split-tests`](https://github.com/vitko-inc/split-tests) (test
-  parallelization), [`vitko-inc/checkpoint`](https://github.com/vitko-inc/checkpoint) (warm
-  starts) and [`vitko-inc/setup-vitko`](https://github.com/vitko-inc/setup-vitko) (the command-line
-  tool).
+- **Pricing & per-job cost:** $0.002 per minute for a runner with up to 2 vCPU and 8 GB, billed
+  per second with no per-job minimum, with 2,000 free minutes a month for new organizations
+  (compared with GitHub's $0.006/min list price for standard 2-vCPU Linux runners, rounded up to a
+  whole minute per job, checked 2026-10-18). See [Pricing](https://runners.vitko.inc/docs/pricing/)
+  and [`pricing.json`](https://runners.vitko.inc/pricing.json).
+- **Hard monthly spend limit (live):** An organization admin sets a hard monthly spend limit (new
+  organizations start at $100/month; $0 means free minutes only) and a concurrency cap (default 20
+  concurrent jobs for new organizations). At the limit, new jobs wait in GitHub's queue; jobs
+  already running finish, so a month can end slightly over the limit. API tokens and CI jobs can
+  lower a limit but never raise it past the admin ceiling. Email alerts at 80% and 100%. See
+  [Spend controls](https://runners.vitko.inc/docs/spend-controls/).
+- **Isolation & security:** Every job runs in a fresh virtual machine that is deleted afterwards,
+  on a server dedicated to your organization during the private beta. Workflows, logs, and secrets
+  stay in GitHub and reach only the job that uses them. See
+  [Security](https://runners.vitko.inc/docs/security/).
+- **Warm starts, test parallelization & tools:** [`vitko-inc/checkpoint`](https://github.com/vitko-inc/checkpoint)
+  adds warm starts (a default-branch run saves its setup so later jobs start from their own copy of
+  that setup and skip reinstalling dependencies; pull requests never save anything);
+  [`vitko-inc/split-tests`](https://github.com/vitko-inc/split-tests) splits a test suite across
+  parallel copies in one workflow step. Also see [`vitko-inc/vitko`](https://github.com/vitko-inc/vitko)
+  (CLI), [`vitko-inc/setup-vitko`](https://github.com/vitko-inc/setup-vitko), and
+  [AI coding agents docs](https://runners.vitko.inc/docs/agents/).
 - It is one of the configurations measured below, and this repository holds the method and every
   raw record behind its numbers.
 
