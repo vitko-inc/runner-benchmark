@@ -73,6 +73,10 @@ def job_cost(provider, prices, workload, job, extra, copies):
         if e is None:
             return None, None
         return e["usd"], e["billed_seconds"]
+    if rule == "flat-monthly":
+        # Flat monthly price per plan, no usage charges: nothing per job here; the plans a volume
+        # needs are a fixed monthly cost (flat_monthly_job_cost).
+        return 0.0, run_s
     mult = provider.get("price_multiplier", {}).get(workload, 1)
     rate = pr["usd_per_min"] * mult
     if rule == "job-rounded-up-to-minute":
@@ -100,6 +104,15 @@ def job_cost(provider, prices, workload, job, extra, copies):
             st = sum(ts(x["completed_at"]) - ts(x["started_at"]) for x in split)
             billed = run_s - st + sum(cps)
     return billed / 60 * rate, billed
+
+
+def flat_monthly_job_cost(pr, volume, mean_run_s):
+    """Cost per job of a flat monthly plan (billing "flat-monthly") at a monthly volume of this job:
+    the plans the volume needs are its concurrency, ceil(volume x mean run time / (hours per month x
+    3600 x U)), each at the monthly price, spread over the volume (METHOD.md, Cost)."""
+    seconds = float(pr.get("hours_per_month", 730)) * 3600 * float(pr.get("utilization", 1))
+    plans = max(1, math.ceil(volume * mean_run_s / seconds))
+    return float(pr["usd_per_month"]) * plans / volume
 
 
 def main():
@@ -169,6 +182,18 @@ def main():
         if any(r.get("replacement") for r in rs):
             units[key] = [r for r in rs if r.get("replacement")]
 
+    # Flat monthly plans: the mean job run time per (workload, provider) over the phase's
+    # completed jobs sets the concurrency, and so the plans, a monthly volume of that job needs.
+    flat_runs = defaultdict(list)
+    for r in rows:
+        p = providers.get(r["provider"])
+        ref = p and p.get("price_ref_by_workload", {}).get(r["workload"], p["price_ref"])
+        if p and prices["providers"].get(ref, {}).get("billing") == "flat-monthly":
+            for j in r["jobs"]:
+                if j.get("started_at") and j.get("completed_at"):
+                    flat_runs[(r["workload"], r["provider"])].append(ts(j["completed_at"]) - ts(j["started_at"]))
+    flat_mean = {k: sum(v) / len(v) for k, v in flat_runs.items() if v}
+
     run_rows = []
     for key, rs in sorted(units.items(), key=lambda kv: str(kv[0])):
         wl, prov = key[0], key[1]
@@ -197,6 +222,12 @@ def main():
                     for v in volumes[1:]:
                         row[f"cost_usd_{v}"] = variable + fx / v * len(jobs)
                     row["billed_s"] = sum(c[1] for c in cs)
+                    pr = prices["providers"].get(p.get("price_ref_by_workload", {}).get(wl, p["price_ref"]), {})
+                    if pr.get("billing") == "flat-monthly" and (wl, prov) in flat_mean:
+                        m = flat_mean[(wl, prov)]
+                        row["cost_usd"] = flat_monthly_job_cost(pr, ref_volume, m) * len(jobs)
+                        for v in volumes[1:]:
+                            row[f"cost_usd_{v}"] = flat_monthly_job_cost(pr, v, m) * len(jobs)
         run_rows.append(row)
 
     os.makedirs(a.out, exist_ok=True)
